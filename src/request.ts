@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch from "unfetch";
 import {stringify} from "querystring";
 
 interface LFMArgumentObject {

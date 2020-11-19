@@ -23,7 +23,13 @@ export default class TagClass extends Base {
 		page?:number
 	}) {
 
-		return await this.getTop("tag.getTopAlbums", tag, params) as TagInterface.getTopAlbums;
+		this.checkLimit(params?.limit, 1000);
+
+		return await new LFMRequest(this.key, this.secret, {
+			method: "tag.getTopAlbums",
+			tag,
+			...params
+		}).execute() as TagInterface.getTopAlbums;
 
 	}
 
@@ -32,7 +38,13 @@ export default class TagClass extends Base {
 		page?:number
 	}) {
 
-		return await this.getTop("tag.getTopArtists", tag, params) as TagInterface.getTopArtists;
+		this.checkLimit(params?.limit, 1000);
+
+		return await new LFMRequest(this.key, this.secret, {
+			method: "tag.getTopArtists",
+			tag,
+			...params
+		}).execute() as TagInterface.getTopArtists;
 
 	}
 
@@ -68,21 +80,14 @@ export default class TagClass extends Base {
 		page?:number
 	}) {
 
-		return await this.getTop("tag.getTopTracks", tag, params) as TagInterface.getTopTracks;
-
-	}
-
-	private async getTop(method:string, tag:string, params?:{
-		limit?:number,
-		page?:number
-	}) {
 		this.checkLimit(params?.limit, 1000);
 
 		return await new LFMRequest(this.key, this.secret, {
-			method: method,
+			method: "tag.getTopTracks",
 			tag,
 			...params
-		}).execute();
+		}).execute() as TagInterface.getTopTracks;
+
 	}
 
 }

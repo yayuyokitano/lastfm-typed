@@ -12,10 +12,20 @@ class TagClass extends base_1.default {
     }
     //skip tag.getSimilar because i have been unable to find any instance of it returning anything
     async getTopAlbums(tag, params) {
-        return await this.getTop("tag.getTopAlbums", tag, params);
+        this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);
+        return await new request_1.default(this.key, this.secret, {
+            method: "tag.getTopAlbums",
+            tag,
+            ...params
+        }).execute();
     }
     async getTopArtists(tag, params) {
-        return await this.getTop("tag.getTopArtists", tag, params);
+        this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);
+        return await new request_1.default(this.key, this.secret, {
+            method: "tag.getTopArtists",
+            tag,
+            ...params
+        }).execute();
     }
     async getTopTags(tag, params) {
         //set arguments in a way consistent with other endpoints
@@ -36,12 +46,9 @@ class TagClass extends base_1.default {
         return res;
     }
     async getTopTracks(tag, params) {
-        return await this.getTop("tag.getTopTracks", tag, params);
-    }
-    async getTop(method, tag, params) {
         this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);
         return await new request_1.default(this.key, this.secret, {
-            method: method,
+            method: "tag.getTopTracks",
             tag,
             ...params
         }).execute();
