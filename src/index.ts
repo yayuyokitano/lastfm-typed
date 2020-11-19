@@ -20,7 +20,9 @@ export default class LastFM {
 			tag,
 			...params
 		}).execute() as Tag.getInfo;
-		res.tag.wiki.published = new Date(res.tag.wiki.published);
+		if (res.tag?.wiki?.published) {
+			res.tag.wiki.published = new Date(res.tag.wiki.published);
+		}
 		return res;
 
 	}
