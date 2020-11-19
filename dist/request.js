@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_fetch_1 = require("node-fetch");
 const querystring_1 = require("querystring");
+const md5 = require("md5");
 class LFMRequest {
     constructor(key, secret, params) {
         this.key = key;
@@ -9,7 +10,7 @@ class LFMRequest {
         this.secret = secret;
     }
     async execute() {
-        if (this.params.hasOwnProperty("sk")) {
+        if (this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password")) {
             if (this.secret === "") {
                 throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
             }
@@ -47,6 +48,22 @@ class LFMRequest {
         return this.response;
     }
     async post() {
+        const api_sig = this.getSignature(this.params);
+        const requestParam = {
+            ...this.params,
+            api_key: this.key,
+            format: "json",
+            api_sig
+        };
+        const paramString = querystring_1.stringify(requestParam);
+        return await (await node_fetch_1.default("http://ws.audioscrobbler.com/2.0/", {
+            method: "POST",
+            headers: {
+                "Content-Length": Buffer.byteLength(paramString).toString(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: paramString
+        })).json();
     }
     async get() {
         const params = {
@@ -55,6 +72,16 @@ class LFMRequest {
             ...this.params
         };
         return await node_fetch_1.default(`http://ws.audioscrobbler.com/2.0?${querystring_1.stringify(params)}`);
+    }
+    getSignature(params) {
+        const paramObj = {
+            ...params,
+            api_key: this.key
+        };
+        const args = Object.keys(paramObj).sort().map(e => [e, paramObj[e]]);
+        let sig = args.reduce((acc, cur) => acc + cur[0] + cur[1], "");
+        sig = md5(sig + this.secret);
+        return sig;
     }
 }
 exports.default = LFMRequest;

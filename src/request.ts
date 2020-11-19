@@ -1,11 +1,13 @@
 import fetch from "node-fetch";
 import {stringify} from "querystring";
+import * as md5 from "md5";
 
 interface LFMArgumentObject {
 	
+	method:string;
+
 	lang?:string;
 	tag?:string;
-	method:string;
 	user?:string;
 	sk?:string;
 	country?:string;
@@ -14,6 +16,10 @@ interface LFMArgumentObject {
 	offset?:number;
 	page?:number;
 	limit?:number;
+	token?:string;
+	api_sig?:string;
+	username?:string;
+	password?:string;
 
 }
 
@@ -35,7 +41,7 @@ export default class LFMRequest {
 
 	public async execute() {
 
-		if (this.params.hasOwnProperty("sk")) {
+		if (this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password")) {
 
 			if (this.secret === "") {
 				throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
@@ -92,6 +98,25 @@ export default class LFMRequest {
 
 	private async post() {
 
+		const api_sig = this.getSignature(this.params);
+
+		const requestParam = {
+			...this.params,
+			api_key: this.key,
+			format: "json",
+			api_sig
+		}
+
+		const paramString = stringify(requestParam);
+		return await (await fetch("http://ws.audioscrobbler.com/2.0/", {
+			method: "POST",
+			headers: {
+				"Content-Length":  Buffer.byteLength(paramString).toString(),
+				"Content-Type": "application/x-www-form-urlencoded"
+			},
+			body: paramString
+		})).json();
+
 	}
 
 	private async get() {
@@ -103,6 +128,26 @@ export default class LFMRequest {
 		}
 		
 		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`);
+
+	}
+
+	private getSignature(params:{
+		method:string;
+		sk?:string;
+		token?:string;
+	}) {
+
+		const paramObj:any = {
+			...params,
+			api_key: this.key
+		};
+		const args = Object.keys(paramObj).sort().map(e => [e, paramObj[e]]) as string[][];
+
+		let sig = args.reduce((acc, cur) => acc + cur[0] + cur[1], "");
+
+		sig = md5(sig + this.secret);
+
+		return sig;
 
 	}
 

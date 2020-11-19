@@ -1,7 +1,7 @@
 interface LFMArgumentObject {
+    method: string;
     lang?: string;
     tag?: string;
-    method: string;
     user?: string;
     sk?: string;
     country?: string;
@@ -10,6 +10,10 @@ interface LFMArgumentObject {
     offset?: number;
     page?: number;
     limit?: number;
+    token?: string;
+    api_sig?: string;
+    username?: string;
+    password?: string;
 }
 export default class LFMRequest {
     private key;
@@ -21,5 +25,6 @@ export default class LFMRequest {
     checkStatus(): Promise<any>;
     private post;
     private get;
+    private getSignature;
 }
 export {};
