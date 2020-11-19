@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const unfetch_1 = require("unfetch");
+const node_fetch_1 = require("node-fetch");
 const querystring_1 = require("querystring");
 class LFMRequest {
     constructor(key, secret, params) {
@@ -48,7 +48,7 @@ class LFMRequest {
             api_key: this.api_key,
             ...this.params
         };
-        return await unfetch_1.default(`http://ws.audioscrobbler.com/2.0?${querystring_1.stringify(params)}`);
+        return await node_fetch_1.default(`http://ws.audioscrobbler.com/2.0?${querystring_1.stringify(params)}`);
     }
 }
 exports.default = LFMRequest;
