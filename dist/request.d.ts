@@ -1,3 +1,10 @@
+interface LFMArgumentObject {
+    lang?: string;
+    tag?: string;
+    method: string;
+    user?: string;
+    sk?: string;
+}
 export default class LFMRequest {
     private api_key;
     private params;
@@ -8,12 +15,5 @@ export default class LFMRequest {
     checkStatus(): Promise<any>;
     private post;
     private get;
-}
-interface LFMArgumentObject {
-    lang?: string;
-    tag?: string;
-    method: string;
-    user?: string;
-    sk?: string;
 }
 export {};

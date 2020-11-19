@@ -1,5 +1,16 @@
-import fetch from "node-fetch"
-import {stringify} from "querystring"
+import fetch from "unfetch";
+import {stringify} from "querystring";
+
+interface LFMArgumentObject {
+	
+	lang?:string;
+	tag?:string;
+	method:string;
+	user?:string;
+	sk?:string;
+
+}
+
 
 export default class LFMRequest {
 
@@ -88,15 +99,5 @@ export default class LFMRequest {
 		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`);
 
 	}
-
-}
-
-interface LFMArgumentObject {
-	
-	lang?:string;
-	tag?:string;
-	method:string;
-	user?:string;
-	sk?:string;
 
 }
