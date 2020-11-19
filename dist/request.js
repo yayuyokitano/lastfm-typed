@@ -78,7 +78,7 @@ class LFMRequest {
             ...params,
             api_key: this.key
         };
-        const args = Object.keys(paramObj).sort().map(e => [e, paramObj[e]]);
+        const args = Object.keys(paramObj).sort().map((e) => [e, paramObj[e]]);
         let sig = args.reduce((acc, cur) => acc + cur[0] + cur[1], "");
         sig = md5(sig + this.secret);
         return sig;

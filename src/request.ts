@@ -141,7 +141,7 @@ export default class LFMRequest {
 			...params,
 			api_key: this.key
 		};
-		const args = Object.keys(paramObj).sort().map(e => [e, paramObj[e]]) as string[][];
+		const args = Object.keys(paramObj).sort().map((e) => [e, paramObj[e]]) as string[][];
 
 		let sig = args.reduce((acc, cur) => acc + cur[0] + cur[1], "");
 
