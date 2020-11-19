@@ -29,7 +29,12 @@ class LFMRequest {
             };
             throw error;
         }
-        this.response = await this.response.json();
+        try {
+            this.response = await this.response.json();
+        }
+        catch (err) {
+            throw new Error("Returned invalid json! Most likely a Last.FM issue.");
+        }
         //lastfm errors
         if (this.response.hasOwnProperty("error")) {
             let error = {
@@ -46,6 +51,7 @@ class LFMRequest {
     async get() {
         const params = {
             api_key: this.api_key,
+            format: "json",
             ...this.params
         };
         return await node_fetch_1.default(`http://ws.audioscrobbler.com/2.0?${querystring_1.stringify(params)}`);

@@ -50,7 +50,11 @@ export default class LFMRequest {
 
 		}
 
-		this.response = await this.response.json();
+		try {
+			this.response = await this.response.json();
+		} catch (err) {
+			throw new Error("Returned invalid json! Most likely a Last.FM issue.");
+		}
 
 		//lastfm errors
 		if (this.response.hasOwnProperty("error")) {
@@ -77,6 +81,7 @@ export default class LFMRequest {
 
 		const params = {
 			api_key: this.api_key,
+			format: "json",
 			...this.params
 		}
 		
