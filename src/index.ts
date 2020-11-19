@@ -30,11 +30,7 @@ export default class LastFM {
 		page?:number
 	}) {
 
-		if (params?.limit) {
-			if (params.limit > 1000 || params.limit < 1) {
-				throw new Error(`tag.getTopAlbums: limit out of bounds (1-1000), ${params.limit} passed`);
-			}
-		}
+		this.checkLimit(params?.limit, 1000);
 
 		return await new lfmrequest(this.key, this.secret, {
 			method: "tag.getTopAlbums",
@@ -49,13 +45,7 @@ export default class LastFM {
 		page?:number
 	}) {
 
-		console.log(params);
-
-		if (params?.limit) {
-			if (params.limit > 1000 || params.limit < 1) {
-				throw new Error(`tag.getTopArtists: limit out of bounds (1-1000), ${params.limit} passed`);
-			}
-		}
+		this.checkLimit(params?.limit, 1000);
 
 		return await new lfmrequest(this.key, this.secret, {
 			method: "tag.getTopArtists",
@@ -70,17 +60,25 @@ export default class LastFM {
 		page?:number
 	}) {
 
-		if (params?.limit) {
-			if (params.limit > 1000 || params.limit < 1) {
-				throw new Error(`tag.getTopTracks: limit out of bounds (1-1000), ${params.limit} passed`);
-			}
-		}
 
-		return await new lfmrequest(this.key, this.secret, {
+		//set arguments in a way consistent with other endpoints
+		const newParams = this.convertNumRes(params);
+		this.checkLimit(newParams.num_res, 1000);
+
+		let res = await new lfmrequest(this.key, this.secret, {
 			method: "tag.getTopTags",
 			tag,
-			...params
-		}).execute() as Tag.getTopAlbums;
+			...newParams
+		}).execute();
+
+		let attr:Tag.ShortMetadata = {
+			total: res.toptags["@attr"].total as string,
+			page: ((newParams.offset / newParams.num_res) + 1).toString(),
+			perPage: newParams.num_res.toString(),
+			totalPages: Math.ceil(parseInt(res.toptags["@attr"].total) / newParams.num_res).toString()
+		}
+		res.toptags["@attr"] = attr;
+		return res as Tag.getTopTags;
 
 	}
 
@@ -89,18 +87,36 @@ export default class LastFM {
 		page?:number
 	}) {
 
-		if (params?.limit) {
-			if (params.limit > 1000 || params.limit < 1) {
-				throw new Error(`tag.getTopTracks: limit out of bounds (1-1000), ${params.limit} passed`);
-			}
-		}
+		this.checkLimit(params?.limit, 1000);
 
 		return await new lfmrequest(this.key, this.secret, {
 			method: "tag.getTopTracks",
 			tag,
 			...params
-		}).execute() as Tag.getTopAlbums;
+		}).execute() as Tag.getTopTracks;
 
+	}
+
+
+
+
+	///helper functions
+
+	private checkLimit(limit:number|undefined, maxLimit:number) {
+		if (limit !== undefined && (limit > maxLimit || limit < 1)) {
+			throw new Error(`Limit out of bounds (1-${maxLimit}), ${limit} passed`);
+		}
+	}
+
+	private convertNumRes(params:any) {
+		let newParams = {
+			num_res: 50,
+			offset: 0
+		}
+
+		newParams.num_res = params?.limit || 50,
+		newParams.offset = ((params?.page || 1) - 1) * newParams.num_res;
+		return newParams;
 	}
 
 

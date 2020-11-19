@@ -17,9 +17,11 @@ export default class LastFM {
     tag_getTopTags(tag: string, params?: {
         limit?: number;
         page?: number;
-    }): Promise<Tag.getTopAlbums>;
+    }): Promise<Tag.getTopTags>;
     tag_getTopTracks(tag: string, params?: {
         limit?: number;
         page?: number;
-    }): Promise<Tag.getTopAlbums>;
+    }): Promise<Tag.getTopTracks>;
+    private checkLimit;
+    private convertNumRes;
 }

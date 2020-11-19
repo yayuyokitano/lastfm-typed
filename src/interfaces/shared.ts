@@ -1,37 +1,46 @@
-import { Url } from "url";
-
 export interface Wiki {
 	published?:string;
 	summary:string;
 	content:string;
 }
 
-export interface Album {
+interface BasicInfo {
 	name:string,
 	mbid:string,
-	url: string,
-	artist:ArtistBasic,
+	url:string,
 	image:Image[],
 	"@attr": {
 		rank:string
 	}
 }
 
-export interface Artist {
-	name:string,
-	mbid:string,
-	url:string,
-	streamable:string,
-	image:Image[],
-	"@attr": {
-		rank:string
+export interface Album extends BasicInfo {
+	artist:ArtistBasic
+}
+
+export interface Artist extends BasicInfo {
+	streamable:string
+}
+
+export interface Track extends BasicInfo {
+	duration:string
+	streamable: {
+		"#text":string,
+		fulltrack:string
 	}
+	artist:ArtistBasic
 }
 
 export interface ArtistBasic {
 	name:string,
 	mbid:string,
 	url:string
+}
+
+export interface TagBasic {
+	name:string,
+	count:number,
+	reach:number
 }
 
 export interface Image {
