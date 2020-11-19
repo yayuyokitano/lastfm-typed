@@ -6,6 +6,7 @@
   "author": "yayuyokitano",
   "license": "MIT",
   "dependencies": {
+    "@types/node-fetch": "^2.5.7",
     "unfetch": "^4.2.0"
   },
   "devDependencies": {
