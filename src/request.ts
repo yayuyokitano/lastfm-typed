@@ -107,7 +107,7 @@ export default class LFMRequest {
 			api_key: this.key,
 			format: "json",
 			api_sig
-		}
+		};
 
 		const paramString = stringify(requestParam);
 		return await (await fetch("http://ws.audioscrobbler.com/2.0/", {
@@ -127,7 +127,7 @@ export default class LFMRequest {
 			api_key: this.key,
 			format: "json",
 			...this.params
-		}
+		};
 		
 		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`);
 
