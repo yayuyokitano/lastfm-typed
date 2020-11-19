@@ -4,9 +4,15 @@ interface LFMArgumentObject {
     method: string;
     user?: string;
     sk?: string;
+    country?: string;
+    location?: string;
+    num_res?: number;
+    offset?: number;
+    page?: number;
+    limit?: number;
 }
 export default class LFMRequest {
-    private api_key;
+    private key;
     private params;
     private secret;
     private response;

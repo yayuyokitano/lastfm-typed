@@ -18,7 +18,7 @@ export default class LFMBase {
 		let newParams = {
 			num_res: 50,
 			offset: 0
-		}
+		};
 
 		newParams.num_res = params?.limit || 50,
 		newParams.offset = ((params?.page || 1) - 1) * newParams.num_res;

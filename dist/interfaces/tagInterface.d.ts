@@ -1,12 +1,6 @@
-import { Album, Artist, TagBasic, Track, Wiki } from "./shared";
+import { TagAlbum, TagArtist, TagBasic, TagTrack, Wiki } from "./shared";
 interface Metadata {
     tag: string;
-    page: string;
-    perPage: string;
-    totalPages: string;
-    total: string;
-}
-export interface ShortMetadata {
     page: string;
     perPage: string;
     totalPages: string;
@@ -22,13 +16,13 @@ export interface getInfo {
 }
 export interface getTopAlbums {
     albums: {
-        album: Album[];
+        album: TagAlbum[];
         "@attr": Metadata;
     };
 }
 export interface getTopArtists {
     topartists: {
-        artist: Artist[];
+        artist: TagArtist[];
         "@attr": Metadata;
     };
 }
@@ -40,7 +34,7 @@ export interface getTopTags {
 }
 export interface getTopTracks {
     tracks: {
-        track: Track[];
+        track: TagTrack[];
         "@attr": Metadata;
     };
 }

@@ -1,4 +1,4 @@
-import fetch from "unfetch";
+import fetch from "node-fetch";
 import {stringify} from "querystring";
 
 interface LFMArgumentObject {
@@ -8,20 +8,26 @@ interface LFMArgumentObject {
 	method:string;
 	user?:string;
 	sk?:string;
+	country?:string;
+	location?:string;
+	num_res?:number;
+	offset?:number;
+	page?:number;
+	limit?:number;
 
 }
 
 
 export default class LFMRequest {
 
-	private api_key:string;
+	private key:string;
 	private params:LFMArgumentObject;
 	private secret:string;
 	private response:any;
 
 	public constructor(key:string, secret:string, params:LFMArgumentObject) {
 
-		this.api_key = key;
+		this.key = key;
 		this.params = params;
 		this.secret = secret;
 
@@ -55,7 +61,7 @@ export default class LFMRequest {
 			let error = {
 				...new Error(this.response.statusText),
 				response: this.response
-			}
+			};
 
 			throw error;
 
@@ -91,7 +97,7 @@ export default class LFMRequest {
 	private async get() {
 
 		const params = {
-			api_key: this.api_key,
+			api_key: this.key,
 			format: "json",
 			...this.params
 		}

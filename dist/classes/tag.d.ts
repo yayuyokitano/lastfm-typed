@@ -20,4 +20,5 @@ export default class TagClass extends Base {
         limit?: number;
         page?: number;
     }): Promise<TagInterface.getTopTracks>;
+    private getTop;
 }

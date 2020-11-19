@@ -1,5 +1,6 @@
 import LFMRequest from "../request";
 import * as TagInterface from "../interfaces/tagInterface";
+import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
 
 export default class TagClass extends Base {
@@ -23,13 +24,7 @@ export default class TagClass extends Base {
 		page?:number
 	}) {
 
-		this.checkLimit(params?.limit, 1000);
-
-		return await new LFMRequest(this.key, this.secret, {
-			method: "tag.getTopAlbums",
-			tag,
-			...params
-		}).execute() as TagInterface.getTopAlbums;
+		return await this.getTop("tag.getTopAlbums", tag, params) as TagInterface.getTopAlbums;
 
 	}
 
@@ -38,13 +33,7 @@ export default class TagClass extends Base {
 		page?:number
 	}) {
 
-		this.checkLimit(params?.limit, 1000);
-
-		return await new LFMRequest(this.key, this.secret, {
-			method: "tag.getTopArtists",
-			tag,
-			...params
-		}).execute() as TagInterface.getTopArtists;
+		return await this.getTop("tag.getTopArtists", tag, params) as TagInterface.getTopArtists;
 
 	}
 
@@ -56,20 +45,16 @@ export default class TagClass extends Base {
 
 		//set arguments in a way consistent with other endpoints
 		const newParams = this.convertNumRes(params);
-		this.checkLimit(newParams.num_res, 1000);
 
-		let res = await new LFMRequest(this.key, this.secret, {
-			method: "tag.getTopTags",
-			tag,
-			...newParams
-		}).execute();
+		let res = await this.getTop("tag.getTopTags", tag, newParams);
 
-		let attr:TagInterface.ShortMetadata = {
+		let attr:ShortMetadata = {
 			total: res.toptags["@attr"].total as string,
 			page: ((newParams.offset / newParams.num_res) + 1).toString(),
 			perPage: newParams.num_res.toString(),
 			totalPages: Math.ceil(parseInt(res.toptags["@attr"].total) / newParams.num_res).toString()
-		}
+		};
+
 		res.toptags["@attr"] = attr;
 		return res as TagInterface.getTopTags;
 
@@ -80,14 +65,23 @@ export default class TagClass extends Base {
 		page?:number
 	}) {
 
-		this.checkLimit(params?.limit, 1000);
+		return await this.getTop("tag.getTopTracks", tag, params) as TagInterface.getTopTracks;
+
+	}
+
+	private async getTop(method:string, tag:string, params?:{
+		limit?:number,
+		page?:number,
+		num_res?:number,
+		offset?:number
+	}) {
+		this.checkLimit(params?.limit || params?.num_res, 1000);
 
 		return await new LFMRequest(this.key, this.secret, {
-			method: "tag.getTopTracks",
+			method,
 			tag,
 			...params
-		}).execute() as TagInterface.getTopTracks;
-
+		}).execute();
 	}
 
 }
