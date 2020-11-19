@@ -5,7 +5,7 @@ export default class LFMRequest {
     private response;
     constructor(key: string, secret: string, params: LFMArgumentObject);
     execute(): Promise<any>;
-    checkStatus(): any;
+    checkStatus(): Promise<any>;
     private post;
     private get;
 }

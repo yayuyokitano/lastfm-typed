@@ -32,11 +32,11 @@ export default class LFMRequest {
 			
 		}
 
-		return this.checkStatus();
+		return await this.checkStatus();
 
 	}
 
-	checkStatus() {
+	async checkStatus() {
 
 		//request errors
 		if (!this.response.ok) {
@@ -49,6 +49,8 @@ export default class LFMRequest {
 			throw error;
 
 		}
+
+		this.response = await this.response.json();
 
 		//lastfm errors
 		if (this.response.hasOwnProperty("error")) {
