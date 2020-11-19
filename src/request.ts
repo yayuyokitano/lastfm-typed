@@ -1,0 +1,95 @@
+import fetch from "unfetch"
+import {stringify} from "querystring"
+
+export default class LFMRequest {
+
+	private api_key:string;
+	private params:LFMArgumentObject;
+	private secret:string;
+	private response:any;
+
+	public constructor(key:string, secret:string, params:LFMArgumentObject) {
+
+		this.api_key = key;
+		this.params = params;
+		this.secret = secret;
+
+	}
+
+	public async execute() {
+
+		if (this.params.hasOwnProperty("sk")) {
+
+			if (this.secret === "") {
+				throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
+			}
+
+			this.response = await this.post();
+
+		} else {
+
+			this.response = await this.get();
+			
+		}
+
+		return this.checkStatus();
+
+	}
+
+	checkStatus() {
+
+		//request errors
+		if (!this.response.ok) {
+
+			let error = {
+				...new Error(this.response.statusText),
+				response: this.response
+			}
+
+			throw error;
+
+		}
+
+		//lastfm errors
+		if (this.response.hasOwnProperty("error")) {
+
+			let error = {
+				...new Error(this.response.message),
+				code: this.response.error
+			}
+
+			throw error;
+
+		}
+
+		//successful request
+		return this.response;
+
+	}
+
+	private async post() {
+
+	}
+
+	private async get() {
+
+		const params = {
+			api_key: this.api_key,
+			...this.params
+		}
+		
+		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`);
+
+	}
+
+}
+
+interface LFMArgumentObject {
+	
+	lang?:string;
+	tag?:string;
+	method:string;
+	user?:string;
+	sk?:string;
+
+}

@@ -1,0 +1,14 @@
+{
+  "name": "lastfm-typed",
+  "version": "0.1.0",
+  "description": "Typed API wrapper for Last.FM using promises through async functions",
+  "main": "dist/index.js",
+  "author": "yayuyokitano",
+  "license": "MIT",
+  "dependencies": {
+    "unfetch": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.8"
+  }
+}
