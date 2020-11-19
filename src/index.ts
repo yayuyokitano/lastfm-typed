@@ -1,7 +1,7 @@
 import lfmrequest from "./request"
 import * as Tag from "./tagInterface"
 
-class LastFM {
+export default class LastFM {
 
 	private key:string;
 	private secret:string;

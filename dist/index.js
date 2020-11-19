@@ -16,4 +16,5 @@ class LastFM {
         return res;
     }
 }
+exports.default = LastFM;
 //# sourceMappingURL=index.js.map
