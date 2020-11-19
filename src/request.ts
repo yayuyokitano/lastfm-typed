@@ -110,14 +110,15 @@ export default class LFMRequest {
 		};
 
 		const paramString = stringify(requestParam);
-		return await (await fetch("http://ws.audioscrobbler.com/2.0/", {
+
+		return await fetch("http://ws.audioscrobbler.com/2.0/", {
 			method: "POST",
 			headers: {
 				"Content-Length":  Buffer.byteLength(paramString).toString(),
 				"Content-Type": "application/x-www-form-urlencoded"
 			},
 			body: paramString
-		})).json();
+		});
 
 	}
 

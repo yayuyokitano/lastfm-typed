@@ -57,14 +57,14 @@ class LFMRequest {
             api_sig
         };
         const paramString = querystring_1.stringify(requestParam);
-        return await (await node_fetch_1.default("http://ws.audioscrobbler.com/2.0/", {
+        return await node_fetch_1.default("http://ws.audioscrobbler.com/2.0/", {
             method: "POST",
             headers: {
                 "Content-Length": Buffer.byteLength(paramString).toString(),
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: paramString
-        })).json();
+        });
     }
     async get() {
         const params = {
