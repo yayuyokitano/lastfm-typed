@@ -10,3 +10,5 @@ export interface getInfo {
         };
     };
 }
+export interface getTopAlbums {
+}
