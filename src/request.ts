@@ -41,7 +41,9 @@ export default class LFMRequest {
 
 	public async execute() {
 
-		if (this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password")) {
+		const isPostRequest = this.isPostRequest();
+
+		if (isPostRequest) {
 
 			if (this.secret === "") {
 				throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
@@ -85,7 +87,7 @@ export default class LFMRequest {
 			let error = {
 				...new Error(this.response.message),
 				code: this.response.error
-			}
+			};
 
 			throw error;
 
@@ -149,6 +151,10 @@ export default class LFMRequest {
 
 		return sig;
 
+	}
+
+	private isPostRequest() {
+		return this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
 	}
 
 }

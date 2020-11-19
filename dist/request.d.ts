@@ -26,5 +26,6 @@ export default class LFMRequest {
     private post;
     private get;
     private getSignature;
+    private isPostRequest;
 }
 export {};
