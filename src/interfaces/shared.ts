@@ -43,8 +43,8 @@ export interface Image {
 }
 
 export interface ArtistNoMBID {
-	 name:string;
-	 url:string;
+	name:string;
+	url:string;
 }
 
 export interface ArtistBasic extends ArtistNoMBID {
