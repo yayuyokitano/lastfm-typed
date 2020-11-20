@@ -14,6 +14,10 @@ interface LFMArgumentObject {
     api_sig?: string;
     username?: string;
     password?: string;
+    artist?: string;
+    album?: string;
+    tags?: string;
+    mbid?: string;
 }
 export default class LFMRequest {
     private key;

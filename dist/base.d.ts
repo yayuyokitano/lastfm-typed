@@ -7,4 +7,6 @@ export default class LFMBase {
         num_res: number;
         offset: number;
     };
+    protected isSessionKey(param: string): boolean;
+    protected formatSearch(query: string): string;
 }

@@ -11,11 +11,7 @@ class GeoClass extends base_1.default {
     }
     async getTop(method, country, params) {
         this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);
-        return await new request_1.default(this.key, this.secret, {
-            method,
-            country,
-            ...params
-        }).execute();
+        return await new request_1.default(this.key, this.secret, { method, country, ...params }).execute();
     }
 }
 exports.default = GeoClass;

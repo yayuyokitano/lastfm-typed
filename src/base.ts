@@ -25,4 +25,12 @@ export default class LFMBase {
 		return newParams;
 	}
 
+	protected isSessionKey(param:string) {
+		return param.length === 32;
+	}
+
+	protected formatSearch(query:string) {
+		return query.replace(/:/g, " ");
+	}
+
 }

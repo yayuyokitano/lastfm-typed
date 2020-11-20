@@ -4,6 +4,32 @@ export interface Wiki {
 	content:string;
 }
 
+interface ArtistAlbumInput {
+	artist:string;
+	album:string;
+	mbid?:string;
+}
+
+interface MBIDAlbumInput {
+	artist?:string;
+	album?:string;
+	mbid:string;
+}
+
+export type AlbumInput = ArtistAlbumInput | MBIDAlbumInput;
+
+interface ArtistNameInput {
+	artist:string;
+	mbid?:string;
+}
+
+interface MBIDArtistInput {
+	artist?:string;
+	mbid:string;
+}
+
+export type ArtistInput = ArtistNameInput | MBIDArtistInput;
+
 export interface ShortMetadata {
 	page:string;
 	perPage:string;
@@ -16,21 +42,48 @@ export interface Image {
 	size:string;
 }
 
-export interface ArtistBasic {
-	name:string;
-	mbid:string;
-	url:string;
+export interface ArtistNoMBID {
+	 name:string;
+	 url:string;
 }
 
-interface BasicInfo {
-	name:string;
+export interface ArtistBasic extends ArtistNoMBID {
 	mbid:string;
+}
+
+export interface ArtistOptionalMBID extends ArtistNoMBID {
+	mbid?:string;
+}
+
+interface InfoNoMBID {
+	name:string;
 	url:string;
 	image:Image[];
 }
 
+interface BasicInfo extends InfoNoMBID {
+	mbid:string;
+}
+
+interface BasicOptionalMBID extends InfoNoMBID {
+	mbid?:string;
+}
+
+export interface StringAlbum extends BasicInfo {
+	artist:string;
+	streamable:string;
+}
+
 export interface Album extends BasicInfo {
 	artist:ArtistBasic;
+}
+
+interface AlbumOptionalMBID extends BasicOptionalMBID {
+	artist:ArtistOptionalMBID;
+}
+
+export interface AlbumGlobal extends AlbumOptionalMBID {
+	playcount:number;
 }
 
 export interface TagAlbum extends Album {
@@ -39,11 +92,17 @@ export interface TagAlbum extends Album {
 	}
 }
 
-export interface Artist extends BasicInfo {
+export interface GlobalAlbum extends BasicInfo {
+	artist:string;
+	listeners:string;
+	playcount:string;
+}
+
+export interface Artist extends ArtistBasic {
 	streamable:string;
 }
 
-export interface TagArtist extends BasicInfo {
+export interface TagArtist extends ArtistBasic {
 	"@attr": {
 		rank:string;
 	}
@@ -53,11 +112,11 @@ export interface ListenerArtist extends Artist {
 	listeners:string;
 }
 
-export interface GlobalArtist extends Artist {
+export interface GlobalArtist extends ListenerArtist {
 	playcount:string;
 }
 
-export interface Track extends BasicInfo {
+interface Track extends ArtistBasic {
 	duration:string;
 	streamable: {
 		"#text":string;
@@ -66,10 +125,14 @@ export interface Track extends BasicInfo {
 	artist:ArtistBasic;
 }
 
-export interface TagTrack extends Track {
+export interface TrackNoImage extends Track {
 	"@attr": {
 		rank:string;
 	}
+}
+
+export interface TagTrack extends TrackNoImage {
+	image:Image[];
 }
 
 export interface ListenerTrack extends Track {
@@ -78,11 +141,18 @@ export interface ListenerTrack extends Track {
 
 export interface GlobalTrack extends ListenerTrack {
 	playcount:string;
-	image:Image[];
 }
 
 interface Tag {
 	name:string;
+}
+
+export interface TagWUrl extends Tag {
+	url:string;
+}
+
+export interface TagUrlCount extends TagWUrl {
+	count:number;
 }
 
 export interface TagBasic extends Tag {
