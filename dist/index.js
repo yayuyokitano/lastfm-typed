@@ -5,6 +5,7 @@ const geo_1 = require("./classes/geo");
 const chart_1 = require("./classes/chart");
 const auth_1 = require("./classes/auth");
 const album_1 = require("./classes/album");
+const artist_1 = require("./classes/artist");
 class LastFM {
     constructor(apiKey, apiSecret = "") {
         this.key = apiKey;
@@ -14,6 +15,7 @@ class LastFM {
         this.chart = new chart_1.default(this.key, this.secret);
         this.auth = new auth_1.default(this.key, this.secret);
         this.album = new album_1.default(this.key, this.secret);
+        this.artist = new artist_1.default(this.key, this.secret);
     }
 }
 exports.default = LastFM;

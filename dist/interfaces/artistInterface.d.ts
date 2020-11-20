@@ -1,4 +1,4 @@
-import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, StringAlbum, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image } from "./shared";
+import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist } from "./shared";
 interface Metadata {
     artist: string;
 }
@@ -99,8 +99,8 @@ export interface search {
         "opensearch:totalResults": string;
         "opensearch:startIndex": string;
         "opensearch:itemsPerPage": string;
-        albummatches: {
-            album: StringAlbum[];
+        artistmatches: {
+            artist: ListenerArtist[];
         };
         "@attr": {
             for: string;

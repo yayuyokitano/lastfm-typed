@@ -51,7 +51,7 @@ export default class AlbumClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, {method: "album.search", ...params}).execute() as AlbumInterface.search;
+		return await new LFMRequest(this.key, this.secret, {method: "album.search", album, ...params}).execute() as AlbumInterface.search;
 
 	}
 

@@ -28,7 +28,7 @@ class AlbumClass extends base_1.default {
     }
     async search(album, params) {
         this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);
-        return await new request_1.default(this.key, this.secret, { method: "album.search", ...params }).execute();
+        return await new request_1.default(this.key, this.secret, { method: "album.search", album, ...params }).execute();
     }
 }
 exports.default = AlbumClass;

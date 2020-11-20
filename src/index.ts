@@ -3,6 +3,7 @@ import GeoClass from "./classes/geo";
 import ChartClass from "./classes/chart";
 import AuthClass from "./classes/auth";
 import AlbumClass from "./classes/album";
+import ArtistClass from "./classes/artist";
 
 export default class LastFM {
 	private key:string;
@@ -12,6 +13,7 @@ export default class LastFM {
 	public chart:ChartClass;
 	public auth:AuthClass;
 	public album:AlbumClass;
+	public artist:ArtistClass;
 
 	public constructor(apiKey:string, apiSecret:string = "") {
 		this.key = apiKey;
@@ -21,5 +23,6 @@ export default class LastFM {
 		this.chart = new ChartClass(this.key, this.secret);
 		this.auth = new AuthClass(this.key, this.secret);
 		this.album = new AlbumClass(this.key, this.secret);
+		this.artist = new ArtistClass(this.key, this.secret);
 	}
 }

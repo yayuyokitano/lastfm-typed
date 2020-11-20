@@ -81,7 +81,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, {method: "album.search", ...params}).execute() as ArtistInterface.search;
+		return await new LFMRequest(this.key, this.secret, {method: "artist.search", artist, ...params}).execute() as ArtistInterface.search;
 
 	}
 
