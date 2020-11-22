@@ -5,19 +5,19 @@ import { ArtistInput } from "../interfaces/shared";
 
 export default class ArtistClass extends Base {
 
-	public async addTags(artist:ArtistInput, tags:string[]|string, sk:string) {
+	public async addTags(artist:string, tags:string[]|string, sk:string) {
 
 		if (Array.isArray(tags)) {
 			tags = tags.join(",");
 		}
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.addTags", tags, sk, ...artist }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "artist.addTags", tags, sk, artist }).execute() as {};
 
 	}
 
-	public async getCorrection(artist:ArtistInput) {
+	public async getCorrection(artist:string) {
 		
-		return (((await new LFMRequest(this.key, this.secret, { method: "artist.getCorrection", ...artist }).execute())?.corrections?.correction) || {}) as ArtistInterface.getCorrection|{};
+		return (((await new LFMRequest(this.key, this.secret, { method: "artist.getCorrection", artist }).execute())?.corrections?.correction) || {}) as ArtistInterface.getCorrection|{};
 
 	}
 

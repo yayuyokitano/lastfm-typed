@@ -10,6 +10,11 @@ class LFMBase {
             throw new Error(`Limit out of bounds (1-${maxLimit}), ${limit} passed`);
         }
     }
+    checkScrobbleCount(scrobbleCount, maxScrobbleCount) {
+        if (typeof scrobbleCount === "undefined" || (scrobbleCount > maxScrobbleCount || scrobbleCount < 1)) {
+            throw new Error(`Scrobble count out of bounds (1-${maxScrobbleCount}), ${scrobbleCount} passed`);
+        }
+    }
     convertNumRes(params) {
         let newParams = {
             num_res: 50,

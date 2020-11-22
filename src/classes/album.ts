@@ -47,7 +47,7 @@ export default class AlbumClass extends Base {
 
 	}
 
-	public async search(album:string, params?:{limit:number, page:number}) {
+	public async search(album:string, params?:{limit?:number, page?:number}) {
 
 		this.checkLimit(params?.limit, 1000);
 

@@ -7,11 +7,11 @@ class ArtistClass extends base_1.default {
         if (Array.isArray(tags)) {
             tags = tags.join(",");
         }
-        return await new request_1.default(this.key, this.secret, { method: "artist.addTags", tags, sk, ...artist }).execute();
+        return await new request_1.default(this.key, this.secret, { method: "artist.addTags", tags, sk, artist }).execute();
     }
     async getCorrection(artist) {
         var _a, _b;
-        return (((_b = (_a = (await new request_1.default(this.key, this.secret, { method: "artist.getCorrection", ...artist }).execute())) === null || _a === void 0 ? void 0 : _a.corrections) === null || _b === void 0 ? void 0 : _b.correction) || {});
+        return (((_b = (_a = (await new request_1.default(this.key, this.secret, { method: "artist.getCorrection", artist }).execute())) === null || _a === void 0 ? void 0 : _a.corrections) === null || _b === void 0 ? void 0 : _b.correction) || {});
     }
     async getInfo(artist, params) {
         return await new request_1.default(this.key, this.secret, { method: "artist.getInfo", ...artist, ...params }).execute();

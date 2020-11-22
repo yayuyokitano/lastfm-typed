@@ -2,8 +2,8 @@ import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
 export default class ArtistClass extends Base {
-    addTags(artist: ArtistInput, tags: string[] | string, sk: string): Promise<{}>;
-    getCorrection(artist: ArtistInput): Promise<{} | ArtistInterface.getCorrection>;
+    addTags(artist: string, tags: string[] | string, sk: string): Promise<{}>;
+    getCorrection(artist: string): Promise<{} | ArtistInterface.getCorrection>;
     getInfo(artist: ArtistInput, params?: {
         autocorrect?: 0 | 1;
         username?: string;

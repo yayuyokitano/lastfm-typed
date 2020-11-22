@@ -17,7 +17,7 @@ export default class AlbumClass extends Base {
     }): Promise<AlbumInterface.getTopTags>;
     removeTag(album: AlbumInput, tag: string, sk: string): Promise<{}>;
     search(album: string, params?: {
-        limit: number;
-        page: number;
+        limit?: number;
+        page?: number;
     }): Promise<AlbumInterface.search>;
 }

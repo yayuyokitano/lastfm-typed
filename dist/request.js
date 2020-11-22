@@ -9,13 +9,13 @@ class LFMRequest {
         this.params = params;
         this.secret = secret;
     }
-    async execute() {
+    async execute(isScrobble = false) {
         const isPostRequest = this.isPostRequest();
         if (isPostRequest) {
             if (this.secret === "") {
                 throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
             }
-            this.response = await this.post();
+            this.response = await this.post(isScrobble);
         }
         else {
             this.response = await this.get();
@@ -48,8 +48,8 @@ class LFMRequest {
         //successful request
         return this.response;
     }
-    async post() {
-        const api_sig = this.getSignature(this.params);
+    async post(isScrobble) {
+        const api_sig = this.getSignature(isScrobble);
         const requestParam = {
             ...this.params,
             api_key: this.key,
@@ -74,13 +74,13 @@ class LFMRequest {
         };
         return await node_fetch_1.default(`http://ws.audioscrobbler.com/2.0?${querystring_1.stringify(params)}`);
     }
-    getSignature(params) {
+    getSignature(isScrobble) {
         const paramObj = {
-            ...params,
+            ...this.params,
             api_key: this.key
         };
         const args = Object.keys(paramObj).sort().map((e) => [e, paramObj[e]]);
-        let sig = args.reduce((acc, cur) => acc + cur[0] + cur[1], "");
+        let sig = args.reduce((acc, cur) => acc + (isScrobble && !["api_key", "sk"].includes(cur[0]) ? "" : cur[0]) + cur[1], "");
         sig = md5(sig + this.secret);
         return sig;
     }

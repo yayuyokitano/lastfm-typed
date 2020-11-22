@@ -18,6 +18,8 @@ interface LFMArgumentObject {
     album?: string;
     tags?: string;
     mbid?: string;
+    track?: string;
+    timestamp?: string;
 }
 export default class LFMRequest {
     private key;
@@ -25,7 +27,7 @@ export default class LFMRequest {
     private secret;
     private response;
     constructor(key: string, secret: string, params: LFMArgumentObject);
-    execute(): Promise<any>;
+    execute(isScrobble?: boolean): Promise<any>;
     checkStatus(): Promise<any>;
     private post;
     private get;

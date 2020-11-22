@@ -58,7 +58,7 @@ export interface getInfo {
 }
 export interface getSimilar {
     similarartists: {
-        artist: SimilarArtist;
+        artist: SimilarArtist[];
         "@attr": {
             artist: string;
         };

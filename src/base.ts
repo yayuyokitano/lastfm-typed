@@ -14,6 +14,12 @@ export default class LFMBase {
 		}
 	}
 
+	protected checkScrobbleCount(scrobbleCount:number|undefined, maxScrobbleCount:number) {
+		if (typeof scrobbleCount === "undefined" || (scrobbleCount > maxScrobbleCount || scrobbleCount < 1)) {
+			throw new Error(`Scrobble count out of bounds (1-${maxScrobbleCount}), ${scrobbleCount} passed`);
+		}
+	}
+
 	protected convertNumRes(params:any) {
 		let newParams = {
 			num_res: 50,

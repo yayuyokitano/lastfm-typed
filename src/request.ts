@@ -24,6 +24,8 @@ interface LFMArgumentObject {
 	album?:string;
 	tags?:string;
 	mbid?:string;
+	track?:string;
+	timestamp?:string;
 
 }
 
@@ -43,7 +45,7 @@ export default class LFMRequest {
 
 	}
 
-	public async execute() {
+	public async execute(isScrobble = false) {
 
 		const isPostRequest = this.isPostRequest();
 
@@ -53,7 +55,7 @@ export default class LFMRequest {
 				throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
 			}
 
-			this.response = await this.post();
+			this.response = await this.post(isScrobble);
 
 		} else {
 
@@ -102,9 +104,9 @@ export default class LFMRequest {
 
 	}
 
-	private async post() {
+	private async post(isScrobble:boolean) {
 
-		const api_sig = this.getSignature(this.params);
+		const api_sig = this.getSignature(isScrobble);
 
 		const requestParam = {
 			...this.params,
@@ -138,19 +140,16 @@ export default class LFMRequest {
 
 	}
 
-	private getSignature(params:{
-		method:string;
-		sk?:string;
-		token?:string;
-	}) {
+	private getSignature(isScrobble:boolean) {
 
 		const paramObj:any = {
-			...params,
+			...this.params,
 			api_key: this.key
 		};
+
 		const args = Object.keys(paramObj).sort().map((e) => [e, paramObj[e]]) as string[][];
 
-		let sig = args.reduce((acc, cur) => acc + cur[0] + cur[1], "");
+		let sig = args.reduce((acc, cur) => acc + (isScrobble && !["api_key", "sk"].includes(cur[0]) ? "" : cur[0]) + cur[1], "");
 
 		sig = md5(sig + this.secret);
 

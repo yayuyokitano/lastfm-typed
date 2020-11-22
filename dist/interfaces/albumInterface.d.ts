@@ -5,7 +5,7 @@ interface Metadata {
 }
 interface AlbumData extends GlobalAlbum {
     userplaycount?: string;
-    wiki: Wiki;
+    wiki?: Wiki;
     tags: {
         tag: TagWUrl[];
     };
