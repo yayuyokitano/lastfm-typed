@@ -17,7 +17,7 @@ export default class AlbumClass extends Base {
 
 	public async getInfo(album:AlbumInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "album.getInfo", ...album, ...params }).execute() as AlbumInterface.getInfo;
+		return (await new LFMRequest(this.key, this.secret, { method: "album.getInfo", ...album, ...params }).execute()).album as AlbumInterface.getInfo;
 
 	}
 	
@@ -25,11 +25,11 @@ export default class AlbumClass extends Base {
 
 		if (this.isSessionKey(usernameOrSessionKey)) {
 
-			return await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, sk: usernameOrSessionKey, ...params }).execute() as AlbumInterface.getTags;
+			return (await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, sk: usernameOrSessionKey, ...params }).execute()).tags as AlbumInterface.getTags;
 
 		} else {
 
-			return await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute() as AlbumInterface.getTags;
+			return (await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute()).tags as AlbumInterface.getTags;
 
 		}
 
@@ -37,7 +37,7 @@ export default class AlbumClass extends Base {
 
 	public async getTopTags(album:AlbumInput, params?:{autocorrect?:0|1}) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "album.getTopTags", ...album, ...params }).execute() as AlbumInterface.getTopTags;
+		return (await new LFMRequest(this.key, this.secret, { method: "album.getTopTags", ...album, ...params }).execute()).toptags as AlbumInterface.getTopTags;
 
 	}
 
@@ -51,7 +51,7 @@ export default class AlbumClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, {method: "album.search", album, ...params}).execute() as AlbumInterface.search;
+		return (await new LFMRequest(this.key, this.secret, {method: "album.search", album, ...params}).execute()).results as AlbumInterface.search;
 
 	}
 

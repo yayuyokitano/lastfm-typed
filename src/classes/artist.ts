@@ -23,7 +23,7 @@ export default class ArtistClass extends Base {
 
 	public async getInfo(artist:ArtistInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.getInfo", ...artist, ...params }).execute() as ArtistInterface.getInfo;
+		return (await new LFMRequest(this.key, this.secret, { method: "artist.getInfo", ...artist, ...params }).execute()).artist as ArtistInterface.getInfo;
 
 	}
 
@@ -31,7 +31,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.getSimilar", ...artist, ...params }).execute() as ArtistInterface.getSimilar;
+		return (await new LFMRequest(this.key, this.secret, { method: "artist.getSimilar", ...artist, ...params }).execute()).similarartists as ArtistInterface.getSimilar;
 
 	}
 	
@@ -39,11 +39,11 @@ export default class ArtistClass extends Base {
 
 		if (this.isSessionKey(usernameOrSessionKey)) {
 
-			return await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, sk: usernameOrSessionKey, ...params }).execute() as ArtistInterface.getTags;
+			return (await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, sk: usernameOrSessionKey, ...params }).execute()).tags as ArtistInterface.getTags;
 
 		} else {
 
-			return await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute() as ArtistInterface.getTags;
+			return (await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute()).tags as ArtistInterface.getTags;
 
 		}
 
@@ -53,13 +53,13 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.getTopAlbums", ...artist, ...params }).execute() as ArtistInterface.getTopAlbums;
+		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTopAlbums", ...artist, ...params }).execute()).topalbums as ArtistInterface.getTopAlbums;
 
 	}
 
 	public async getTopTags(artist:ArtistInput, params?:{autocorrect?:0|1}) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.getTopTags", ...artist, ...params }).execute() as ArtistInterface.getTopTags;
+		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTopTags", ...artist, ...params }).execute()).toptags as ArtistInterface.getTopTags;
 
 	}
 
@@ -67,7 +67,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.getTopTracks", ...artist, ...params }).execute() as ArtistInterface.getTopTracks;
+		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTopTracks", ...artist, ...params }).execute()).toptracks as ArtistInterface.getTopTracks;
 
 	}
 
@@ -81,7 +81,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, {method: "artist.search", artist, ...params}).execute() as ArtistInterface.search;
+		return (await new LFMRequest(this.key, this.secret, {method: "artist.search", artist, ...params}).execute()).results as ArtistInterface.search;
 
 	}
 

@@ -9,38 +9,28 @@ interface Metadata {
 }
 
 export interface getInfo {
-	tag: {
-		name:string;
-		reach:number;
-		total:number;
-		wiki:Wiki;
-	}
+	name:string;
+	reach:number;
+	total:number;
+	wiki:Wiki;
 }
 
 export interface getTopAlbums {
-	albums: {
-		album:TagAlbum[];
-		"@attr":Metadata;
-	}
+	album:TagAlbum[];
+	"@attr":Metadata;
 }
 
 export interface getTopArtists {
-	topartists: {
-		artist:TagArtist[];
-		"@attr":Metadata;
-	}
+	artist:TagArtist[];
+	"@attr":Metadata;
 }
 
 export interface getTopTags {
-	toptags: {
-		tag:TagBasic[];
-		"@attr":Metadata;
-	}
+	tag:TagBasic[];
+	"@attr":Metadata;
 }
 
 export interface getTopTracks {
-	tracks: {
-		track:TagTrack[];
-		"@attr":Metadata;
-	}
+	track:TagTrack[];
+	"@attr":Metadata;
 }

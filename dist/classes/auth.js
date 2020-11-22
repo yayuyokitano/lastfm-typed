@@ -11,10 +11,10 @@ class AuthClass extends base_1.default {
         return token.token;
     }
     async getSession(token) {
-        return await new request_1.default(this.key, this.secret, { method: "auth.getSession", token }).execute();
+        return (await new request_1.default(this.key, this.secret, { method: "auth.getSession", token }).execute()).session;
     }
     async getMobileSession(username, password) {
-        return await new request_1.default(this.key, this.secret, { method: "auth.getMobileSession", username, password }).execute();
+        return (await new request_1.default(this.key, this.secret, { method: "auth.getMobileSession", username, password }).execute()).session;
     }
 }
 exports.default = AuthClass;

@@ -1,15 +1,15 @@
 import * as ChartInterface from "../interfaces/chartInterface";
 import Base from "../base";
 export default class ChartClass extends Base {
-    getTopArtists(country: string, params?: {
+    getTopArtists(params?: {
         limit?: number;
         page?: number;
     }): Promise<ChartInterface.getTopArtists>;
-    getTopTags(country: string, params?: {
+    getTopTags(params?: {
         limit?: number;
         page?: number;
     }): Promise<ChartInterface.getTopTags>;
-    getTopTracks(country: string, params?: {
+    getTopTracks(params?: {
         limit?: number;
         page?: number;
     }): Promise<ChartInterface.getTopTracks>;

@@ -17,13 +17,13 @@ export default class AuthClass extends Base {
 
 	public async getSession(token:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "auth.getSession", token }).execute() as AuthInterface.getSession;
+		return (await new LFMRequest(this.key, this.secret, { method: "auth.getSession", token }).execute()).session as AuthInterface.getSession;
 
 	}
 
 	public async getMobileSession(username:string, password:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "auth.getMobileSession", username, password }).execute() as AuthInterface.getSession;
+		return (await new LFMRequest(this.key, this.secret, { method: "auth.getMobileSession", username, password }).execute()).session as AuthInterface.getSession;
 
 	}
 

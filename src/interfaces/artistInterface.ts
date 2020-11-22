@@ -11,7 +11,29 @@ interface LargeMetadata extends Metadata {
 	total:string;
 }
 
-interface ArtistData extends Artist {
+interface SimilarArtist extends Artist {
+	match:string;
+}
+
+interface TrackData extends ArtistOptionalMBID {
+	playcount:string;
+	listeners:string;
+	streamable:string;
+	artist:ArtistOptionalMBID;
+	image:Image[];
+	"@attr": {
+		rank:string;
+	}
+}
+
+export interface getCorrection {
+	artist:ArtistBasic;
+	"@attr": {
+		index:string;
+	}
+}
+
+export interface getInfo extends Artist {
 	ontour:string;
 	stats: {
 		listeners:string;
@@ -38,85 +60,47 @@ interface ArtistData extends Artist {
 	}
 }
 
-interface SimilarArtist extends Artist {
-	match:string;
-}
-
-interface TrackData extends ArtistOptionalMBID {
-	playcount:string;
-	listeners:string;
-	streamable:string;
-	artist:ArtistOptionalMBID;
-	image:Image[];
-	"@attr": {
-		rank:string;
-	}
-}
-
-export interface getCorrection {
-	artist:ArtistBasic;
-	"@attr": {
-		index:string;
-	}
-}
-
-export interface getInfo {
-	artist: ArtistData;
-}
-
 export interface getSimilar {
-	similarartists: {
-		artist:SimilarArtist[];
-		"@attr": {
-			artist:string;
-		}
+	artist:SimilarArtist[];
+	"@attr": {
+		artist:string;
 	}
 }
 
 export interface getTags {
-	tags: {
-		tag:TagWUrl[];
-		"@attr":Metadata;
-	}
+	tag:TagWUrl[];
+	"@attr":Metadata;
 }
 
 export interface getTopAlbums {
-	topalbums: {
-		album:AlbumGlobal[];
-		"@attr":LargeMetadata;
-	}
+	album:AlbumGlobal[];
+	"@attr":LargeMetadata;
 }
 
 export interface getTopTags {
-	toptags: {
-		tag:TagUrlCount[];
-		"@attr":Metadata;
-	}
+	tag:TagUrlCount[];
+	"@attr":Metadata;
 }
 
 export interface getTopTracks {
-	toptracks: {
-		track:TrackData[];
-		"@attr":LargeMetadata;
-	}
+	track:TrackData[];
+	"@attr":LargeMetadata;
 }
 
 export interface search {
-	results: {
-		"opensearch:Query": {
-			"#text":string;
-			role:string;
-			searchTerms:string;
-			startPage:string;
-		}
-		"opensearch:totalResults":string;
-		"opensearch:startIndex":string;
-		"opensearch:itemsPerPage":string;
-		artistmatches: {
-			artist:ListenerArtist[];
-		}
-		"@attr": {
-			for:string;
-		}
+	"opensearch:Query": {
+		"#text":string;
+		role:string;
+		searchTerms:string;
+		startPage:string;
+	}
+	"opensearch:totalResults":string;
+	"opensearch:startIndex":string;
+	"opensearch:itemsPerPage":string;
+	artistmatches: {
+		artist:ListenerArtist[];
+	}
+	"@attr": {
+		for:string;
 	}
 }

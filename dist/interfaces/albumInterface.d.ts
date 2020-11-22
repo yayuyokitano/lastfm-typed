@@ -3,7 +3,7 @@ interface Metadata {
     artist: string;
     album: string;
 }
-interface AlbumData extends GlobalAlbum {
+export interface getInfo extends GlobalAlbum {
     userplaycount?: string;
     wiki?: Wiki;
     tags: {
@@ -13,38 +13,29 @@ interface AlbumData extends GlobalAlbum {
         track: TagTrack[];
     };
 }
-export interface getInfo {
-    album: AlbumData;
-}
 export interface getTags {
-    tags: {
-        tag: TagWUrl[];
-        "@attr": Metadata;
-    };
+    tag: TagWUrl[];
+    "@attr": Metadata;
 }
 export interface getTopTags {
-    toptags: {
-        tag: TagUrlCount[];
-        "@attr": Metadata;
-    };
+    tag: TagUrlCount[];
+    "@attr": Metadata;
 }
 export interface search {
-    results: {
-        "opensearch:Query": {
-            "#text": string;
-            role: string;
-            searchTerms: string;
-            startPage: string;
-        };
-        "opensearch:totalResults": string;
-        "opensearch:startIndex": string;
-        "opensearch:itemsPerPage": string;
-        albummatches: {
-            album: StringAlbum[];
-        };
-        "@attr": {
-            for: string;
-        };
+    "opensearch:Query": {
+        "#text": string;
+        role: string;
+        searchTerms: string;
+        startPage: string;
+    };
+    "opensearch:totalResults": string;
+    "opensearch:startIndex": string;
+    "opensearch:itemsPerPage": string;
+    albummatches: {
+        album: StringAlbum[];
+    };
+    "@attr": {
+        for: string;
     };
 }
 export {};

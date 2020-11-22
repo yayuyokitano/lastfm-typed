@@ -7,15 +7,11 @@ interface Metadata {
     total: string;
 }
 export interface getTopArtists {
-    topartists: {
-        artist: ListenerArtist[];
-        "@attr": Metadata;
-    };
+    artist: ListenerArtist[];
+    "@attr": Metadata;
 }
 export interface getTopTracks {
-    tracks: {
-        track: ListenerTrack[];
-        "@attr": Metadata;
-    };
+    track: ListenerTrack[];
+    "@attr": Metadata;
 }
 export {};
