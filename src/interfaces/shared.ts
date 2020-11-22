@@ -152,14 +152,14 @@ interface TrackOptionalMBID extends Track {
 	artist:ArtistOptionalMBID;
 }
 
-export interface TrackNoImage extends TrackMBID {
+export interface TrackOptionalMBIDImg extends TrackOptionalMBID {
+	image:Image[];
+}
+
+export interface TagTrack extends TrackMBID {
 	"@attr": {
 		rank:string;
 	}
-}
-
-export interface TagTrack extends TrackNoImage {
-	image:Image[];
 }
 
 export interface ListenerTrack extends TrackMBID {

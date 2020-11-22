@@ -39,7 +39,7 @@ interface ScrobbleArrayStringified {
 	duration?:string;
 }
 
-export default class ArtistClass extends Base {
+export default class TrackClass extends Base {
 
 	public async addTags(artist:string, track:string, tags:string[]|string, sk:string) {
 

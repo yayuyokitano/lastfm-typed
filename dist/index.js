@@ -6,16 +6,18 @@ const chart_1 = require("./classes/chart");
 const auth_1 = require("./classes/auth");
 const album_1 = require("./classes/album");
 const artist_1 = require("./classes/artist");
+const library_1 = require("./classes/library");
+const track_1 = require("./classes/track");
 class LastFM {
     constructor(apiKey, apiSecret = "") {
-        this.key = apiKey;
-        this.secret = apiSecret;
-        this.tag = new tag_1.default(this.key, this.secret);
-        this.geo = new geo_1.default(this.key, this.secret);
-        this.chart = new chart_1.default(this.key, this.secret);
-        this.auth = new auth_1.default(this.key, this.secret);
-        this.album = new album_1.default(this.key, this.secret);
-        this.artist = new artist_1.default(this.key, this.secret);
+        this.tag = new tag_1.default(apiKey, apiSecret);
+        this.geo = new geo_1.default(apiKey, apiSecret);
+        this.chart = new chart_1.default(apiKey, apiSecret);
+        this.auth = new auth_1.default(apiKey, apiSecret);
+        this.album = new album_1.default(apiKey, apiSecret);
+        this.artist = new artist_1.default(apiKey, apiSecret);
+        this.library = new library_1.default(apiKey, apiSecret);
+        this.track = new track_1.default(apiKey, apiSecret);
     }
 }
 exports.default = LastFM;

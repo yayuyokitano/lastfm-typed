@@ -4,25 +4,27 @@ import ChartClass from "./classes/chart";
 import AuthClass from "./classes/auth";
 import AlbumClass from "./classes/album";
 import ArtistClass from "./classes/artist";
+import LibraryClass from "./classes/library";
+import TrackClass from "./classes/track";
 
 export default class LastFM {
-	private key:string;
-	private secret:string;
 	public tag:TagClass;
 	public geo:GeoClass;
 	public chart:ChartClass;
 	public auth:AuthClass;
 	public album:AlbumClass;
 	public artist:ArtistClass;
+	public library:LibraryClass;
+	public track:TrackClass;
 
 	public constructor(apiKey:string, apiSecret:string = "") {
-		this.key = apiKey;
-		this.secret = apiSecret;
-		this.tag = new TagClass(this.key, this.secret);
-		this.geo = new GeoClass(this.key, this.secret);
-		this.chart = new ChartClass(this.key, this.secret);
-		this.auth = new AuthClass(this.key, this.secret);
-		this.album = new AlbumClass(this.key, this.secret);
-		this.artist = new ArtistClass(this.key, this.secret);
+		this.tag = new TagClass(apiKey, apiSecret);
+		this.geo = new GeoClass(apiKey, apiSecret);
+		this.chart = new ChartClass(apiKey, apiSecret);
+		this.auth = new AuthClass(apiKey, apiSecret);
+		this.album = new AlbumClass(apiKey, apiSecret);
+		this.artist = new ArtistClass(apiKey, apiSecret);
+		this.library = new LibraryClass(apiKey, apiSecret);
+		this.track = new TrackClass(apiKey, apiSecret);
 	}
 }

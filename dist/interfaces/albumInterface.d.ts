@@ -1,4 +1,4 @@
-import { GlobalAlbum, StringAlbum, TagUrlCount, TagWUrl, TrackNoImage, Wiki } from "./shared";
+import { GlobalAlbum, StringAlbum, TagUrlCount, TagWUrl, TagTrack, Wiki } from "./shared";
 interface Metadata {
     artist: string;
     album: string;
@@ -10,7 +10,7 @@ interface AlbumData extends GlobalAlbum {
         tag: TagWUrl[];
     };
     tracks: {
-        track: TrackNoImage[];
+        track: TagTrack[];
     };
 }
 export interface getInfo {

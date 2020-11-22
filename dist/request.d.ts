@@ -20,6 +20,7 @@ interface LFMArgumentObject {
     mbid?: string;
     track?: string;
     timestamp?: string;
+    taggingType?: string;
 }
 export default class LFMRequest {
     private key;

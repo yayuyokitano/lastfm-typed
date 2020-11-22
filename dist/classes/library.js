@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = require("../request");
 const base_1 = require("../base");
-class ArtistClass extends base_1.default {
+class LibraryClass extends base_1.default {
     async getArtists(usernameOrSessionKey, params) {
         this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);
         if (this.isSessionKey(usernameOrSessionKey)) {
@@ -13,5 +13,5 @@ class ArtistClass extends base_1.default {
         }
     }
 }
-exports.default = ArtistClass;
+exports.default = LibraryClass;
 //# sourceMappingURL=library.js.map

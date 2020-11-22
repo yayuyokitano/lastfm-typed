@@ -1,9 +1,8 @@
 import LFMRequest from "../request";
 import * as LibraryInterface from "../interfaces/libraryInterface";
 import Base from "../base";
-import { ArtistInput } from "../interfaces/shared";
 
-export default class ArtistClass extends Base {
+export default class LibraryClass extends Base {
 
 	public async getArtists(usernameOrSessionKey:string, params?:{page?:number, limit?:number}) {
 

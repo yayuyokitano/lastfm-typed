@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = require("../request");
 const base_1 = require("../base");
-class ArtistClass extends base_1.default {
+class TrackClass extends base_1.default {
     async addTags(artist, track, tags, sk) {
         if (Array.isArray(tags)) {
             tags = tags.join(",");
@@ -68,5 +68,5 @@ class ArtistClass extends base_1.default {
         return await new request_1.default(this.key, this.secret, { method: "track.updateNowPlaying", artist, track, sk, ...params }).execute();
     }
 }
-exports.default = ArtistClass;
+exports.default = TrackClass;
 //# sourceMappingURL=track.js.map

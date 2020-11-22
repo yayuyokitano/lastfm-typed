@@ -26,6 +26,7 @@ interface LFMArgumentObject {
 	mbid?:string;
 	track?:string;
 	timestamp?:string;
+	taggingType?:string;
 
 }
 

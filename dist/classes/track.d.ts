@@ -12,7 +12,7 @@ interface ScrobbleObject {
     albumArtist?: string;
     duration?: number;
 }
-export default class ArtistClass extends Base {
+export default class TrackClass extends Base {
     addTags(artist: string, track: string, tags: string[] | string, sk: string): Promise<{}>;
     getCorrection(artist: string, track: string): Promise<{} | TrackInterface.getCorrection>;
     getInfo(track: TrackInput, params?: {
