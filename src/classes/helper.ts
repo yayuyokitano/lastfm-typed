@@ -25,7 +25,7 @@ export default class HelperClass {
 
 			} else if (page === 0 && limit <= 1000) {
 
-				trueLimit = limit
+				trueLimit = limit;
 
 			}
 
@@ -96,7 +96,7 @@ export default class HelperClass {
 			},
 			nowplaying,
 			image
-		}
+		};
 	}
 
 }
