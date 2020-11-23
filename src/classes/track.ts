@@ -15,30 +15,6 @@ interface ScrobbleObject {
 	duration?:number;
 }
 
-interface ScrobbleArrayed {
-	artist:string[];
-	track:string[];
-	timestamp:number[];
-	album?:string[];
-	chosenByUser?:(0|1)[];
-	trackNumber?:number[];
-	mbid?:string[];
-	albumArtist?:string[];
-	duration?:number[];
-}
-
-interface ScrobbleArrayStringified {
-	artist:string;
-	track:string;
-	timestamp:string;
-	album?:string;
-	chosenByUser?:string;
-	trackNumber?:string;
-	mbid?:string;
-	albumArtist?:string;
-	duration?:string;
-}
-
 export default class TrackClass extends Base {
 
 	public async addTags(artist:string, track:string, tags:string[]|string, sk:string) {
@@ -102,12 +78,12 @@ export default class TrackClass extends Base {
 		let params:any = {};
 
 		for (let [index, scrobble] of scrobbles.entries()) {
-			for (let [key, value] of Object.keys(scrobble)) {
+			for (let [key, value] of Object.entries(scrobble)) {
 				params[`${key}[${index}]`] = value;
 			}
 		}
 
-		return await new LFMRequest(this.key, this.secret, {method: "track.scrobble", ...params, sk}).execute(true) as any;
+		return (await new LFMRequest(this.key, this.secret, {method: "track.scrobble", ...params, sk}).execute()).scrobbles as TrackInterface.scrobble;
 
 	}
 

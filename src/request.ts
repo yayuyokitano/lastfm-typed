@@ -46,7 +46,7 @@ export default class LFMRequest {
 
 	}
 
-	public async execute(isScrobble = false) {
+	public async execute() {
 
 		const isPostRequest = this.isPostRequest();
 
@@ -56,7 +56,7 @@ export default class LFMRequest {
 				throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
 			}
 
-			this.response = await this.post(isScrobble);
+			this.response = await this.post();
 
 		} else {
 
@@ -105,14 +105,14 @@ export default class LFMRequest {
 
 	}
 
-	private async post(isScrobble:boolean) {
+	private async post() {
 
 		if (this.params.hasOwnProperty("user")) {
 			this.params.sk = this.params.user;
 			delete this.params.user;
 		}
 
-		const api_sig = this.getSignature(isScrobble);
+		const api_sig = this.getSignature();
 
 		const requestParam = {
 			...this.params,
@@ -146,7 +146,7 @@ export default class LFMRequest {
 
 	}
 
-	private getSignature(isScrobble:boolean) {
+	private getSignature() {
 
 		const paramObj:any = {
 			...this.params,
@@ -155,7 +155,7 @@ export default class LFMRequest {
 
 		const args = Object.keys(paramObj).sort().map((e) => [e, paramObj[e]]) as string[][];
 
-		let sig = args.reduce((acc, cur) => acc + (isScrobble && !["api_key", "sk"].includes(cur[0]) ? "" : cur[0]) + cur[1], "");
+		let sig = args.reduce((acc, cur) => `${acc}${cur[0]}${cur[1]}`, "");
 
 		sig = md5(sig + this.secret);
 

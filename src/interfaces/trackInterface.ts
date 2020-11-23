@@ -75,6 +75,29 @@ export interface getTopTags {
 	"@attr":TrackMetadata;
 }
 
+interface ScrobbleEntry {
+	corrected:string;
+	"#text":string;
+}
+
+export interface scrobble {
+	"@attr": {
+		accepted:number;
+		ignored:number;
+	}
+	scrobble: {
+		artist:ScrobbleEntry;
+		ignoredMessage: {
+			code:string;
+			"#text":string;
+		}
+		albumArtist:ScrobbleEntry;
+		timestamp:string;
+		album:ScrobbleEntry;
+		track:ScrobbleEntry;
+	}
+}
+
 export interface search {
 	"opensearch:Query": {
 		"#text":string;
