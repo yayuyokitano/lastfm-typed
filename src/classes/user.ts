@@ -38,7 +38,16 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getRecentTracks", user: usernameOrSessionKey, ...params }).execute()).recenttracks as UserInterface.getRecentTracks;
+		let res = (await new LFMRequest(this.key, this.secret, { method: "user.getRecentTracks", user: usernameOrSessionKey, ...params }).execute()).recenttracks;
+
+		for (let i = 0; i < res.track.length; i++) {
+			res.track[i].artist.name ||= res.track[i].artist["#text"];
+			delete res.track[i].artist["#text"];
+			res.track[i].album.name ||= res.track[i].album["#text"];
+			delete res.track[i].album["#text"];
+		}
+
+		return res as UserInterface.getRecentTracks;
 		
 	}
 
@@ -69,8 +78,12 @@ export default class UserClass extends Base {
 	public async getWeeklyAlbumChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
 
 		this.checkLimit(params?.limit, 1000);
+		
+		let res = (await new LFMRequest(this.key, this.secret, { method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params }).execute()).weeklyalbumchart;
+		res.artist.name = res.artist["#text"];
+		delete res.artist["#text"];
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params }).execute()).weeklyalbumchart as UserInterface.getWeeklyAlbumChart;
+		return res as UserInterface.getWeeklyAlbumChart;
 
 	}
 

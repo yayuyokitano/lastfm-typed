@@ -78,11 +78,11 @@ export type getPersonalTags = ArtistPersonalTags|AlbumPersonalTags|TrackPersonal
 
 interface ShortInfo {
 	mbid:string;
-	"#text":string;
+	name:string;
 }
 
 interface RecentTrack {
-	artist: ShortInfo|ArtistBasic;
+	artist: ShortInfo&ArtistBasic;
 	"@attr"?:{
 		nowplaying?:string;
 	}
