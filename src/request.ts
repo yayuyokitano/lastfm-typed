@@ -112,6 +112,11 @@ export default class LFMRequest {
 			delete this.params.user;
 		}
 
+		if (this.params.hasOwnProperty("username")) {
+			this.params.sk = this.params.username;
+			delete this.params.username;
+		}
+
 		const api_sig = this.getSignature();
 
 		const requestParam = {
@@ -164,7 +169,7 @@ export default class LFMRequest {
 	}
 
 	private isPostRequest() {
-		return this.params.user?.length === 32 || this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
+		return this.params.user?.length === 32 || this.params.username?.length === 32 || this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
 	}
 
 }

@@ -1,15 +1,18 @@
 import LastFM from "..";
 import { Image } from "../interfaces/shared";
+import * as ArtistInterface from "../interfaces/artistInterface";
+import * as AlbumInterface from "../interfaces/albumInterface";
+import * as TrackInterface from "../interfaces/trackInterface";
 
 export default class HelperClass {
 
-	lastfm:LastFM;
+	private lastfm:LastFM;
 
-	constructor(lastfm:LastFM) {
+	public constructor(lastfm:LastFM) {
 		this.lastfm = lastfm;
 	}
 
-	async getCombo(usernameOrSessionKey:string, limit:number) {
+	public async getCombo(usernameOrSessionKey:string, limit:number) {
 		let combo = [true, true, true];
 		let comboData:[string,number][] = [["",0],["",0],["",0]];
 		let page = 0;
@@ -97,6 +100,123 @@ export default class HelperClass {
 			nowplaying,
 			image
 		};
+	}
+
+	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = []) {
+
+		const currTrack = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1})).track[0];
+
+		const artist = currTrack.artist.name;
+		const track = currTrack.name;
+		const image = currTrack.image;
+		const album = currTrack.album?.name;
+		const url = currTrack.url;
+		const nowplaying = currTrack["@attr"]?.nowplaying === "true";
+
+		const details:{
+			artist:{
+				data?:ArtistInterface.getInfo;
+				successful:boolean;
+			}
+			album:{
+				data?:AlbumInterface.getInfo;
+				successful:boolean;
+			}
+			track:{
+				data?:TrackInterface.getInfo;
+				successful:boolean;
+			}
+		} = {
+			artist: {
+				successful: false
+			},
+			album: {
+				successful: false
+			},
+			track: {
+				successful: false
+			}
+		};
+
+		if (detailTypes !== []) {
+
+			const res = await this.fetchDetails(usernameOrSessionKey, detailTypes, artist, album, track);
+			console.log(res);
+
+			const exists = res.map(e => e.error === undefined);
+
+			let i = 0;
+
+			if (detailTypes.includes("artist")) {
+				details.artist.data = res[i];
+				details.artist.successful = exists[i];
+				i++;
+			}
+			if (detailTypes.includes("album") && album) {
+				details.album.data = res[i];
+				details.album.successful = exists[i];
+				i++;
+			}
+			if (detailTypes.includes("track")) {
+				details.track.data = res[i];
+				details.track.successful = exists[i];
+				i++;
+			}
+
+			return {
+				recent: {
+					artist,
+					album,
+					track,
+					image,
+					url,
+					nowplaying
+				},
+				details
+			}
+
+		}
+
+		return {
+			recent: {
+				artist,
+				album,
+				track,
+				image,
+				url,
+				nowplaying
+			},
+			details: {
+				artist: {
+					successful: false
+				},
+				album: {
+					successful: false
+				},
+				track: {
+					successful: false
+				},
+			}
+		}
+
+	}
+
+	private async fetchDetails(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[], artist:string, album:string, track:string) {
+
+		let promises:Promise<any>[] = [];
+
+		if (detailTypes?.includes("artist")) {
+			promises.push(this.lastfm.artist.getInfo({artist}, {username: usernameOrSessionKey}).catch(err => {}));
+		}
+		if (detailTypes?.includes("album") && album) {
+			promises.push(this.lastfm.album.getInfo({artist, album}, {username: usernameOrSessionKey}).catch(err => {}));
+		}
+		if (detailTypes?.includes("track")) {
+			promises.push(this.lastfm.track.getInfo({artist, track}, {username: usernameOrSessionKey}).catch(err => {}));
+		}
+
+		return await Promise.all(promises);
+
 	}
 
 }
