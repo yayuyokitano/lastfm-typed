@@ -12,7 +12,7 @@ export default class TagClass extends Base {
         limit?: number;
         page?: number;
     }): Promise<TagInterface.getTopArtists>;
-    getTopTags(tag: string, params?: {
+    getTopTags(params?: {
         limit?: number;
         page?: number;
     }): Promise<TagInterface.getTopTags>;

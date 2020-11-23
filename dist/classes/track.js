@@ -34,23 +34,13 @@ class TrackClass extends base_1.default {
     }
     async scrobble(sk, scrobbles) {
         this.checkScrobbleCount(scrobbles.length, 50);
-        let paramObjStr = {
-            artist: "",
-            track: "",
-            timestamp: "",
-            album: "",
-            chosenByUser: "",
-            trackNumber: "",
-            mbid: "",
-            albumArtist: "",
-            duration: ""
-        };
+        let params = {};
         for (let [index, scrobble] of scrobbles.entries()) {
-            for (let key of Object.keys(paramObjStr)) {
-                typeof paramObjStr[key].concat(scrobble[key] === "undefined" || scrobble[key] === null ? "" : `${key}[${index}]${scrobble[key]}`);
+            for (let [key, value] of Object.keys(scrobble)) {
+                params[`${key}[${index}]`] = value;
             }
         }
-        return await new request_1.default(this.key, this.secret, { method: "track.scrobble", ...paramObjStr, sk }).execute(true);
+        return await new request_1.default(this.key, this.secret, { method: "track.scrobble", ...params, sk }).execute(true);
     }
     async search(track, params) {
         this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);

@@ -99,25 +99,15 @@ export default class TrackClass extends Base {
 
 		this.checkScrobbleCount(scrobbles.length, 50);
 
-		let paramObjStr:ScrobbleArrayStringified = {
-			artist:"",
-			track:"",
-			timestamp:"",
-			album:"",
-			chosenByUser:"",
-			trackNumber:"",
-			mbid:"",
-			albumArtist:"",
-			duration:""
-		};
+		let params:any = {};
 
 		for (let [index, scrobble] of scrobbles.entries()) {
-			for (let key of Object.keys(paramObjStr)) {
-				typeof (paramObjStr as any)[key].concat((scrobble as any)[key] === "undefined" || (scrobble as any)[key] === null ? "" : `${key}[${index}]${(scrobble as any)[key]}`);
+			for (let [key, value] of Object.keys(scrobble)) {
+				params[`${key}[${index}]`] = value;
 			}
 		}
 
-		return await new LFMRequest(this.key, this.secret, {method: "track.scrobble", ...paramObjStr, sk}).execute(true) as any;
+		return await new LFMRequest(this.key, this.secret, {method: "track.scrobble", ...params, sk}).execute(true) as any;
 
 	}
 

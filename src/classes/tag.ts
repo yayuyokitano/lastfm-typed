@@ -25,12 +25,12 @@ export default class TagClass extends Base {
 
 	}
 
-	public async getTopTags(tag:string, params?:{limit?:number, page?:number}) {
+	public async getTopTags(params?:{limit?:number, page?:number}) {
 
 		//set arguments in a way consistent with other endpoints
 		const newParams = this.convertNumRes(params);
 
-		let res = await this.getTop("tag.getTopTags", tag, newParams);
+		let res = await this.getTop("tag.getTopTags", "", newParams);
 
 		let attr:ShortMetadata = {
 			total: res.toptags["@attr"].total as string,

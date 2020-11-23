@@ -13,10 +13,10 @@ class TagClass extends base_1.default {
     async getTopArtists(tag, params) {
         return (await this.getTop("tag.getTopArtists", tag, params)).topartists;
     }
-    async getTopTags(tag, params) {
+    async getTopTags(params) {
         //set arguments in a way consistent with other endpoints
         const newParams = this.convertNumRes(params);
-        let res = await this.getTop("tag.getTopTags", tag, newParams);
+        let res = await this.getTop("tag.getTopTags", "", newParams);
         let attr = {
             total: res.toptags["@attr"].total,
             page: ((newParams.offset / newParams.num_res) + 1).toString(),

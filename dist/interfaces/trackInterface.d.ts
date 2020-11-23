@@ -34,6 +34,7 @@ export interface getCorrection {
 }
 export interface getInfo extends GlobalTrackOptionalMBID {
     userplaycount?: string;
+    userloved?: string;
     wiki?: Wiki;
     toptags: {
         tag: TagWUrl[];
