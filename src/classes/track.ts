@@ -113,7 +113,7 @@ export default class TrackClass extends Base {
 
 		for (let [index, scrobble] of scrobbles.entries()) {
 			for (let key of Object.keys(paramObjStr)) {
-				(paramObjStr as any)[key].concat((scrobble as any)[key] === undefined || (scrobble as any)[key] === null ? "" : `${key}[${index}]${(scrobble as any)[key]}`);
+				typeof (paramObjStr as any)[key].concat((scrobble as any)[key] === "undefined" || (scrobble as any)[key] === null ? "" : `${key}[${index}]${(scrobble as any)[key]}`);
 			}
 		}
 

@@ -47,7 +47,7 @@ class TrackClass extends base_1.default {
         };
         for (let [index, scrobble] of scrobbles.entries()) {
             for (let key of Object.keys(paramObjStr)) {
-                paramObjStr[key].concat(scrobble[key] === undefined || scrobble[key] === null ? "" : `${key}[${index}]${scrobble[key]}`);
+                typeof paramObjStr[key].concat(scrobble[key] === "undefined" || scrobble[key] === null ? "" : `${key}[${index}]${scrobble[key]}`);
             }
         }
         return await new request_1.default(this.key, this.secret, { method: "track.scrobble", ...paramObjStr, sk }).execute(true);
