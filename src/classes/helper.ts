@@ -1,4 +1,3 @@
-import { cpuUsage } from "process";
 import LastFM from "..";
 import { Image } from "../interfaces/shared";
 
