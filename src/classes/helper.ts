@@ -141,9 +141,8 @@ export default class HelperClass {
 		if (detailTypes !== []) {
 
 			const res = await this.fetchDetails(usernameOrSessionKey, detailTypes, artist, album, track);
-			console.log(res);
 
-			const exists = res.map(e => e.error === undefined);
+			const exists = res.map((e) => typeof e.error === "undefined");
 
 			let i = 0;
 
@@ -173,7 +172,7 @@ export default class HelperClass {
 					nowplaying
 				},
 				details
-			}
+			};
 
 		}
 
@@ -206,13 +205,13 @@ export default class HelperClass {
 		let promises:Promise<any>[] = [];
 
 		if (detailTypes?.includes("artist")) {
-			promises.push(this.lastfm.artist.getInfo({artist}, {username: usernameOrSessionKey}).catch(err => {}));
+			promises.push(this.lastfm.artist.getInfo({artist}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 		if (detailTypes?.includes("album") && album) {
-			promises.push(this.lastfm.album.getInfo({artist, album}, {username: usernameOrSessionKey}).catch(err => {}));
+			promises.push(this.lastfm.album.getInfo({artist, album}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 		if (detailTypes?.includes("track")) {
-			promises.push(this.lastfm.track.getInfo({artist, track}, {username: usernameOrSessionKey}).catch(err => {}));
+			promises.push(this.lastfm.track.getInfo({artist, track}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 
 		return await Promise.all(promises);
