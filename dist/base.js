@@ -24,6 +24,13 @@ class LFMBase {
             newParams.offset = (((params === null || params === void 0 ? void 0 : params.page) || 1) - 1) * newParams.num_res;
         return newParams;
     }
+    convertGetTags(res) {
+        if ((res === null || res === void 0 ? void 0 : res["#text"]) === " ") {
+            res.tag = [];
+            delete res["#text"];
+        }
+        return res;
+    }
     formatSearch(query) {
         return query.replace(/:/g, " ");
     }

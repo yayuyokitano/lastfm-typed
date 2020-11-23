@@ -73,7 +73,7 @@ export default class TrackClass extends Base {
 	
 	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params }).execute()).tags as TrackInterface.getTags;
+		return this.convertGetTags((await new LFMRequest(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params }).execute()).tags) as TrackInterface.getTags;
 
 	}
 

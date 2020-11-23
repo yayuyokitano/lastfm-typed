@@ -21,7 +21,7 @@ class TrackClass extends base_1.default {
         return (await new request_1.default(this.key, this.secret, { method: "track.getSimilar", ...track, ...params }).execute()).similartracks;
     }
     async getTags(track, usernameOrSessionKey, params) {
-        return (await new request_1.default(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params }).execute()).tags;
+        return this.convertGetTags((await new request_1.default(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params }).execute()).tags);
     }
     async getTopTags(track, params) {
         return (await new request_1.default(this.key, this.secret, { method: "track.getTopTags", ...track, ...params }).execute()).toptags;

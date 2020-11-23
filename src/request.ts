@@ -107,12 +107,12 @@ export default class LFMRequest {
 
 	private async post(isScrobble:boolean) {
 
-		const api_sig = this.getSignature(isScrobble);
-
-		if (this.params.hasOwnProperty("sk")) {
+		if (this.params.hasOwnProperty("user")) {
 			this.params.sk = this.params.user;
 			delete this.params.user;
 		}
+
+		const api_sig = this.getSignature(isScrobble);
 
 		const requestParam = {
 			...this.params,

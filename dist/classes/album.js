@@ -13,7 +13,7 @@ class AlbumClass extends base_1.default {
         return (await new request_1.default(this.key, this.secret, { method: "album.getInfo", ...album, ...params }).execute()).album;
     }
     async getTags(album, usernameOrSessionKey, params) {
-        return (await new request_1.default(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute()).tags;
+        return this.convertGetTags((await new request_1.default(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute()).tags);
     }
     async getTopTags(album, params) {
         return (await new request_1.default(this.key, this.secret, { method: "album.getTopTags", ...album, ...params }).execute()).toptags;

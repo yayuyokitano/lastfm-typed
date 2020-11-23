@@ -8,5 +8,6 @@ export default class LFMBase {
         num_res: number;
         offset: number;
     };
+    protected convertGetTags(res: any): any;
     protected formatSearch(query: string): string;
 }

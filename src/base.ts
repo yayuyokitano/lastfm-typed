@@ -31,6 +31,14 @@ export default class LFMBase {
 		return newParams;
 	}
 
+	protected convertGetTags(res:any) {
+		if (res?.["#text"] === " ") {
+			res.tag = [];
+			delete res["#text"];
+		}
+		return res;
+	}
+
 	protected formatSearch(query:string) {
 		return query.replace(/:/g, " ");
 	}
