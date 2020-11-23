@@ -6,6 +6,7 @@ import AlbumClass from "./classes/album";
 import ArtistClass from "./classes/artist";
 import LibraryClass from "./classes/library";
 import TrackClass from "./classes/track";
+import UserClass from "./classes/user";
 export default class LastFM {
     tag: TagClass;
     geo: GeoClass;
@@ -15,5 +16,6 @@ export default class LastFM {
     artist: ArtistClass;
     library: LibraryClass;
     track: TrackClass;
+    user: UserClass;
     constructor(apiKey: string, apiSecret?: string);
 }

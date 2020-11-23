@@ -37,15 +37,7 @@ export default class ArtistClass extends Base {
 	
 	public async getTags(artist:ArtistInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		if (this.isSessionKey(usernameOrSessionKey)) {
-
-			return (await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, sk: usernameOrSessionKey, ...params }).execute()).tags as ArtistInterface.getTags;
-
-		} else {
-
-			return (await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute()).tags as ArtistInterface.getTags;
-
-		}
+		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute()).tags as ArtistInterface.getTags;
 
 	}
 

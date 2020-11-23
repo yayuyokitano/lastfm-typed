@@ -8,6 +8,7 @@ const album_1 = require("./classes/album");
 const artist_1 = require("./classes/artist");
 const library_1 = require("./classes/library");
 const track_1 = require("./classes/track");
+const user_1 = require("./classes/user");
 class LastFM {
     constructor(apiKey, apiSecret = "") {
         this.tag = new tag_1.default(apiKey, apiSecret);
@@ -18,6 +19,7 @@ class LastFM {
         this.artist = new artist_1.default(apiKey, apiSecret);
         this.library = new library_1.default(apiKey, apiSecret);
         this.track = new track_1.default(apiKey, apiSecret);
+        this.user = new user_1.default(apiKey, apiSecret);
     }
 }
 exports.default = LastFM;

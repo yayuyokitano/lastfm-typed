@@ -24,9 +24,6 @@ class LFMBase {
             newParams.offset = (((params === null || params === void 0 ? void 0 : params.page) || 1) - 1) * newParams.num_res;
         return newParams;
     }
-    isSessionKey(param) {
-        return param.length === 32;
-    }
     formatSearch(query) {
         return query.replace(/:/g, " ");
     }

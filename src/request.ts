@@ -109,6 +109,9 @@ export default class LFMRequest {
 
 		const api_sig = this.getSignature(isScrobble);
 
+		this.params.sk = this.params.user;
+		this.params.user = undefined;
+
 		const requestParam = {
 			...this.params,
 			api_key: this.key,
@@ -159,7 +162,7 @@ export default class LFMRequest {
 	}
 
 	private isPostRequest() {
-		return this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
+		return this.params.user?.length === 32 || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
 	}
 
 }

@@ -21,12 +21,7 @@ class ArtistClass extends base_1.default {
         return (await new request_1.default(this.key, this.secret, { method: "artist.getSimilar", ...artist, ...params }).execute()).similarartists;
     }
     async getTags(artist, usernameOrSessionKey, params) {
-        if (this.isSessionKey(usernameOrSessionKey)) {
-            return (await new request_1.default(this.key, this.secret, { method: "artist.getTags", ...artist, sk: usernameOrSessionKey, ...params }).execute()).tags;
-        }
-        else {
-            return (await new request_1.default(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute()).tags;
-        }
+        return (await new request_1.default(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute()).tags;
     }
     async getTopAlbums(artist, params) {
         this.checkLimit(params === null || params === void 0 ? void 0 : params.limit, 1000);

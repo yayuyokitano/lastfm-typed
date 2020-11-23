@@ -23,15 +23,7 @@ export default class AlbumClass extends Base {
 	
 	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		if (this.isSessionKey(usernameOrSessionKey)) {
-
-			return (await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, sk: usernameOrSessionKey, ...params }).execute()).tags as AlbumInterface.getTags;
-
-		} else {
-
-			return (await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute()).tags as AlbumInterface.getTags;
-
-		}
+		return (await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute()).tags as AlbumInterface.getTags;
 
 	}
 
