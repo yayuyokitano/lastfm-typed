@@ -50,8 +50,10 @@ class LFMRequest {
     }
     async post(isScrobble) {
         const api_sig = this.getSignature(isScrobble);
-        this.params.sk = this.params.user;
-        this.params.user = undefined;
+        if (this.params.hasOwnProperty("sk")) {
+            this.params.sk = this.params.user;
+            delete this.params.user;
+        }
         const requestParam = {
             ...this.params,
             api_key: this.key,
@@ -88,7 +90,7 @@ class LFMRequest {
     }
     isPostRequest() {
         var _a;
-        return ((_a = this.params.user) === null || _a === void 0 ? void 0 : _a.length) === 32 || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
+        return ((_a = this.params.user) === null || _a === void 0 ? void 0 : _a.length) === 32 || this.params.hasOwnProperty("sk") || this.params.hasOwnProperty("token") || this.params.hasOwnProperty("password");
     }
 }
 exports.default = LFMRequest;
