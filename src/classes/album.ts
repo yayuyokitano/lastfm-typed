@@ -5,13 +5,13 @@ import { AlbumInput } from "../interfaces/shared";
 
 export default class AlbumClass extends Base {
 
-	public async addTags(album:AlbumInput, tags:string[]|string, sk:string) {
+	public async addTags(artist:string, album:string, tags:string[]|string, sk:string) {
 
 		if (Array.isArray(tags)) {
 			tags = tags.join(",");
 		}
 
-		return await new LFMRequest(this.key, this.secret, { method: "album.addTags", tags, sk, ...album }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "album.addTags", tags, sk, artist, album }).execute() as {};
 
 	}
 
@@ -33,9 +33,9 @@ export default class AlbumClass extends Base {
 
 	}
 
-	public async removeTag(album:AlbumInput, tag:string, sk:string) {
+	public async removeTag(artist:string, album:string, tag:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "album.removeTag", tag, sk, ...album }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "album.removeTag", tag, sk, artist, album }).execute() as {};
 
 	}
 
@@ -43,7 +43,7 @@ export default class AlbumClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, {method: "album.search", album, ...params}).execute()).results as AlbumInterface.search;
+		return (await new LFMRequest(this.key, this.secret, {method: "album.search", album, ...params }).execute()).results as AlbumInterface.search;
 
 	}
 

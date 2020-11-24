@@ -63,9 +63,9 @@ export default class ArtistClass extends Base {
 
 	}
 
-	public async removeTag(artist:ArtistInput, tag:string, sk:string) {
+	public async removeTag(artist:string, tag:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.removeTag", tag, sk, ...artist }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "artist.removeTag", tag, sk, artist }).execute() as {};
 
 	}
 

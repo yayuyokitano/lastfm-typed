@@ -59,15 +59,15 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async love(track:TrackInput, sk:string) {
+	public async love(artist:string, track:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "track.love", ...track, sk }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "track.love", artist, track, sk }).execute() as {};
 
 	}
 
-	public async removeTag(track:TrackInput, tag:string, sk:string) {
+	public async removeTag(artist:string, track:string, tag:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "track.removeTag", tag, sk, ...track }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "track.removeTag", tag, sk, artist, track }).execute() as {};
 
 	}
 
@@ -95,9 +95,9 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async unlove(track:TrackInput, sk:string) {
+	public async unlove(artist:string, track:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "track.unlove", ...track, sk }).execute() as {};
+		return await new LFMRequest(this.key, this.secret, { method: "track.unlove", artist, track, sk }).execute() as {};
 
 	}
 
