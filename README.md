@@ -38,7 +38,8 @@ A simple authentication example:
 ```ts
 const token = await lastfm.auth.getToken();
 
-this.message.reply(`https://www.last.fm/api/auth?api_key=${config.lastfm.key}&token=${token}`);
+//replace this with whatever method you would use to show the url to the user
+sendToUser(`https://www.last.fm/api/auth?api_key=${config.lastfm.key}&token=${token}`);
 
 //replace this with whatever method you use to determine that the user has accepted integration.
 await userInput;
