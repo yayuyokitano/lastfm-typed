@@ -3,6 +3,7 @@ import { Image } from "../interfaces/shared";
 import * as ArtistInterface from "../interfaces/artistInterface";
 import * as AlbumInterface from "../interfaces/albumInterface";
 import * as TrackInterface from "../interfaces/trackInterface";
+import * as UserInterface from "../interfaces/userInterface";
 
 export default class HelperClass {
 
@@ -200,6 +201,85 @@ export default class HelperClass {
 
 	}
 
+	public async getMatchingArtists(user1:string, user2:string, limit:number, period:"overall"|"7day"|"1month"|"3month"|"6month"|"12month") {
+		
+		this.checkLimit(limit, 1000);
+
+		let request = [
+			this.lastfm.user.getTopArtists(user1, {limit, period}),
+			this.lastfm.user.getTopArtists(user2, {limit, period})
+		]
+
+		const res = await Promise.all(request);
+
+		return this.getIntersection(res[0].artist, res[1].artist);
+
+	}
+
+	public ArtistFromMBID(mbid:string) {
+		return {
+			mbid
+		}
+	}
+
+	public ArtistFromName(artist:string) {
+		return {
+			artist
+		}
+	}
+
+	public AlbumFromMBID(mbid:string) {
+		return {
+			mbid
+		}
+	}
+
+	public AlbumFromName(artist:string, album:string) {
+		return {
+			artist,
+			album
+		}
+	}
+
+	public TrackFromMBID(mbid:string) {
+		return {
+			mbid
+		}
+	}
+
+	public TrackFromName(artist:string, track:string) {
+		return {
+			artist,
+			track,
+		}
+	}
+
+	private getIntersection(arr1:UserInterface.TopArtist[], arr2:UserInterface.TopArtist[]){
+		const aSort = arr1.sort((a, b) => a.name.localeCompare(b.name));
+		const bSort = arr2.sort((a, b) => a.name.localeCompare(b.name));
+		let i1 = 0;
+		let i2 = 0;
+		let common = [];
+
+		while (i1 < aSort.length && i2 < bSort.length) {
+			if (aSort[i1].name.localeCompare(bSort[i2].name) === 0) {
+				common.push({
+					name: aSort[i1].name,
+					url: aSort[i1].url,
+					playcount: [parseInt(aSort[i1].playcount), parseInt(bSort[i2].playcount)]
+				});
+				i1++;
+				i2++;
+			} else if (aSort[i1].name.localeCompare(bSort[i2].name) < 0) {
+				i1++;
+			} else {
+				i2++;
+			}
+		}
+		return common;
+	}
+
+
 	private async fetchDetails(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[], artist:string, album:string, track:string) {
 
 		let promises:Promise<any>[] = [];
@@ -216,6 +296,12 @@ export default class HelperClass {
 
 		return await Promise.all(promises);
 
+	}
+
+	private checkLimit(limit:number|undefined, maxLimit:number) {
+		if (typeof limit !== "undefined" && (limit > maxLimit || limit < 1)) {
+			throw new Error(`Limit out of bounds (1-${maxLimit}), ${limit} passed`);
+		}
 	}
 
 }

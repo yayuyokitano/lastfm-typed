@@ -113,7 +113,7 @@ interface ChartArtist extends TagArtist {
 	playcount:string;
 }
 
-interface TopArtist extends ChartArtist {
+export interface TopArtist extends ChartArtist {
 	streamable:string;
 }
 

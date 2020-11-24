@@ -38,7 +38,7 @@ interface ArtistTrackInput {
 
 interface MBIDTrackInput {
 	artist?:string;
-	album?:string;
+	track?:string;
 	mbid:string;
 }
 
