@@ -208,7 +208,7 @@ export default class HelperClass {
 		let request = [
 			this.lastfm.user.getTopArtists(user1, {limit, period}),
 			this.lastfm.user.getTopArtists(user2, {limit, period})
-		]
+		];
 
 		const res = await Promise.all(request);
 
@@ -262,7 +262,10 @@ export default class HelperClass {
 		let common = [];
 
 		while (i1 < aSort.length && i2 < bSort.length) {
-			if (aSort[i1].name.localeCompare(bSort[i2].name) === 0) {
+
+			const compare = aSort[i1].name.localeCompare(bSort[i2].name);
+
+			if (compare === 0) {
 				common.push({
 					name: aSort[i1].name,
 					url: aSort[i1].url,
@@ -270,10 +273,9 @@ export default class HelperClass {
 				});
 				i1++;
 				i2++;
-			} else if (aSort[i1].name.localeCompare(bSort[i2].name) < 0) {
-				i1++;
 			} else {
-				i2++;
+				i1 += +(compare < 0);
+				i2 += +(compare > 0);
 			}
 		}
 		return common;
