@@ -3,13 +3,14 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/04d6fccb32494d0b95fe631c702ad0fc)](https://app.codacy.com/gh/yayuyokitano/lastfm-typed?utm_source=github.com&utm_medium=referral&utm_content=yayuyokitano/lastfm-typed&utm_campaign=Badge_Grade)
 
 - [Introduction](#introduction)
+
 - [Usage](#usage)
-  - [Structure](#structure)
-  - [Examples](#examples)
+    - [Structure](#structure)
+    - [Examples](#examples)
 - [Helper Methods](#helper-methods)
-  - [getCombo](#getcombo)
-  - [getNowPlaying](#getnowplaying)
-  - [getMatchingArtists](#getmatchingartists)
+    - [getCombo](#getcombo)
+    - [getNowPlaying](#getnowplaying)
+    - [getMatchingArtists](#getmatchingartists)
 
 ## Introduction
 
