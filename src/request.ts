@@ -75,7 +75,7 @@ export default class LFMRequest {
 
 			let error = {
 				...new Error(this.response.statusText),
-				response: this.response
+				response: await this.response.json()
 			};
 
 			throw error;
