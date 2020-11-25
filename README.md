@@ -27,8 +27,10 @@ The library exports a single class. This class, in turn, creates instances of a 
 ```ts
 import LastFMTyped from "lastfm-typed";
 
-const lastfm = new LastFMTyped(api_key, api_secret); //insert key and secret here
+const lastfm = new LastFMTyped(api_key, api_secret, UserAgent); //insert key, secret, and user agent here
 ```
+
+For user agent, please initialize this with an easily identifiable name (preferably one that would lead to your program if googled). You can choose to not set one, in which case `lastfm-typed-npm` will be set as the user agent. This is probably the best idea if your program is not public.
 
 Then we can call methods as needed.
 
