@@ -21,16 +21,16 @@ export default class LastFM {
 	public user:UserClass;
 	public helper:HelperClass;
 
-	public constructor(apiKey:string, apiSecret:string = "") {
-		this.tag = new TagClass(apiKey, apiSecret);
-		this.geo = new GeoClass(apiKey, apiSecret);
-		this.chart = new ChartClass(apiKey, apiSecret);
-		this.auth = new AuthClass(apiKey, apiSecret);
-		this.album = new AlbumClass(apiKey, apiSecret);
-		this.artist = new ArtistClass(apiKey, apiSecret);
-		this.library = new LibraryClass(apiKey, apiSecret);
-		this.track = new TrackClass(apiKey, apiSecret);
-		this.user = new UserClass(apiKey, apiSecret);
+	public constructor(apiKey:string, apiSecret:string = "", userAgent:string = "lastfm-typed-npm") {
+		this.tag = new TagClass(apiKey, apiSecret, userAgent);
+		this.geo = new GeoClass(apiKey, apiSecret, userAgent);
+		this.chart = new ChartClass(apiKey, apiSecret, userAgent);
+		this.auth = new AuthClass(apiKey, apiSecret, userAgent);
+		this.album = new AlbumClass(apiKey, apiSecret, userAgent);
+		this.artist = new ArtistClass(apiKey, apiSecret, userAgent);
+		this.library = new LibraryClass(apiKey, apiSecret, userAgent);
+		this.track = new TrackClass(apiKey, apiSecret, userAgent);
+		this.user = new UserClass(apiKey, apiSecret, userAgent);
 		this.helper = new HelperClass(this);
 	}
 }

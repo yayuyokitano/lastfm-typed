@@ -1,4 +1,3 @@
-import LFMRequest from "../request";
 import * as ChartInterface from "../interfaces/chartInterface";
 import Base from "../base";
 
@@ -26,7 +25,7 @@ export default class ChartClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, {method, ...params}).execute();
+		return await this.sendRequest(this.key, this.secret, {method, ...params});
 
 	}
 

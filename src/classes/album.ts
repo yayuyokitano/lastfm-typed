@@ -1,4 +1,3 @@
-import LFMRequest from "../request";
 import * as AlbumInterface from "../interfaces/albumInterface";
 import Base from "../base";
 import { AlbumInput } from "../interfaces/shared";
@@ -11,31 +10,31 @@ export default class AlbumClass extends Base {
 			tags = tags.join(",");
 		}
 
-		return await new LFMRequest(this.key, this.secret, { method: "album.addTags", tags, sk, artist, album }).execute() as {};
+		return await this.sendRequest(this.key, this.secret, { method: "album.addTags", tags, sk, artist, album }) as {};
 
 	}
 
 	public async getInfo(album:AlbumInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "album.getInfo", ...album, ...params }).execute()).album as AlbumInterface.getInfo;
+		return (await this.sendRequest(this.key, this.secret, { method: "album.getInfo", ...album, ...params })).album as AlbumInterface.getInfo;
 
 	}
 	
 	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		return this.convertGetTags((await new LFMRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params }).execute()).tags) as AlbumInterface.getTags;
+		return this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as AlbumInterface.getTags;
 
 	}
 
 	public async getTopTags(album:AlbumInput, params?:{autocorrect?:0|1}) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "album.getTopTags", ...album, ...params }).execute()).toptags as AlbumInterface.getTopTags;
+		return (await this.sendRequest(this.key, this.secret, { method: "album.getTopTags", ...album, ...params })).toptags as AlbumInterface.getTopTags;
 
 	}
 
 	public async removeTag(artist:string, album:string, tag:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "album.removeTag", tag, sk, artist, album }).execute() as {};
+		return await this.sendRequest(this.key, this.secret, { method: "album.removeTag", tag, sk, artist, album }) as {};
 
 	}
 
@@ -43,7 +42,7 @@ export default class AlbumClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, {method: "album.search", album, ...params }).execute()).results as AlbumInterface.search;
+		return (await this.sendRequest(this.key, this.secret, {method: "album.search", album, ...params })).results as AlbumInterface.search;
 
 	}
 

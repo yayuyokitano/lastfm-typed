@@ -1,4 +1,3 @@
-import LFMRequest from "../request";
 import * as GeoInterface from "../interfaces/geoInterface";
 import Base from "../base";
 
@@ -20,7 +19,7 @@ export default class GeoClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await new LFMRequest(this.key, this.secret, {method, country, ...params}).execute();
+		return await this.sendRequest(this.key, this.secret, {method, country, ...params});
 
 	}
 

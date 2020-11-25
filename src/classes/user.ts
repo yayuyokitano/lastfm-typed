@@ -1,4 +1,3 @@
-import LFMRequest from "../request";
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
 
@@ -8,13 +7,13 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getFriends", user: usernameOrSessionKey, ...params }).execute()).friends as UserInterface.getFriends;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getFriends", user: usernameOrSessionKey, ...params })).friends as UserInterface.getFriends;
 
 	}
 
 	public async getInfo(usernameOrSessionKey:string) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getInfo", user: usernameOrSessionKey }).execute()).user as UserInterface.getInfo;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getInfo", user: usernameOrSessionKey })).user as UserInterface.getInfo;
 
 	}
 
@@ -22,7 +21,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getLovedTracks", user: usernameOrSessionKey, ...params }).execute()).lovedtracks as UserInterface.getLovedTracks;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as UserInterface.getLovedTracks;
 
 	}
 
@@ -30,7 +29,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params }).execute()).taggings as UserInterface.getPersonalTags;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as UserInterface.getPersonalTags;
 
 	}
 
@@ -38,7 +37,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await new LFMRequest(this.key, this.secret, { method: "user.getRecentTracks", user: usernameOrSessionKey, ...params }).execute()).recenttracks;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getRecentTracks", user: usernameOrSessionKey, ...params })).recenttracks;
 
 		for (let i = 0; i < res.track.length; i++) {
 			res.track[i].artist.name ||= res.track[i].artist["#text"];
@@ -55,7 +54,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getTopAlbums", user: usernameOrSessionKey, ...params }).execute()).topalbums as UserInterface.getTopAlbums;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as UserInterface.getTopAlbums;
 
 	}
 
@@ -63,7 +62,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getTopArtists", user: usernameOrSessionKey, ...params }).execute()).topartists as UserInterface.getTopArtists;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as UserInterface.getTopArtists;
 
 	}
 
@@ -71,7 +70,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getTopTags", user: usernameOrSessionKey, ...params }).execute()).toptags as UserInterface.getTopTags;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as UserInterface.getTopTags;
 
 	}
 
@@ -79,7 +78,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 		
-		let res = (await new LFMRequest(this.key, this.secret, { method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params }).execute()).weeklyalbumchart;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params })).weeklyalbumchart;
 		res.artist.name = res.artist["#text"];
 		delete res.artist["#text"];
 
@@ -91,13 +90,13 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params }).execute()).weeklyartistchart as UserInterface.getWeeklyArtistChart;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as UserInterface.getWeeklyArtistChart;
 
 	}
 
 	public async getWeeklyChartList() {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getWeeklyChartList"}).execute()).weeklychartlist as UserInterface.getWeeklyChartList;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyChartList"})).weeklychartlist as UserInterface.getWeeklyChartList;
 
 	}
 
@@ -105,7 +104,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params }).execute()).weeklytrackchart as UserInterface.getWeeklyTrackChart;
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as UserInterface.getWeeklyTrackChart;
 
 	}
 

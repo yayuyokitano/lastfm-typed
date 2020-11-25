@@ -1,11 +1,15 @@
+import {LFMArgumentObject, LFMRequest} from "./request";
+
 export default class LFMBase {
 
 	protected key:string;
 	protected secret:string;
+	protected userAgent:string;
 
-	public constructor(apiKey:string, apiSecret:string = "") {
+	public constructor(apiKey:string, apiSecret:string = "", userAgent:string = "lastfm-typed-npm") {
 		this.key = apiKey;
 		this.secret = apiSecret;
+		this.userAgent = userAgent;
 	}
 	
 	protected checkLimit(limit:number|undefined, maxLimit:number) {
@@ -41,6 +45,10 @@ export default class LFMBase {
 
 	protected formatSearch(query:string) {
 		return query.replace(/:/g, " ");
+	}
+
+	protected async sendRequest(apiKey:string, apiSecret:string, params:LFMArgumentObject) {
+		return await new LFMRequest(apiKey, apiSecret, this.userAgent, params).execute();
 	}
 
 }

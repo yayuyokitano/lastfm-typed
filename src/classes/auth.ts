@@ -1,4 +1,3 @@
-import LFMRequest from "../request";
 import * as AuthInterface from "../interfaces/authInterface";
 import Base from "../base";
 
@@ -6,7 +5,7 @@ export default class AuthClass extends Base {
 
 	public async getToken() {
 
-		const token = await new LFMRequest(this.key, this.secret, { method: "auth.getToken" }).execute();
+		const token = await this.sendRequest(this.key, this.secret, { method: "auth.getToken" });
 		if (typeof token.token === "undefined") {
 			throw Error ("Something went wrong while getting the token. Probably because of Last.FM");
 		}
@@ -17,13 +16,13 @@ export default class AuthClass extends Base {
 
 	public async getSession(token:string) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "auth.getSession", token }).execute()).session as AuthInterface.getSession;
+		return (await this.sendRequest(this.key, this.secret, { method: "auth.getSession", token })).session as AuthInterface.getSession;
 
 	}
 
 	public async getMobileSession(username:string, password:string) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "auth.getMobileSession", username, password }).execute()).session as AuthInterface.getSession;
+		return (await this.sendRequest(this.key, this.secret, { method: "auth.getMobileSession", username, password })).session as AuthInterface.getSession;
 
 	}
 

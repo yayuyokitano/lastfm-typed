@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import {stringify} from "querystring";
 import * as md5 from "md5";
 
-interface LFMArgumentObject {
+export interface LFMArgumentObject {
 	
 	method:string;
 
@@ -31,18 +31,20 @@ interface LFMArgumentObject {
 }
 
 
-export default class LFMRequest {
+export class LFMRequest {
 
 	private key:string;
 	private params:LFMArgumentObject;
 	private secret:string;
 	private response:any;
+	private userAgent:string;
 
-	public constructor(key:string, secret:string, params:LFMArgumentObject) {
+	public constructor(key:string, secret:string, userAgent:string, params:LFMArgumentObject) {
 
 		this.key = key;
 		this.params = params;
 		this.secret = secret;
+		this.userAgent = userAgent;
 
 	}
 
@@ -132,7 +134,8 @@ export default class LFMRequest {
 			method: "POST",
 			headers: {
 				"Content-Length":  Buffer.byteLength(paramString).toString(),
-				"Content-Type": "application/x-www-form-urlencoded"
+				"Content-Type": "application/x-www-form-urlencoded",
+				"User-Agent": this.userAgent
 			},
 			body: paramString
 		});
@@ -147,7 +150,12 @@ export default class LFMRequest {
 			...this.params
 		};
 		
-		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`);
+		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`, {
+			method: "GET",
+			headers: {
+				"User-Agent": this.userAgent
+			}
+		});
 
 	}
 

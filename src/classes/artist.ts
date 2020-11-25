@@ -1,4 +1,3 @@
-import LFMRequest from "../request";
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
@@ -11,19 +10,19 @@ export default class ArtistClass extends Base {
 			tags = tags.join(",");
 		}
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.addTags", tags, sk, artist }).execute() as {};
+		return await this.sendRequest(this.key, this.secret, { method: "artist.addTags", tags, sk, artist }) as {};
 
 	}
 
 	public async getCorrection(artist:string) {
 		
-		return (((await new LFMRequest(this.key, this.secret, { method: "artist.getCorrection", artist }).execute())?.corrections?.correction) || {}) as ArtistInterface.getCorrection|{};
+		return (((await this.sendRequest(this.key, this.secret, { method: "artist.getCorrection", artist }))?.corrections?.correction) || {}) as ArtistInterface.getCorrection|{};
 
 	}
 
 	public async getInfo(artist:ArtistInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "artist.getInfo", ...artist, ...params }).execute()).artist as ArtistInterface.getInfo;
+		return (await this.sendRequest(this.key, this.secret, { method: "artist.getInfo", ...artist, ...params })).artist as ArtistInterface.getInfo;
 
 	}
 
@@ -31,13 +30,13 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "artist.getSimilar", ...artist, ...params }).execute()).similarartists as ArtistInterface.getSimilar;
+		return (await this.sendRequest(this.key, this.secret, { method: "artist.getSimilar", ...artist, ...params })).similarartists as ArtistInterface.getSimilar;
 
 	}
 	
 	public async getTags(artist:ArtistInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		return this.convertGetTags((await new LFMRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params }).execute()).tags) as ArtistInterface.getTags;
+		return this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params })).tags) as ArtistInterface.getTags;
 
 	}
 
@@ -45,13 +44,13 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTopAlbums", ...artist, ...params }).execute()).topalbums as ArtistInterface.getTopAlbums;
+		return (await this.sendRequest(this.key, this.secret, { method: "artist.getTopAlbums", ...artist, ...params })).topalbums as ArtistInterface.getTopAlbums;
 
 	}
 
 	public async getTopTags(artist:ArtistInput, params?:{autocorrect?:0|1}) {
 
-		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTopTags", ...artist, ...params }).execute()).toptags as ArtistInterface.getTopTags;
+		return (await this.sendRequest(this.key, this.secret, { method: "artist.getTopTags", ...artist, ...params })).toptags as ArtistInterface.getTopTags;
 
 	}
 
@@ -59,13 +58,13 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, { method: "artist.getTopTracks", ...artist, ...params }).execute()).toptracks as ArtistInterface.getTopTracks;
+		return (await this.sendRequest(this.key, this.secret, { method: "artist.getTopTracks", ...artist, ...params })).toptracks as ArtistInterface.getTopTracks;
 
 	}
 
 	public async removeTag(artist:string, tag:string, sk:string) {
 
-		return await new LFMRequest(this.key, this.secret, { method: "artist.removeTag", tag, sk, artist }).execute() as {};
+		return await this.sendRequest(this.key, this.secret, { method: "artist.removeTag", tag, sk, artist }) as {};
 
 	}
 
@@ -73,7 +72,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await new LFMRequest(this.key, this.secret, {method: "artist.search", artist, ...params}).execute()).results as ArtistInterface.search;
+		return (await this.sendRequest(this.key, this.secret, {method: "artist.search", artist, ...params})).results as ArtistInterface.search;
 
 	}
 
