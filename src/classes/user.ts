@@ -74,6 +74,14 @@ export default class UserClass extends Base {
 
 	}
 
+	public async getTopTracks(usernameOrSessionKey:string, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
+
+		this.checkLimit(params?.limit, 1000);
+
+		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as UserInterface.getTopTracks;
+
+	}
+
 	public async getWeeklyAlbumChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
 
 		this.checkLimit(params?.limit, 1000);
