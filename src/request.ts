@@ -38,13 +38,15 @@ export class LFMRequest {
 	private secret:string;
 	private response:any;
 	private userAgent:string;
+	private connectionType:string;
 
-	public constructor(key:string, secret:string, userAgent:string, params:LFMArgumentObject) {
+	public constructor(key:string, secret:string, userAgent:string, secureConnection:boolean, params:LFMArgumentObject) {
 
 		this.key = key;
 		this.params = params;
 		this.secret = secret;
 		this.userAgent = userAgent;
+		this.connectionType = secureConnection ? "https" : "http";
 
 	}
 
@@ -130,7 +132,7 @@ export class LFMRequest {
 
 		const paramString = stringify(requestParam);
 
-		return await fetch("http://ws.audioscrobbler.com/2.0/", {
+		return await fetch(`${this.connectionType}://ws.audioscrobbler.com/2.0/`, {
 			method: "POST",
 			headers: {
 				"Content-Length":  Buffer.byteLength(paramString).toString(),
@@ -150,7 +152,7 @@ export class LFMRequest {
 			...this.params
 		};
 		
-		return await fetch(`http://ws.audioscrobbler.com/2.0?${stringify(params)}`, {
+		return await fetch(`${this.connectionType}://ws.audioscrobbler.com/2.0?${stringify(params)}`, {
 			method: "GET",
 			headers: {
 				"User-Agent": this.userAgent
