@@ -32,7 +32,7 @@ export default class LFMBase {
 			offset: 0
 		};
 
-		newParams.num_res = params?.limit || 50,
+		newParams.num_res = params?.limit || 50;
 		newParams.offset = ((params?.page || 1) - 1) * newParams.num_res;
 		return newParams;
 	}
