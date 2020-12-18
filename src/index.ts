@@ -21,16 +21,16 @@ export default class LastFM {
 	public user:UserClass;
 	public helper:HelperClass;
 
-	public constructor(apiKey:string, apiSecret:string = "", userAgent:string = "lastfm-typed-npm") {
-		this.tag = new TagClass(apiKey, apiSecret, userAgent);
-		this.geo = new GeoClass(apiKey, apiSecret, userAgent);
-		this.chart = new ChartClass(apiKey, apiSecret, userAgent);
-		this.auth = new AuthClass(apiKey, apiSecret, userAgent);
-		this.album = new AlbumClass(apiKey, apiSecret, userAgent);
-		this.artist = new ArtistClass(apiKey, apiSecret, userAgent);
-		this.library = new LibraryClass(apiKey, apiSecret, userAgent);
-		this.track = new TrackClass(apiKey, apiSecret, userAgent);
-		this.user = new UserClass(apiKey, apiSecret, userAgent);
+	public constructor(apiKey:string, apiSecret:string = "", userAgent:string = "lastfm-typed-npm", secureConnection:boolean = false) {
+		this.tag = new TagClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.geo = new GeoClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.chart = new ChartClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.auth = new AuthClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.album = new AlbumClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.artist = new ArtistClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.library = new LibraryClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.track = new TrackClass(apiKey, apiSecret, userAgent, secureConnection);
+		this.user = new UserClass(apiKey, apiSecret, userAgent, secureConnection);
 		this.helper = new HelperClass(this);
 	}
 }
