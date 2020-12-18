@@ -134,7 +134,7 @@ interface TopTrack extends TagTrack {
 }
 
 export interface getTopTracks {
-	artist:TopTrack[];
+	track:TopTrack[];
 	"@attr":Metadata;
 }
 
