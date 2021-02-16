@@ -21,16 +21,12 @@ interface TrackData extends ArtistOptionalMBID {
 	streamable:string;
 	artist:ArtistOptionalMBID;
 	image:Image[];
-	"@attr": {
-		rank:string;
-	}
+	rank:string;
 }
 
 export interface getCorrection {
 	artist:ArtistBasic;
-	"@attr": {
-		index:string;
-	}
+	index:string;
 }
 
 export interface getInfo extends Artist {
@@ -40,19 +36,12 @@ export interface getInfo extends Artist {
 		playcount:string;
 		userplaycount:string;
 	}
-	similar: {
-		artist:ArtistNoMBID[];
-	}
-	tags: {
-		tag:TagWUrl[];
-	}
+	similarArtists:ArtistNoMBID[];
+	tags:TagWUrl[];
 	bio: {
-		links: {
-			link: {
-				"#text":string;
-				rel:string;
-				href:string;
-			}
+		link: {
+			rel:string;
+			href:string;
 		}
 		published:string;
 		summary:string;
@@ -61,46 +50,41 @@ export interface getInfo extends Artist {
 }
 
 export interface getSimilar {
-	artist:SimilarArtist[];
-	"@attr": {
-		artist:string;
-	}
+	artists:SimilarArtist[];
+	meta:Metadata;
 }
 
 export interface getTags {
 	tag:TagWUrl[];
-	"@attr":Metadata;
+	meta:Metadata;
 }
 
 export interface getTopAlbums {
-	album:AlbumGlobal[];
-	"@attr":LargeMetadata;
+	albums:AlbumGlobal[];
+	meta:LargeMetadata;
 }
 
 export interface getTopTags {
 	tag:TagUrlCount[];
-	"@attr":Metadata;
+	meta:Metadata;
 }
 
 export interface getTopTracks {
-	track:TrackData[];
-	"@attr":LargeMetadata;
+	tracks:TrackData[];
+	meta:LargeMetadata;
 }
 
 export interface search {
-	"opensearch:Query": {
-		"#text":string;
+	query: {
 		role:string;
 		searchTerms:string;
 		startPage:string;
 	}
-	"opensearch:totalResults":string;
-	"opensearch:startIndex":string;
-	"opensearch:itemsPerPage":string;
-	artistmatches: {
-		artist:ListenerArtist[];
-	}
-	"@attr": {
-		for:string;
+	totalResults:string;
+	startIndex:string;
+	itemsPerPage:string;
+	artistMatches:ListenerArtist[];
+	parameters: {
+		query:string;
 	}
 }

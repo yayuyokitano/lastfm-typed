@@ -14,13 +14,41 @@ export default class TagClass extends Base {
 
 	public async getTopAlbums(tag:string, params?:{limit?:number, page?:number}) {
 
-		return (await this.getTop("tag.getTopAlbums", tag, params)).albums as TagInterface.getTopAlbums;
+		let res = (await this.getTop("tag.getTopAlbums", tag, params)).albums as any;
+		
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.albums = res.album;
+		delete res.album;
+
+		res.albums.forEach((e:any) => {
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+			e.image.forEach((f:any) => {
+				f.url = f["#text"];
+				delete f["#text"];
+			});
+		});
+
+		return res as TagInterface.getTopAlbums;
 
 	}
 
 	public async getTopArtists(tag:string, params?:{limit?:number, page?:number}) {
 
-		return (await this.getTop("tag.getTopArtists", tag, params)).topartists as TagInterface.getTopArtists;
+		let res = (await this.getTop("tag.getTopArtists", tag, params)).topartists as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.artists = res.artist;
+		delete res.artist;
+
+		res.artists.forEach((e:any) => {
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
+
+		return res as TagInterface.getTopArtists;
 
 	}
 
@@ -29,23 +57,40 @@ export default class TagClass extends Base {
 		//set arguments in a way consistent with other endpoints
 		const newParams = this.convertNumRes(params);
 
-		let res = await this.getTop("tag.getTopTags", "", newParams);
+		let res = (await this.getTop("tag.getTopTags", "", newParams)).toptags as any;
 
 		let attr:ShortMetadata = {
-			total: res.toptags["@attr"].total as string,
+			total: res["@attr"].total as string,
 			page: ((newParams.offset / newParams.num_res) + 1).toString(),
 			perPage: newParams.num_res.toString(),
-			totalPages: Math.ceil(parseInt(res.toptags["@attr"].total) / newParams.num_res).toString()
+			totalPages: Math.ceil(parseInt(res["@attr"].total) / newParams.num_res).toString()
 		};
 
-		res.toptags["@attr"] = attr;
-		return res.toptags as TagInterface.getTopTags;
+		res.meta = attr;
+		delete res["@attr"];
+		res.tags = res.tag;
+		delete res.tag;
+		return res as TagInterface.getTopTags;
 
 	}
 
 	public async getTopTracks(tag:string, params?:{limit?:number, page?:number}) {
 
-		return (await this.getTop("tag.getTopTracks", tag, params)).tracks as TagInterface.getTopTracks;
+		let res = (await this.getTop("tag.getTopTracks", tag, params)).tracks as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tracks = res.track;
+		delete res.track;
+
+		res.tracks.forEach((e:any) => {
+			e.streamable.isStreamable = e.streamable["#text"];
+			delete e.streamable["#text"];
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
+
+		return res as TagInterface.getTopTracks;
 
 	}
 

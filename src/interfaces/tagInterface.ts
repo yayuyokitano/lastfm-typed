@@ -16,21 +16,21 @@ export interface getInfo {
 }
 
 export interface getTopAlbums {
-	album:TagAlbum[];
-	"@attr":Metadata;
+	albums:TagAlbum[];
+	meta:Metadata;
 }
 
 export interface getTopArtists {
-	artist:TagArtist[];
-	"@attr":Metadata;
+	artists:TagArtist[];
+	meta:Metadata;
 }
 
 export interface getTopTags {
-	tag:TagBasic[];
-	"@attr":Metadata;
+	tags:TagBasic[];
+	meta:Metadata;
 }
 
 export interface getTopTracks {
-	track:TagTrack[];
-	"@attr":Metadata;
+	tracks:TagTrack[];
+	meta:Metadata;
 }

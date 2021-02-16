@@ -7,7 +7,12 @@ export default class LibraryClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "library.getArtists", user: usernameOrSessionKey, ...params })).artists as LibraryInterface.getArtists;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "library.getArtists", user: usernameOrSessionKey, ...params })).artists as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		return res as LibraryInterface.getArtists;
 
 	}
 

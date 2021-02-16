@@ -38,19 +38,19 @@ export default class HelperClass {
 			let res = await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: Math.min(1000, limit), page});
 
 			if (page === 1) {
-				comboData[0][0] = res.track[0].artist.name;
-				comboData[1][0] = res.track[0].album.name;
-				comboData[2][0] = res.track[0].name;
-				image = res.track[0].image;
+				comboData[0][0] = res.tracks[0].artist.name;
+				comboData[1][0] = res.tracks[0].album.name;
+				comboData[2][0] = res.tracks[0].name;
+				image = res.tracks[0].image;
 
 				if (comboData[1][0] === "") {
 					combo[1] = false;
 				}
 			}
 
-			if (res.track[0]["@attr"]?.nowplaying) {
+			if (res.tracks[0]?.nowplaying) {
 				nowplaying = true;
-				res.track = res.track.slice(1);
+				res.tracks = res.tracks.slice(1);
 			}
 
 			for (let i = 0; i < trueLimit; i++) {
@@ -59,7 +59,7 @@ export default class HelperClass {
 				}
 
 				if (combo[0]) {
-					if (comboData[0][0] === res.track[i].artist.name) {
+					if (comboData[0][0] === res.tracks[i].artist.name) {
 						comboData[0][1]++;
 					} else {
 						combo[0] = false;
@@ -67,7 +67,7 @@ export default class HelperClass {
 				}
 
 				if (combo[1]) {
-					if (comboData[1][0] === res.track[i].album.name) {
+					if (comboData[1][0] === res.tracks[i].album.name) {
 						comboData[1][1]++;
 					} else {
 						combo[1] = false;
@@ -75,7 +75,7 @@ export default class HelperClass {
 				}
 
 				if (combo[2]) {
-					if (comboData[2][0] === res.track[i].name) {
+					if (comboData[2][0] === res.tracks[i].name) {
 						comboData[2][1]++;
 					} else {
 						combo[2] = false;
@@ -105,14 +105,14 @@ export default class HelperClass {
 
 	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = []) {
 
-		const currTrack = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1})).track[0];
+		const currTrack = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1})).tracks[0];
 
 		const artist = currTrack.artist.name;
 		const track = currTrack.name;
 		const image = currTrack.image;
 		const album = currTrack.album?.name;
 		const url = currTrack.url;
-		const nowplaying = currTrack["@attr"]?.nowplaying === "true";
+		const nowplaying = currTrack?.nowplaying === "true";
 
 		const details:{
 			artist:{
@@ -212,7 +212,7 @@ export default class HelperClass {
 
 		const res = await Promise.all(request);
 
-		return this.getIntersection(res[0].artist, res[1].artist);
+		return this.getIntersection(res[0].artists, res[1].artists);
 
 	}
 

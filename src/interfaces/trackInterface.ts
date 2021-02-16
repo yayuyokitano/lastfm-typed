@@ -11,7 +11,7 @@ interface TrackMetadata extends Metadata {
 interface SimilarTrack extends ArtistNoMBID {
 	duration:number;
 	streamable: {
-		"#text":string;
+		isStreamable:string;
 		fulltrack:string;
 	}
 	match:number;
@@ -31,7 +31,7 @@ interface searchTrack {
 
 export interface getCorrection {
 	track:TrackBasic;
-	"@attr": {
+	meta: {
 		index:string;
 		artistcorrected:string;
 		trackcorrected:string;
@@ -42,72 +42,65 @@ export interface getInfo extends GlobalTrackOptionalMBID {
 	userplaycount?:string;
 	userloved?:string;
 	wiki?:Wiki;
-	toptags: {
-		tag:TagWUrl[];
-	}
+	toptags:TagWUrl[];
 	album?: {
 		artist:string;
 		title:string;
 		mbid:string;
 		url:string;
 		image:Image[];
-		"@attr": {
-			position:string;
-		}
+		position:string;
 	}
 	artist:ArtistOptionalMBID;
 }
 
 export interface getSimilar {
-	track:SimilarTrack[];
-	"@attr": {
+	tracks:SimilarTrack[];
+	meta: {
 		artist:string;
 	}
 }
 
 export interface getTags {
-	tag:TagWUrl[];
-	"@attr":TrackMetadata;
+	tags:TagWUrl[];
+	meta:TrackMetadata;
 }
 
 export interface getTopTags {
-	tag:TagUrlCount[];
-	"@attr":TrackMetadata;
+	tags:TagUrlCount[];
+	meta:TrackMetadata;
 }
 
 interface ScrobbleEntry {
 	corrected:string;
-	"#text":string;
+	name?:string;
 }
 
 export interface scrobble {
-	"@attr": {
+	head: {
 		accepted:number;
 		ignored:number;
 	}
-	scrobble: {
+	scrobbles: {
 		artist:ScrobbleEntry;
 		ignoredMessage: {
 			code:string;
-			"#text":string;
+			message:string;
 		}
 		albumArtist:ScrobbleEntry;
 		timestamp:string;
 		album:ScrobbleEntry;
 		track:ScrobbleEntry;
-	}
+	}[]
 }
 
 export interface search {
-	"opensearch:Query": {
-		"#text":string;
+	query: {
 		role:string;
 		startPage:string;
 	}
-	"opensearch:totalResults":string;
-	"opensearch:startIndex":string;
-	"opensearch:itemsPerPage":string;
-	trackmatches: {
-		track:searchTrack[];
-	}
+	totalResults:string;
+	startIndex:string;
+	itemsPerPage:string;
+	trackmatches:searchTrack[];
 }

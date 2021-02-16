@@ -5,19 +5,45 @@ export default class ChartClass extends Base {
 
 	public async getTopArtists(params?:{limit?:number, page?:number}) {
 
-		return (await this.getTop("chart.getTopArtists", params)).artists as ChartInterface.getTopArtists;
+		let res = (await this.getTop("chart.getTopArtists", params)).artists as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.artists = res.artist;
+		delete res.artist;
+
+		return res as ChartInterface.getTopArtists;
 
 	}
 
 	public async getTopTags(params?:{limit?:number, page?:number}) {
 
-		return (await this.getTop("chart.getTopTags", params)).tags as ChartInterface.getTopTags;
+		let res = (await this.getTop("chart.getTopTags", params)).tags as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tags = res.tag;
+		delete res.tag;
+
+		return res as ChartInterface.getTopTags;
 
 	}
 
 	public async getTopTracks(params?:{limit?:number, page?:number}) {
 
-		return (await this.getTop("chart.getTopTracks", params)).tracks as ChartInterface.getTopTracks;
+		let res = (await this.getTop("chart.getTopTracks", params)).tracks as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tracks = res.track;
+		delete res.track;
+
+		res.tracks.forEach((e:any) => {
+			e.streamable.isStreamable = e.streamable["#text"];
+			delete e.streamable["#text"];
+		})
+
+		return res as ChartInterface.getTopTracks;
 
 	}
 
