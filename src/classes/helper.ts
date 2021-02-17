@@ -5,6 +5,9 @@ import * as AlbumInterface from "../interfaces/albumInterface";
 import * as TrackInterface from "../interfaces/trackInterface";
 import * as UserInterface from "../interfaces/userInterface";
 
+import {EventEmitter} from "events";
+class ScrobbleEmitter extends EventEmitter {}
+
 export default class HelperClass {
 
 	private lastfm:LastFM;
@@ -252,6 +255,60 @@ export default class HelperClass {
 			artist,
 			track,
 		}
+	}
+
+	public async cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number}) {
+
+		let scrobbleEmitter = new ScrobbleEmitter();
+
+		this.handleCaching(user, scrobbleEmitter, options);
+
+		return scrobbleEmitter;
+
+	}
+
+	private async handleCaching(user:string, scrobbleEmitter:ScrobbleEmitter, options?:{previouslyCached?:number, parallelCaches?:number}) {
+
+		let count = parseInt((await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total);
+
+		let newCount = count - (options?.previouslyCached || 0);
+		let totalPages = Math.ceil(newCount / 1000);
+
+		scrobbleEmitter.emit("start", {totalPages, count: newCount});
+
+		let currPage = 1;
+		let active = Math.min(options?.parallelCaches || 10, totalPages);
+
+		for (;currPage <= (active || 10); currPage++) {
+			this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
+		}
+
+		scrobbleEmitter.on("progress", (data) => {
+			if (currPage <= totalPages) {
+				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
+				this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
+				currPage++;
+			} else {
+				active--;
+				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
+				if (active === 0) {
+					scrobbleEmitter.emit("close");
+					scrobbleEmitter.removeAllListeners();
+				}
+			}
+		});
+
+	}
+
+	private async handleCacheInstance(user:string, scrobbleEmitter:ScrobbleEmitter, page:number, count:number) {
+
+		let res = await this.lastfm.user.getRecentTracks(user, {limit: 1000, page});
+		if (res.tracks[0].nowplaying) {
+			res.tracks.shift();
+		}
+
+		scrobbleEmitter.emit("progress", res);
+
 	}
 
 	private getIntersection(arr1:UserInterface.TopArtist[], arr2:UserInterface.TopArtist[]){

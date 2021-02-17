@@ -115,7 +115,7 @@ export default class UserClass extends Base {
 			delete e.artist["#text"];
 			e.album.name ||= e.album["#text"];
 			delete e.album["#text"];
-			if (e?.["@attr"].hasOwnProperty("nowplaying")) {
+			if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
 				e.nowplaying = e["@attr"].nowplaying;
 				delete e["@attr"];
 			}
