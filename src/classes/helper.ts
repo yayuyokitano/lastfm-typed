@@ -284,17 +284,26 @@ export default class HelperClass {
 		}
 
 		scrobbleEmitter.on("progress", (data) => {
+
+			if (data.meta.page === totalPages) {
+				data = data.slice(0, newCount % 1000);
+			}
+
 			if (currPage <= totalPages) {
+
 				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
 				this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
 				currPage++;
+
 			} else {
+
 				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
 				active--;
 				if (active === 0) {
 					scrobbleEmitter.emit("close");
 					scrobbleEmitter.removeAllListeners();
 				}
+				
 			}
 		});
 
@@ -306,6 +315,8 @@ export default class HelperClass {
 		if (res.tracks[0].nowplaying) {
 			res.tracks.shift();
 		}
+
+		res.meta.page
 
 		scrobbleEmitter.emit("progress", res);
 
