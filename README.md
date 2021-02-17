@@ -476,3 +476,58 @@ Takes two users, a limit on the number of top artists to check, and a time perio
   ```
 
 </details>
+
+### cacheScrobbles
+
+Goes through the scrobbles of an individual user, and returns an event emitter that will return every scrobble the user has made, or every scrobble made after a certain number of scrobbles.
+
+Syntax: `lastfm.helper.cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number})`. user is the user to be cached, previouslyCached is the number of scrobbles already cached (default 0), parallelCaches is the number of parallel requests to make (default 10). Keep in mind that with a count higher than 1, there is no guarantee that the scrobbles arrive in the correct order.
+
+<details>
+  <summary>Example</summary>
+  
+  ```ts
+  let scrobbleCacher = await lastfm.helper.cacheScrobbles("Mexdeep");
+  
+  scrobbleCacher.on("start", (data) => {
+    console.log(`Found ${data.count} scrobbles, starting (0/${data.totalPages}).`);
+  });
+  
+  scrobbleCacher.on("data", (data) => {
+    database.addScrobblesBulk(data.data);
+    console.log(`${data.completedPages}/${data.totalPages} (${(data.progress * 100).toFixed(2)}%)`);
+  });
+  
+  scrobbleCacher.on("close", () => {
+    console.log("Caching completed.");
+  });
+  ```
+  
+  ```ts
+  Found 19017 scrobbles, starting (0/20).
+  1/20 (5.00%)
+  2/20 (10.00%)
+  3/20 (15.00%)
+  4/20 (20.00%)
+  5/20 (25.00%)
+  6/20 (30.00%)
+  7/20 (35.00%)
+  8/20 (40.00%)
+  9/20 (45.00%)
+  10/20 (50.00%)
+  11/20 (55.00%)
+  12/20 (60.00%)
+  13/20 (65.00%)
+  14/20 (70.00%)
+  15/20 (75.00%)
+  16/20 (80.00%)
+  17/20 (85.00%)
+  18/20 (90.00%)
+  19/20 (95.00%)
+  20/20 (100.00%)
+  Caching completed.
+  ```
+  
+  This would send 1000 scrobbles at a time to the database.addScrobblesBulk(). This is returned exactly like the user.getRecentTracks function returns it (except that it does remove nowplaying).
+
+</details>

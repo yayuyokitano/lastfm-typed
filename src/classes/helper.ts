@@ -289,8 +289,8 @@ export default class HelperClass {
 				this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
 				currPage++;
 			} else {
-				active--;
 				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
+				active--;
 				if (active === 0) {
 					scrobbleEmitter.emit("close");
 					scrobbleEmitter.removeAllListeners();
