@@ -84,7 +84,7 @@ export interface search {
 	startIndex:string;
 	itemsPerPage:string;
 	artistMatches:ListenerArtist[];
-	parameters: {
+	meta: {
 		query:string;
 	}
 }

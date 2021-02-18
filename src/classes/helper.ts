@@ -6,7 +6,14 @@ import * as TrackInterface from "../interfaces/trackInterface";
 import * as UserInterface from "../interfaces/userInterface";
 
 import {EventEmitter} from "events";
-class ScrobbleEmitter extends EventEmitter {}
+import TypedEmitter from "typed-emitter";
+
+interface ScrobbleEmitter {
+	start: (meta:{totalPages:number, count:number}) => void;
+	data: (data:{data:UserInterface.getRecentTracks, completedPages:number, totalPages:number, progress:number}) => void;
+	close: () => void;
+	internalDontUse: (data:UserInterface.getRecentTracks) => void;
+}
 
 export default class HelperClass {
 
@@ -259,7 +266,7 @@ export default class HelperClass {
 
 	public async cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number}) {
 
-		let scrobbleEmitter = new ScrobbleEmitter();
+		let scrobbleEmitter = new EventEmitter() as TypedEmitter<ScrobbleEmitter>;
 
 		this.handleCaching(user, scrobbleEmitter, options);
 
@@ -267,7 +274,7 @@ export default class HelperClass {
 
 	}
 
-	private async handleCaching(user:string, scrobbleEmitter:ScrobbleEmitter, options?:{previouslyCached?:number, parallelCaches?:number}) {
+	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, options?:{previouslyCached?:number, parallelCaches?:number}) {
 
 		let count = parseInt((await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total);
 
@@ -283,31 +290,42 @@ export default class HelperClass {
 			this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
 		}
 
-		scrobbleEmitter.on("progress", (data) => {
+		scrobbleEmitter.on("internalDontUse", (data) => {
+
+			if (parseInt(data.meta.page) === totalPages) {
+				data.tracks = data.tracks.slice(0, newCount % 1000);
+			}
+
 			if (currPage <= totalPages) {
+
 				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
 				this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
 				currPage++;
+
 			} else {
+
 				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
 				active--;
 				if (active === 0) {
 					scrobbleEmitter.emit("close");
 					scrobbleEmitter.removeAllListeners();
 				}
+				
 			}
 		});
 
 	}
 
-	private async handleCacheInstance(user:string, scrobbleEmitter:ScrobbleEmitter, page:number, count:number) {
+	private async handleCacheInstance(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, page:number, count:number) {
 
 		let res = await this.lastfm.user.getRecentTracks(user, {limit: 1000, page});
 		if (res.tracks[0].nowplaying) {
 			res.tracks.shift();
 		}
 
-		scrobbleEmitter.emit("progress", res);
+		res.meta.page
+
+		scrobbleEmitter.emit("internalDontUse", res);
 
 	}
 

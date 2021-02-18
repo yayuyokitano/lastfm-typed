@@ -136,10 +136,10 @@ export default class ArtistClass extends Base {
 		let res = (await this.sendRequest(this.key, this.secret, {method: "artist.search", artist, ...params})).results as any;
 
 		delete res["opensearch:Query"]["#text"];
-		res.parameters = res["@attr"];
+		res.meta = res["@attr"];
 		delete res["@attr"];
-		res.parameters.query = res.parameters.for;
-		delete res.parameters.for;
+		res.meta.query = res.meta.for;
+		delete res.meta.for;
 		res.itemsPerPage = res["opensearch:itemsPerPage"];
 		delete res["opensearch:itemsPerPage"];
 		res.startIndex = res["opensearch:startIndex"];

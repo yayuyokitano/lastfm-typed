@@ -14,12 +14,12 @@ export interface getInfo extends GlobalAlbum {
 
 export interface getTags {
 	tags:TagWUrl[];
-	parameters:Metadata;
+	meta:Metadata;
 }
 
 export interface getTopTags {
 	tags:TagUrlCount[];
-	parameters:Metadata;
+	meta:Metadata;
 }
 
 export interface search {
@@ -32,7 +32,7 @@ export interface search {
 	startIndex:string;
 	itemsPerPage:string;
 	albumMatches:StringAlbum[];
-	parameters: {
+	meta: {
 		query:string;
 	}
 }

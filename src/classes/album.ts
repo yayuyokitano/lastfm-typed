@@ -39,7 +39,7 @@ export default class AlbumClass extends Base {
 	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
 		let res = this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as any;
-		res.parameters = res["@attr"];
+		res.meta = res["@attr"];
 		delete res["@attr"];
 		res.tags = res.tag;
 		delete res.tag;
@@ -52,7 +52,7 @@ export default class AlbumClass extends Base {
 
 		let res = (await this.sendRequest(this.key, this.secret, { method: "album.getTopTags", ...album, ...params })).toptags as any;
 
-		res.parameters = res["@attr"];
+		res.meta = res["@attr"];
 		delete res["@attr"];
 		res.tags = res.tag;
 		delete res.tag;
@@ -73,10 +73,10 @@ export default class AlbumClass extends Base {
 
 		let res = (await this.sendRequest(this.key, this.secret, {method: "album.search", album, ...params })).results as any;
 		delete res["opensearch:Query"]["#text"];
-		res.parameters = res["@attr"];
+		res.meta = res["@attr"];
 		delete res["@attr"];
-		res.parameters.query = res.parameters.for;
-		delete res.parameters.for;
+		res.meta.query = res.meta.for;
+		delete res.meta.for;
 		res.itemsPerPage = res["opensearch:itemsPerPage"];
 		delete res["opensearch:itemsPerPage"];
 		res.startIndex = res["opensearch:startIndex"];
