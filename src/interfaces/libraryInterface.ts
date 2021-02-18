@@ -15,5 +15,5 @@ interface LocalArtist extends Artist {
 
 export interface getArtists {
 	artist:LocalArtist;
-	"@attr":Metadata;
+	meta:Metadata;
 }

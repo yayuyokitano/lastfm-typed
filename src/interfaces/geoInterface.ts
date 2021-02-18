@@ -9,11 +9,11 @@ interface Metadata {
 }
 
 export interface getTopArtists {
-	artist:ListenerArtist[];
-	"@attr":Metadata;
+	artists:ListenerArtist[];
+	meta:Metadata;
 }
 
 export interface getTopTracks {
-	track:ListenerTrack[];
-	"@attr":Metadata;
+	tracks:ListenerTrack[];
+	meta:Metadata;
 }

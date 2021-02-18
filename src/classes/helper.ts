@@ -5,6 +5,16 @@ import * as AlbumInterface from "../interfaces/albumInterface";
 import * as TrackInterface from "../interfaces/trackInterface";
 import * as UserInterface from "../interfaces/userInterface";
 
+import {EventEmitter} from "events";
+import TypedEmitter from "typed-emitter";
+
+interface ScrobbleEmitter {
+	start: (meta:{totalPages:number, count:number}) => void;
+	data: (data:{data:UserInterface.getRecentTracks, completedPages:number, totalPages:number, progress:number}) => void;
+	close: () => void;
+	internalDontUse: (data:UserInterface.getRecentTracks) => void;
+}
+
 export default class HelperClass {
 
 	private lastfm:LastFM;
@@ -38,19 +48,19 @@ export default class HelperClass {
 			let res = await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: Math.min(1000, limit), page});
 
 			if (page === 1) {
-				comboData[0][0] = res.track[0].artist.name;
-				comboData[1][0] = res.track[0].album.name;
-				comboData[2][0] = res.track[0].name;
-				image = res.track[0].image;
+				comboData[0][0] = res.tracks[0].artist.name;
+				comboData[1][0] = res.tracks[0].album.name;
+				comboData[2][0] = res.tracks[0].name;
+				image = res.tracks[0].image;
 
 				if (comboData[1][0] === "") {
 					combo[1] = false;
 				}
 			}
 
-			if (res.track[0]["@attr"]?.nowplaying) {
+			if (res.tracks[0]?.nowplaying) {
 				nowplaying = true;
-				res.track = res.track.slice(1);
+				res.tracks = res.tracks.slice(1);
 			}
 
 			for (let i = 0; i < trueLimit; i++) {
@@ -59,7 +69,7 @@ export default class HelperClass {
 				}
 
 				if (combo[0]) {
-					if (comboData[0][0] === res.track[i].artist.name) {
+					if (comboData[0][0] === res.tracks[Number(i)].artist.name) {
 						comboData[0][1]++;
 					} else {
 						combo[0] = false;
@@ -67,7 +77,7 @@ export default class HelperClass {
 				}
 
 				if (combo[1]) {
-					if (comboData[1][0] === res.track[i].album.name) {
+					if (comboData[1][0] === res.tracks[Number(i)].album.name) {
 						comboData[1][1]++;
 					} else {
 						combo[1] = false;
@@ -75,7 +85,7 @@ export default class HelperClass {
 				}
 
 				if (combo[2]) {
-					if (comboData[2][0] === res.track[i].name) {
+					if (comboData[2][0] === res.tracks[Number(i)].name) {
 						comboData[2][1]++;
 					} else {
 						combo[2] = false;
@@ -105,14 +115,14 @@ export default class HelperClass {
 
 	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = []) {
 
-		const currTrack = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1})).track[0];
+		const currTrack = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1})).tracks[0];
 
 		const artist = currTrack.artist.name;
 		const track = currTrack.name;
 		const image = currTrack.image;
 		const album = currTrack.album?.name;
 		const url = currTrack.url;
-		const nowplaying = currTrack["@attr"]?.nowplaying === "true";
+		const nowplaying = currTrack?.nowplaying === "true";
 
 		const details:{
 			artist:{
@@ -212,7 +222,7 @@ export default class HelperClass {
 
 		const res = await Promise.all(request);
 
-		return this.getIntersection(res[0].artist, res[1].artist);
+		return this.getIntersection(res[0].artists, res[1].artists);
 
 	}
 
@@ -252,6 +262,73 @@ export default class HelperClass {
 			artist,
 			track,
 		}
+	}
+
+	public async cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number}) {
+
+		let scrobbleEmitter = new EventEmitter() as TypedEmitter<ScrobbleEmitter>;
+
+		this.handleCaching(user, scrobbleEmitter, options);
+
+		return scrobbleEmitter;
+
+	}
+
+	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, options?:{previouslyCached?:number, parallelCaches?:number}) {
+
+		let count = parseInt((await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total);
+
+		let newCount = count - (options?.previouslyCached || 0);
+		let totalPages = Math.ceil(newCount / 1000);
+
+		scrobbleEmitter.emit("start", {totalPages, count: newCount});
+
+		let currPage = 1;
+		let active = Math.min(options?.parallelCaches || 10, totalPages);
+
+		for (;currPage <= (active || 10); currPage++) {
+			this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
+		}
+
+		scrobbleEmitter.on("internalDontUse", (data) => {
+
+			if (parseInt(data.meta.page) === totalPages) {
+				data.tracks = data.tracks.slice(0, newCount % 1000);
+			}
+
+			if (currPage <= totalPages) {
+
+				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
+				this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
+				currPage++;
+
+			} else {
+
+				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
+				active--;
+				this.attemptClose(active, scrobbleEmitter);
+				
+			}
+		});
+
+	}
+
+	private attemptClose(active:number, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>) {
+		if (active === 0) {
+			scrobbleEmitter.emit("close");
+			scrobbleEmitter.removeAllListeners();
+		}
+	}
+
+	private async handleCacheInstance(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, page:number, count:number) {
+
+		let res = await this.lastfm.user.getRecentTracks(user, {limit: 1000, page});
+		if (res.tracks[0].nowplaying) {
+			res.tracks.shift();
+		}
+
+		scrobbleEmitter.emit("internalDontUse", res);
+
 	}
 
 	private getIntersection(arr1:UserInterface.TopArtist[], arr2:UserInterface.TopArtist[]){

@@ -21,7 +21,17 @@ export default class LastFM {
 	public user:UserClass;
 	public helper:HelperClass;
 
-	public constructor(apiKey:string, apiSecret:string = "", userAgent:string = "lastfm-typed-npm", secureConnection:boolean = false) {
+	public constructor(apiKey:string, options?:{apiSecret?:string, userAgent?:string, secureConnection?:boolean}) {
+		if (!options) {
+			options = {};
+		}
+
+		options.apiSecret ??= "";
+		options.userAgent ??= "lastfm-typed-npm";
+		options.secureConnection ??= true;
+
+		let {apiSecret, userAgent, secureConnection} = options;
+
 		this.tag = new TagClass(apiKey, apiSecret, userAgent, secureConnection);
 		this.geo = new GeoClass(apiKey, apiSecret, userAgent, secureConnection);
 		this.chart = new ChartClass(apiKey, apiSecret, userAgent, secureConnection);

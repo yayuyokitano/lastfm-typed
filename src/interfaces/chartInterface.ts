@@ -9,16 +9,16 @@ interface Metadata {
 }
 
 export interface getTopArtists {
-	artist:GlobalArtist[];
-	"@attr":ShortMetadata;
+	artists:GlobalArtist[];
+	meta:ShortMetadata;
 }
 
 export interface getTopTags {
-	tag:TagGlobalNoWiki[];
-	"@attr":ShortMetadata;
+	tags:TagGlobalNoWiki[];
+	meta:ShortMetadata;
 }
 
 export interface getTopTracks {
-	track:ListenerTrack[];
-	"@attr":Metadata;
+	tracks:ListenerTrack[];
+	meta:Metadata;
 }

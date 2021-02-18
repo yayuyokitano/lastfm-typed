@@ -52,7 +52,7 @@ export interface ShortMetadata {
 }
 
 export interface Image {
-	"#text":string;
+	url:string;
 	size:string;
 }
 
@@ -105,9 +105,7 @@ export interface AlbumGlobal extends AlbumOptionalMBID {
 }
 
 export interface TagAlbum extends Album {
-	"@attr": {
-		rank:string;
-	}
+	rank:string;
 }
 
 export interface GlobalAlbum extends BasicInfo {
@@ -121,9 +119,7 @@ export interface Artist extends ArtistBasic {
 }
 
 export interface TagArtist extends ArtistBasic {
-	"@attr": {
-		rank:string;
-	}
+	rank:string;
 }
 
 export interface ListenerArtist extends Artist {
@@ -137,7 +133,7 @@ export interface GlobalArtist extends ListenerArtist {
 interface Track extends ArtistNoMBID {
 	duration:string;
 	streamable: {
-		"#text":string;
+		isStreamable:string;
 		fulltrack:string;
 	}
 }
@@ -157,9 +153,7 @@ export interface TrackOptionalMBIDImg extends TrackOptionalMBID {
 }
 
 export interface TagTrack extends TrackMBID {
-	"@attr": {
-		rank:string;
-	}
+	rank:string;
 }
 
 export interface ListenerTrack extends TrackMBID {

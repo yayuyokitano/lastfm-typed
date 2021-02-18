@@ -7,13 +7,36 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getFriends", user: usernameOrSessionKey, ...params })).friends as UserInterface.getFriends;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getFriends", user: usernameOrSessionKey, ...params })).friends as any;
+
+		res.user.forEach((e:any) => {
+			e.registered.datetime = e.registered["#text"];
+			delete e.registered["#text"];
+			e.image.forEach((f:any) => {
+				f.url = f["#text"];
+				delete f["#text"];
+			});
+		});
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		return res as UserInterface.getFriends;
 
 	}
 
 	public async getInfo(usernameOrSessionKey:string) {
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getInfo", user: usernameOrSessionKey })).user as UserInterface.getInfo;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getInfo", user: usernameOrSessionKey })).user as any;
+
+		res.registered.datetime = res.registered["#text"];
+		delete res.registered["#text"];
+		res.image.forEach((e:any) => {
+			e.url = e["#text"];
+			delete e["#text"];
+		});
+
+		return res as UserInterface.getInfo;
 
 	}
 
@@ -21,7 +44,21 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as UserInterface.getLovedTracks;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tracks = res.track;
+		delete res.track;
+
+		res.tracks.forEach((e:any) => {
+			e.date.datetime = e.date["#text"];
+			delete e.date["#text"];
+			e.streamable.isStreamable = e.streamable["#text"];
+			delete e.streamable["#text"];
+		});
+
+		return res as UserInterface.getLovedTracks;
 
 	}
 
@@ -29,7 +66,35 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as UserInterface.getPersonalTags;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as any;
+
+		if (res.hasOwnProperty("artists")) {
+			res.artists = res.artists.artist;
+		} else if (res.hasOwnProperty("albums")) {
+			res.albums = res.albums.album;
+
+			res.albums.forEach((e:any) => {
+				e.image.forEach((f:any) => {
+					f.url = f["#text"];
+					delete f["#text"];
+				});
+			});
+
+		} else if (res.hasOwnProperty("tracks")) {
+			res.tracks = res.tracks.track;
+
+			res.tracks.forEach((e:any) => {
+				e.image.forEach((f:any) => {
+					f.url = f["#text"];
+					delete f["#text"];
+				});
+				
+				e.streamable.isStreamable = e.streamable["#text"];
+				delete e.streamable["#text"];
+			});
+		}
+
+		return res as UserInterface.getPersonalTags;
 
 	}
 
@@ -39,12 +104,28 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getRecentTracks", user: usernameOrSessionKey, ...params })).recenttracks;
 
-		for (let i = 0; i < res.track.length; i++) {
-			res.track[i].artist.name ||= res.track[i].artist["#text"];
-			delete res.track[i].artist["#text"];
-			res.track[i].album.name ||= res.track[i].album["#text"];
-			delete res.track[i].album["#text"];
-		}
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		res.tracks = res.track;
+		delete res.track;
+
+		res.tracks.forEach((e:any) => {
+			e.artist.name ||= e.artist["#text"];
+			delete e.artist["#text"];
+			e.album.name ||= e.album["#text"];
+			delete e.album["#text"];
+			if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
+				e.nowplaying = e["@attr"].nowplaying;
+				delete e["@attr"];
+			}
+
+			e.image.forEach((f:any) => {
+				f.url = f["#text"];
+				delete f["#text"];
+			});
+
+		});
 
 		return res as UserInterface.getRecentTracks;
 		
@@ -54,7 +135,23 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as UserInterface.getTopAlbums;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as any;
+	
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.albums = res.album;
+		delete res.album;
+
+		res.albums.forEach((e:any) => {
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+			e.image.forEach((f:any) => {
+				f.url = f["#text"];
+				delete f["#text"];
+			});
+		});
+
+		return res as UserInterface.getTopAlbums;
 
 	}
 
@@ -62,7 +159,18 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as UserInterface.getTopArtists;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
+		
+		res.artists = res.artist;
+		delete res.artist;
+		res.meta = res["@attr"];
+
+		res.artists.forEach((e:any) => {
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
+
+		return res as UserInterface.getTopArtists;
 
 	}
 
@@ -70,7 +178,14 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as UserInterface.getTopTags;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as any;
+
+		res.tags = res.tag;
+		delete res.tag;
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		return res as UserInterface.getTopTags;
 
 	}
 
@@ -78,8 +193,21 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as UserInterface.getTopTracks;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
 
+		res.tracks = res.track;
+		delete res.track;
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		res.tracks.forEach((e:any) => {
+			e.streamable.isStreamable = e.streamable["#text"];
+			delete e.streamable["#text"];
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
+
+		return res as UserInterface.getTopTracks;
 	}
 
 	public async getWeeklyAlbumChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
@@ -87,8 +215,18 @@ export default class UserClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 		
 		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params })).weeklyalbumchart;
-		res.artist.name = res.artist["#text"];
-		delete res.artist["#text"];
+		
+		res.albums = res.album;
+		delete res.album;
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		res.albums.forEach((e:any) => {
+			e.artist.name = e.artist["#text"];
+			delete e.artist["#text"];
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
 
 		return res as UserInterface.getWeeklyAlbumChart;
 
@@ -98,13 +236,29 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as UserInterface.getWeeklyArtistChart;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as any;
 
+		res.artists = res.artist;
+		delete res.artist;
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		res.artists.forEach((e:any) => {
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
+
+		return res as UserInterface.getWeeklyArtistChart;
 	}
 
 	public async getWeeklyChartList() {
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyChartList"})).weeklychartlist as UserInterface.getWeeklyChartList;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyChartList"})).weeklychartlist as any;
+
+		res.charts = res.chart;
+		delete res.chart;
+
+		return res as UserInterface.getWeeklyChartList;
 
 	}
 
@@ -112,7 +266,21 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as UserInterface.getWeeklyTrackChart;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as any;
+
+		res.tracks = res.track;
+		delete res.track;
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		res.tracks.forEach((e:any) => {
+			e.artist.name = e.artist["#text"];
+			delete e.artist["#text"];
+			e.rank = e["@attr"].rank;
+			delete e["@attr"];
+		});
+
+		return res as UserInterface.getWeeklyTrackChart;
 
 	}
 

@@ -28,13 +28,33 @@ export default class TrackClass extends Base {
 
 	public async getCorrection(artist:string, track:string) {
 		
-		return (((await this.sendRequest(this.key, this.secret, { method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as TrackInterface.getCorrection|{};
+		let res = (((await this.sendRequest(this.key, this.secret, { method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
+		if (res === {}) {
+			return res as {};
+		}
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+
+		return res as TrackInterface.getCorrection;
 
 	}
 
 	public async getInfo(track:TrackInput, params?:{autocorrect?:0|1, username?:string, sk?:string}) {
 
-		return (await this.sendRequest(this.key, this.secret, { method: "track.getInfo", ...track, ...params })).track as TrackInterface.getInfo;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "track.getInfo", ...track, ...params })).track as any;
+
+		res.toptags = res.toptags.tag;
+		if (res.album) {
+			res.album.position = res.album["@attr"].position;
+			delete res.album["@attr"];
+			res.album.image.forEach((e:any) => {
+				e.url = e["#text"];
+				delete e["#text"];
+			});
+		}
+
+		return res as TrackInterface.getInfo;
 
 	}
 
@@ -42,19 +62,44 @@ export default class TrackClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, { method: "track.getSimilar", ...track, ...params })).similartracks as TrackInterface.getSimilar;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "track.getSimilar", ...track, ...params })).similartracks as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tracks = res.track;
+		delete res.track;
+
+		res.tracks.forEach((e:any) => {
+			e.streamable.isStreamable = e.streamable["#text"];
+			delete e.streamable["#text"];
+		});
+
+		return res as TrackInterface.getSimilar;
 
 	}
 	
 	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		return this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as TrackInterface.getTags;
+		let res = this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
 
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tags = res.tag;
+		delete res.tag;
+
+		return res as TrackInterface.getTags;
 	}
 
 	public async getTopTags(track:TrackInput, params?:{autocorrect?:0|1}) {
 
-		return (await this.sendRequest(this.key, this.secret, { method: "track.getTopTags", ...track, ...params })).toptags as TrackInterface.getTopTags;
+		let res = (await this.sendRequest(this.key, this.secret, { method: "track.getTopTags", ...track, ...params })).toptags as any;
+
+		res.meta = res["@attr"];
+		delete res["@attr"];
+		res.tags = res.tag;
+		delete res.tag;
+
+		return res as TrackInterface.getTopTags;
 
 	}
 
@@ -82,7 +127,40 @@ export default class TrackClass extends Base {
 			}
 		}
 
-		return (await this.sendRequest(this.key, this.secret, {method: "track.scrobble", ...params, sk})).scrobbles as TrackInterface.scrobble;
+		let res = (await this.sendRequest(this.key, this.secret, {method: "track.scrobble", ...params, sk})).scrobbles as any;
+
+		res.head = res["@attr"];
+		delete res["@attr"];
+		res.scrobbles = res.scrobble;
+		delete res.scrobble;
+		//consistency woo
+		if (res.scrobbles.artist) {
+			res.scrobbles = [res.scrobbles];
+		}
+		
+		res.scrobbles.forEach((e:any) => {
+			e.ignoredMessage.message = e.ignoredMessage["#text"];
+			delete e.ignoredMessage["#text"];
+
+			if (e.artist["#text"]) {
+				e.artist.name = e.artist["#text"];
+				delete e.artist["#text"];
+			}
+			if (e.album["#text"]) {
+				e.album.name = e.album["#text"];
+				delete e.album["#text"];
+			}
+			if (e.track["#text"]) {
+				e.track.name = e.track["#text"];
+				delete e.track["#text"];
+			}
+			if (e.albumArtist["#text"]) {
+				e.albumArtist.name = e.albumArtist["#text"];
+				delete e.albumArtist["#text"];
+			}
+		});
+
+		return res as TrackInterface.scrobble;
 
 	}
 
@@ -90,8 +168,28 @@ export default class TrackClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return (await this.sendRequest(this.key, this.secret, {method: "track.search", track, ...params})).results as TrackInterface.search;
+		let res = (await this.sendRequest(this.key, this.secret, {method: "track.search", track, ...params})).results as any;
 
+		delete res["opensearch:Query"]["#text"];
+		res.itemsPerPage = res["opensearch:itemsPerPage"];
+		delete res["opensearch:itemsPerPage"];
+		res.startIndex = res["opensearch:startIndex"];
+		delete res["opensearch:startIndex"];
+		res.totalResults = res["opensearch:totalResults"];
+		delete res["opensearch:totalResults"];
+		res.query = res["opensearch:Query"];
+		delete res["opensearch:Query"];
+		res.trackMatches = res.trackmatches.track;
+		delete res.trackmatches;
+
+		res.trackMatches.forEach((e:any) => {
+			e.image.forEach((f:any) => {
+				f.url = f["#text"];
+				delete f["#text"];
+			});
+		});
+
+		return res as TrackInterface.search;
 	}
 
 	public async unlove(artist:string, track:string, sk:string) {
