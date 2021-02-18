@@ -72,7 +72,7 @@ export default class TrackClass extends Base {
 		res.tracks.forEach((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
 			delete e.streamable["#text"];
-		})
+		});
 
 		return res as TrackInterface.getSimilar;
 
@@ -158,7 +158,7 @@ export default class TrackClass extends Base {
 				e.albumArtist.name = e.albumArtist["#text"];
 				delete e.albumArtist["#text"];
 			}
-		})
+		});
 
 		return res as TrackInterface.scrobble;
 

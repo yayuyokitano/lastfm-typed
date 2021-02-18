@@ -28,7 +28,7 @@ export default class GeoClass extends Base {
 		res.tracks.forEach((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
 			delete e.streamable["#text"];
-		})
+		});
 
 		return res as GeoInterface.getTopTracks;
 
@@ -38,7 +38,7 @@ export default class GeoClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await this.sendRequest(this.key, this.secret, {method, country, ...params})
+		return await this.sendRequest(this.key, this.secret, {method, country, ...params});
 
 	}
 

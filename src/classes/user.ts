@@ -56,7 +56,7 @@ export default class UserClass extends Base {
 			delete e.date["#text"];
 			e.streamable.isStreamable = e.streamable["#text"];
 			delete e.streamable["#text"];
-		})
+		});
 
 		return res as UserInterface.getLovedTracks;
 

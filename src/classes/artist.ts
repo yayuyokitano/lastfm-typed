@@ -21,7 +21,7 @@ export default class ArtistClass extends Base {
 		res.index = res["@attr"].index;
 		delete res["@attr"];
 
-		return res as ArtistInterface.getCorrection|{}
+		return res as ArtistInterface.getCorrection|{};
 
 	}
 
@@ -61,7 +61,7 @@ export default class ArtistClass extends Base {
 		res.meta = res["@attr"];
 		delete res["@attr"];
 
-		return res as ArtistInterface.getTags
+		return res as ArtistInterface.getTags;
 
 	}
 
@@ -77,8 +77,8 @@ export default class ArtistClass extends Base {
 			e.image.forEach((f:any) => {
 				f.url = f["#text"];
 				delete f["#text"];
-			})
-		})
+			});
+		});
 		res.meta = res["@attr"];
 		delete res["@attr"];
 
@@ -109,7 +109,7 @@ export default class ArtistClass extends Base {
 			e.image.forEach((f:any) => {
 				f.url = f["#text"];
 				delete f["#text"];
-			})
+			});
 
 		});
 

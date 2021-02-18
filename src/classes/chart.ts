@@ -41,7 +41,7 @@ export default class ChartClass extends Base {
 		res.tracks.forEach((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
 			delete e.streamable["#text"];
-		})
+		});
 
 		return res as ChartInterface.getTopTracks;
 

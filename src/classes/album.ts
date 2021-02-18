@@ -24,13 +24,13 @@ export default class AlbumClass extends Base {
 			delete e.streamable["#text"];
 			e.rank = e["@attr"].rank;
 			delete e["@attr"];
-		})
+		});
 
 		res.tags = res.tags.tag;
 		res.image.forEach((e:any) => {
 			e.url = e["#text"];
 			delete e["#text"];
-		})
+		});
 
 		return res as AlbumInterface.getInfo;
 

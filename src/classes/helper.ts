@@ -323,8 +323,6 @@ export default class HelperClass {
 			res.tracks.shift();
 		}
 
-		res.meta.page
-
 		scrobbleEmitter.emit("internalDontUse", res);
 
 	}
