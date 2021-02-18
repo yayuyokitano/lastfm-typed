@@ -69,7 +69,7 @@ export default class HelperClass {
 				}
 
 				if (combo[0]) {
-					if (comboData[0][0] === res.tracks[i].artist.name) {
+					if (comboData[0][0] === res.tracks[Number(i)].artist.name) {
 						comboData[0][1]++;
 					} else {
 						combo[0] = false;
@@ -77,7 +77,7 @@ export default class HelperClass {
 				}
 
 				if (combo[1]) {
-					if (comboData[1][0] === res.tracks[i].album.name) {
+					if (comboData[1][0] === res.tracks[Number(i)].album.name) {
 						comboData[1][1]++;
 					} else {
 						combo[1] = false;
@@ -85,7 +85,7 @@ export default class HelperClass {
 				}
 
 				if (combo[2]) {
-					if (comboData[2][0] === res.tracks[i].name) {
+					if (comboData[2][0] === res.tracks[Number(i)].name) {
 						comboData[2][1]++;
 					} else {
 						combo[2] = false;
@@ -306,14 +306,18 @@ export default class HelperClass {
 
 				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
 				active--;
-				if (active === 0) {
-					scrobbleEmitter.emit("close");
-					scrobbleEmitter.removeAllListeners();
-				}
+				this.attemptClose(active, scrobbleEmitter);
 				
 			}
 		});
 
+	}
+
+	private attemptClose(active:number, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>) {
+		if (active === 0) {
+			scrobbleEmitter.emit("close");
+			scrobbleEmitter.removeAllListeners();
+		}
 	}
 
 	private async handleCacheInstance(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, page:number, count:number) {
