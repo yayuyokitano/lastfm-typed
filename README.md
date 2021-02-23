@@ -16,6 +16,17 @@
 
 lastfm-typed is a fully typed library for interaction with the [Last.FM API](https://www.last.fm/api). Uses promises.
 
+### IMPORTANT: Breaking changes in 1.0.0
+
+1.0.0 is the first major update to lastfm-typed, and it comes with a lot of breaking changes (hopefully the first and last time this happens).
+
+It comes with a bunch of changes to attribute names in responses, so many that I will not list them all. Most notably, all instances of "#text" and "@attr" have been replaced with a descriptive name like "name" or "meta". Your IDE should help you deal with this, though I plan to make a full documentation of this later.
+Additionally, the constructor call has changed. See [Usage](#usage) for the new way to call the class constructor.
+
+### Changes: 1.0.1
+
+1.0.1 comes with fixes to the caching helper function to make it work properly with rate limiting. It also turns off parallel caching by default (though it can still be enabled with the parameters).
+
 ## Usage
 
 For the most part, the library stays close to the original input and input of the API. It is designed to be relatively self-documenting thanks to TypeScript types and variable names. As a general rule, required parameters will be separate method parameters, while optional parameters will be grouped into an optional final object parameter. All methods that take a user will also take a session key in its place, though when the username is optional it is separated into a separate `sk` property.
@@ -27,7 +38,7 @@ The library exports a single class. This class, in turn, creates instances of a 
 ```ts
 import LastFMTyped from "lastfm-typed";
 
-const lastfm = new LastFMTyped(api_key, api_secret, UserAgent, secureConnection); //insert key, secret, user agent, and whether to use https here
+const lastfm = new LastFMTyped(apiKey:string, options?:{apiSecret?:string, userAgent?:string, secureConnection?:boolean}); //insert key, secret, user agent, and whether to use https here
 ```
 
 `api_key` is the only required parameter.
@@ -36,7 +47,7 @@ Without `api_secret`, auth commands will not work. This includes usage of sessio
 
 For user agent, please initialize this with an easily identifiable name (preferably one that would lead to your program if googled). You can choose to not set one, in which case `lastfm-typed-npm` will be set as the user agent. This is probably the best idea if your program is not public.
 
-`secureConnection` determines whether to use https or http. By default, this is `false`, which uses http. Set to `true` to use https. Note that this will most likely be defaulted to true in a future major update.
+`secureConnection` determines whether to use https or http. By default, this is `true`, which uses https. Set to `false` to use http.
 
 Then we can call methods as needed.
 
@@ -481,7 +492,7 @@ Takes two users, a limit on the number of top artists to check, and a time perio
 
 Goes through the scrobbles of an individual user, and returns an event emitter that will return every scrobble the user has made, or every scrobble made after a certain number of scrobbles.
 
-Syntax: `lastfm.helper.cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number})`. user is the user to be cached, previouslyCached is the number of scrobbles already cached (default 0), parallelCaches is the number of parallel requests to make (default 10). Keep in mind that with a count higher than 1, there is no guarantee that the scrobbles arrive in the correct order.
+Syntax: `lastfm.helper.cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number})`. user is the user to be cached, previouslyCached is the number of scrobbles already cached (default 0), parallelCaches is the number of parallel requests to make (default 1). Keep in mind that with a count higher than 1, there is no guarantee that the scrobbles arrive in the correct order.
 
 <details>
   <summary>Example</summary>

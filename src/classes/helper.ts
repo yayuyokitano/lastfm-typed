@@ -12,7 +12,8 @@ interface ScrobbleEmitter {
 	start: (meta:{totalPages:number, count:number}) => void;
 	data: (data:{data:UserInterface.getRecentTracks, completedPages:number, totalPages:number, progress:number}) => void;
 	close: () => void;
-	internalDontUse: (data:UserInterface.getRecentTracks) => void;
+	internalDontUse: (data:UserInterface.getRecentTracks|number) => void;
+	error: (err:NodeJS.ErrnoException, intendedPage:number) => void;
 }
 
 export default class HelperClass {
@@ -264,7 +265,7 @@ export default class HelperClass {
 		}
 	}
 
-	public async cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number}) {
+	public async cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
 
 		let scrobbleEmitter = new EventEmitter() as TypedEmitter<ScrobbleEmitter>;
 
@@ -274,41 +275,103 @@ export default class HelperClass {
 
 	}
 
-	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, options?:{previouslyCached?:number, parallelCaches?:number}) {
+	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
+		let count:number;
+		try {
+			count = parseInt((await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total);
+		} catch {
+			let rateLimitInterval = setInterval(() => {
+				
+				try {
+					this.handleCaching(user, scrobbleEmitter, options);
+				
+					clearInterval(rateLimitInterval);
+				} catch (err) {
 
-		let count = parseInt((await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total);
+				}
+			})
+			return;
+		}
 
 		let newCount = count - (options?.previouslyCached || 0);
 		let totalPages = Math.ceil(newCount / 1000);
+		let rateLimited = false;
+		let limitTime = options?.rateLimitTimeout || 300000;
 
 		scrobbleEmitter.emit("start", {totalPages, count: newCount});
 
-		let currPage = 1;
-		let active = Math.min(options?.parallelCaches || 10, totalPages);
+		let pages = Array(totalPages).fill("").map((_, i) => i + 1);
 
-		for (;currPage <= (active || 10); currPage++) {
+		let active = Math.min(options?.parallelCaches || 1, totalPages);
+
+		let complete = 0;
+
+		for (let currPage = 1; currPage <= active; currPage++) {
+
+			pages.shift();
 			this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
+
 		}
 
 		scrobbleEmitter.on("internalDontUse", (data) => {
 
-			if (parseInt(data.meta.page) === totalPages) {
-				data.tracks = data.tracks.slice(0, newCount % 1000);
-			}
+			if (typeof data !== "number") {
 
-			if (currPage <= totalPages) {
+				complete++;
+				let data2 = data as UserInterface.getRecentTracks;
 
-				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
-				this.handleCacheInstance(user, scrobbleEmitter, currPage, newCount);
-				currPage++;
-
-			} else {
-
-				scrobbleEmitter.emit("data", {data, completedPages: currPage - active, totalPages, progress: (currPage - active) / totalPages});
-				active--;
-				this.attemptClose(active, scrobbleEmitter);
+				if (parseInt(data2.meta.page) === totalPages) {
+					data2.tracks = data2.tracks.slice(0, newCount % 1000);
+				}
 				
+				scrobbleEmitter.emit("data", {data:data2, completedPages: complete, totalPages, progress: complete / totalPages});
+
+				if (pages.length) {
+					if (!rateLimited) {
+						this.handleCacheInstance(user, scrobbleEmitter, pages[0], newCount);
+						pages.shift();
+					} else {
+
+						let rateLimitInterval = setInterval(() => {
+							if (!rateLimited) {
+								this.handleCacheInstance(user, scrobbleEmitter, pages[0], newCount);
+								pages.shift();
+								clearInterval(rateLimitInterval);
+							}
+						})
+
+					}
+				} else {
+					active--;
+					this.attemptClose(active, scrobbleEmitter);
+				}
+				
+			} else {
+				if (!rateLimited) {
+					this.handleCacheInstance(user, scrobbleEmitter, data, newCount);
+				} else {
+					let rateLimitInterval = setInterval(() => {
+						if (!rateLimited) {
+							this.handleCacheInstance(user, scrobbleEmitter, data, newCount);
+							clearInterval(rateLimitInterval);
+						}
+					})
+				}
 			}
+
+		});
+
+		scrobbleEmitter.on("error", (err, page) => {
+
+			if (err.code == "29") {
+				rateLimited = true;
+				setTimeout(() => {
+					rateLimited = false;
+				}, limitTime);
+			}
+
+			scrobbleEmitter.emit("internalDontUse", page)
+
 		});
 
 	}
@@ -322,12 +385,16 @@ export default class HelperClass {
 
 	private async handleCacheInstance(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, page:number, count:number) {
 
-		let res = await this.lastfm.user.getRecentTracks(user, {limit: 1000, page});
-		if (res.tracks[0].nowplaying) {
-			res.tracks.shift();
+		try {
+			let res = await this.lastfm.user.getRecentTracks(user, {limit: 1000, page});
+			if (res.tracks[0].nowplaying) {
+				res?.tracks?.shift();
+			}
+	
+			scrobbleEmitter.emit("internalDontUse", res);
+		} catch(err) {
+			scrobbleEmitter.emit("error", err, page);
 		}
-
-		scrobbleEmitter.emit("internalDontUse", res);
 
 	}
 
