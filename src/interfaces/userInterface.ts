@@ -93,6 +93,10 @@ interface RecentTrack {
 	name:string;
 	image:Image[];
 	loved?:string;
+	date:{
+		uts:string;
+		"#text":string;
+	}
 }
 
 export interface getRecentTracks {
