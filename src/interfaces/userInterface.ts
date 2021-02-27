@@ -85,7 +85,7 @@ interface RecentTrack {
 	name:string;
 	image:Image[];
 	loved?:string;
-	date: {
+	date?: {
 		uts:string;
 		imf:string;
 	}
