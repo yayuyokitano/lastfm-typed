@@ -1,4 +1,4 @@
-## This is the deprecated pre-1.0.0 dist version of lastfm-typed. This is here because of breaking changes introduced with 1.0.0. It will only get bugfixes. It is recommended to use the most recent npm version for new projects. To use this version, simply install directly from this github branch. It will never change name from v0 (disclaimer: unless github itself does something funky, which I doubt)
+## This is the deprecated pre-1.0.0 dist version of lastfm-typed. This is here because of breaking changes introduced with 1.0.0. It will only get bugfixes. It is recommended to use the most recent npm version for new projects. To use this version, simply install directly from this github branch using for instance `yarn add github:yayuyokitano/lastfm-typed#v0`. It will never change name from v0 (disclaimer: unless github itself does something funky, which I doubt)
 
 # lastfm-typed
 
