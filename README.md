@@ -23,9 +23,9 @@ lastfm-typed is a fully typed library for interaction with the [Last.FM API](htt
 It comes with a bunch of changes to attribute names in responses, so many that I will not list them all. Most notably, all instances of "#text" and "@attr" have been replaced with a descriptive name like "name" or "meta". Your IDE should help you deal with this, though I plan to make a full documentation of this later.
 Additionally, the constructor call has changed. See [Usage](#usage) for the new way to call the class constructor.
 
-### Changes: 1.0.2
+### Changes: 1.0.3
 
-1.0.2 fixes user.getRecentTracks, adding the date field under tracks to the interface.
+1.0.3 fixes the cacheScrobbles helper method, fixing a bug where the close event was not triggered when 0 new scrobbles were cached.
 
 ## Usage
 
