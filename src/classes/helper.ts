@@ -301,10 +301,10 @@ export default class HelperClass {
 		scrobbleEmitter.emit("start", {totalPages, count: newCount});
 
 		let pages = Array(totalPages).fill("").map((_, i) => i + 1);
-
 		let active = Math.min(options?.parallelCaches || 1, totalPages);
-
 		let complete = 0;
+
+		this.attemptClose(active, scrobbleEmitter);
 
 		for (let currPage = 1; currPage <= active; currPage++) {
 
