@@ -46,8 +46,10 @@ export default class TrackClass extends Base {
 
 		res.toptags = res.toptags.tag;
 		if (res.album) {
-			res.album.position = res.album["@attr"].position;
-			delete res.album["@attr"];
+			if (res.album["@attr"]) {
+				res.album.position = res.album["@attr"].position;
+				delete res.album["@attr"];
+			}
 			res.album.image.forEach((e:any) => {
 				e.url = e["#text"];
 				delete e["#text"];
