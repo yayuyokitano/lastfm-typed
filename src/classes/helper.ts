@@ -198,6 +198,7 @@ export default class HelperClass {
 				track,
 				image,
 				url,
+				username,
 				nowplaying
 			},
 			details: {
