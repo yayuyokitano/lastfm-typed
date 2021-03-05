@@ -440,7 +440,6 @@ export default class HelperClass {
 			promises.push(this.lastfm.album.getInfo({artist, album}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 		if (detailTypes?.includes("track")) {
-			console.log("|" + artist + "|-|" + track + "|");
 			promises.push(this.lastfm.track.getInfo({artist, track}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 
