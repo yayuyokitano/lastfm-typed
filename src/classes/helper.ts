@@ -116,13 +116,15 @@ export default class HelperClass {
 
 	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = []) {
 
-		const currTrack = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1})).tracks[0];
+		const curr = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1}));
+		const currTrack = curr.tracks[0]
 
 		const artist = currTrack.artist.name;
 		const track = currTrack.name;
 		const image = currTrack.image;
 		const album = currTrack.album?.name;
 		const url = currTrack.url;
+		const username = curr.meta.user;
 		const nowplaying = currTrack?.nowplaying === "true";
 
 		const details:{
@@ -181,6 +183,7 @@ export default class HelperClass {
 					track,
 					image,
 					url,
+					username,
 					nowplaying
 				},
 				details
@@ -437,6 +440,7 @@ export default class HelperClass {
 			promises.push(this.lastfm.album.getInfo({artist, album}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 		if (detailTypes?.includes("track")) {
+			console.log("|" + artist + "|-|" + track + "|");
 			promises.push(this.lastfm.track.getInfo({artist, track}, {username: usernameOrSessionKey}).catch((err) => {}));
 		}
 
