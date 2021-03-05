@@ -154,7 +154,7 @@ export default class HelperClass {
 
 			const res = await this.fetchDetails(usernameOrSessionKey, detailTypes, artist, album, track);
 
-			const exists = res.map((e) => typeof e.error === "undefined");
+			const exists = res.map((e) => typeof e !== "undefined" && typeof e.error === "undefined");
 
 			let i = 0;
 
