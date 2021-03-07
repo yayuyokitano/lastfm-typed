@@ -102,5 +102,5 @@ export interface search {
 	totalResults:string;
 	startIndex:string;
 	itemsPerPage:string;
-	trackmatches:searchTrack[];
+	trackMatches:searchTrack[];
 }
