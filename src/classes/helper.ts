@@ -128,6 +128,9 @@ export default class HelperClass {
 		const nowplaying = currTrack?.nowplaying === "true";
 
 		const details:{
+			recent:{
+				data:UserInterface.getRecentTracks;
+			}
 			artist:{
 				data?:ArtistInterface.getInfo;
 				successful:boolean;
@@ -141,6 +144,9 @@ export default class HelperClass {
 				successful:boolean;
 			}
 		} = {
+			recent: {
+				data: curr
+			},
 			artist: {
 				successful: false
 			},
@@ -202,6 +208,9 @@ export default class HelperClass {
 				nowplaying
 			},
 			details: {
+				recent: {
+					data: curr
+				},
 				artist: {
 					successful: false
 				},
