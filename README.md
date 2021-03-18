@@ -23,9 +23,9 @@ lastfm-typed is a fully typed library for interaction with the [Last.FM API](htt
 It comes with a bunch of changes to attribute names in responses, so many that I will not list them all. Most notably, all instances of "#text" and "@attr" have been replaced with a descriptive name like "name" or "meta". Your IDE should help you deal with this, though I plan to make a full documentation of this later.
 Additionally, the constructor call has changed. See [Usage](#usage) for the new way to call the class constructor.
 
-### Changes: 1.1.2
+### Changes: 1.2.0
 
-1.1.2 fixes a casing error in the track.search interface.
+1.2.0 adds the results of the user.getRecentTracks call to the return object for helper.getNowPlaying under details.recent.data.
 
 ## Usage
 
