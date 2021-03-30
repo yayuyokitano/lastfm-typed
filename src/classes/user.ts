@@ -111,8 +111,10 @@ export default class UserClass extends Base {
 		delete res.track;
 
 		res.tracks.forEach((e:any) => {
-			e.artist.name = e.artist["#text"];
-			delete e.artist["#text"];
+			if (!e.artist.hasOwnProperty("name")) {
+				e.artist.name = e.artist["#text"];
+				delete e.artist["#text"];
+			}
 
 			if (e.hasOwnProperty("album")) {
 				e.album.name ||= e.album["#text"];
