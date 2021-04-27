@@ -11,7 +11,7 @@ import HelperClass from "./classes/helper";
 import LoggerClass from "./logger";
 import TypedEmitter from "typed-emitter";
 import {EventEmitter} from "events";
-import {LFMArgumentObject} from "./request"
+import {LFMArgumentObject} from "./request";
 
 interface Logger {
 	requestStart: (args:LFMArgumentObject, HTTPMethod:"GET"|"POST") => void;
@@ -53,7 +53,7 @@ export default class LastFM extends (EventEmitter as { new<Logger>(): TypedEmitt
 			key: apiKey,
 			secret: apiSecret,
 			context: this
-		}
+		};
 
 		this.tag = new TagClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.geo = new GeoClass(apiKey, this, apiSecret, userAgent, secureConnection);

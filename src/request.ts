@@ -81,7 +81,7 @@ export class LFMRequest {
 		return {
 			res: await this.checkStatus(),
 			time: Date.now() - this.startTime
-		}
+		};
 
 	}
 
@@ -185,7 +185,7 @@ export class LFMRequest {
 
 		let sig = args.reduce((acc, cur) => `${acc}${cur[0]}${cur[1]}`, "");
 
-		sig = crypto.createHash('md5').update(sig + this.secret).digest('hex');
+		sig = crypto.createHash("md5").update(sig + this.secret).digest("hex");
 
 		return sig;
 
