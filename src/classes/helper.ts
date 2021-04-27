@@ -13,7 +13,10 @@ interface ScrobbleEmitter {
 	data: (data:{data:UserInterface.getRecentTracks, completedPages:number, totalPages:number, progress:number}) => void;
 	close: () => void;
 	internalDontUse: (data:UserInterface.getRecentTracks|number) => void;
-	error: (err:NodeJS.ErrnoException, intendedPage:number) => void;
+	error: (err:{
+		message:string,
+		code:string
+	}, intendedPage:number) => void;
 }
 
 export default class HelperClass {

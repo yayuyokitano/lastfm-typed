@@ -91,7 +91,7 @@ export class LFMRequest {
 		if (!this.response.ok) {
 
 			let error = {
-				...new Error(this.response.statusText),
+				message: this.response.statusText,
 				response: await this.response.json()
 			};
 
@@ -109,7 +109,7 @@ export class LFMRequest {
 		if (this.response.hasOwnProperty("error")) {
 
 			let error = {
-				...new Error(this.response.message),
+				message: this.response.message,
 				code: this.response.error
 			};
 

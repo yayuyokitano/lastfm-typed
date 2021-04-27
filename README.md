@@ -28,7 +28,7 @@ Additionally, the constructor call has changed. See [Usage](#usage) for the new 
 
 1.3.0 adds some simple but fairly powerful logging functionality to lastfm-typed. You can read more about it under [Logging](#logging).
 
-1.3.0 also lightens the weight of the package a tiny bit by removing dependency on md5 package.
+1.3.0 also lightens the weight of the package a bit by removing dependency on md5 package and moving typing packages to dev dependencies.
 
 ## Usage
 
