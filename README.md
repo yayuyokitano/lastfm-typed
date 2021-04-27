@@ -28,6 +28,8 @@ Additionally, the constructor call has changed. See [Usage](#usage) for the new 
 
 1.3.0 adds some simple but fairly powerful logging functionality to lastfm-typed. You can read more about it under [Logging](#logging).
 
+1.3.0 also lightens the weight of the package a bit by removing dependency on md5 package and moving some typings to dev dependencies.
+
 ## Usage
 
 For the most part, the library stays close to the original input and input of the API. It is designed to be relatively self-documenting thanks to TypeScript types and variable names. As a general rule, required parameters will be separate method parameters, while optional parameters will be grouped into an optional final object parameter. All methods that take a user will also take a session key in its place, though when the username is optional it is separated into a separate `sk` property.
@@ -564,7 +566,7 @@ Starting with version 1.3.0, lastfm-typed finally has logging built-in! Currentl
       console.log("REQUEST COMPLETE: ", args, `Executed in ${time}ms`, res);
     });
     
-    const nowplaying = await this.lastfm.helper.getNowPlaying("Mexdeep", ["artist", "album", "track"]);
+    const nowplaying = await lastfm.helper.getNowPlaying("Mexdeep", ["artist", "album", "track"]);
   ```
   
   ```js
