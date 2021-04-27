@@ -7,9 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "node-fetch": "^2.6.1",
-    "typed-emitter": "^1.3.1"
-  },
-  "devDependencies": {
+    "typed-emitter": "^1.3.1",
     "@types/node": "^15.0.1",
     "@types/node-fetch": "^2.5.10"
   },
