@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
 import {stringify} from "querystring";
-import * as md5 from "md5";
+import * as crypto from "crypto";
+import * as Logger from "./interfaces/loggerInterface";
+import LastFM from ".";
 
 export interface LFMArgumentObject {
 	
@@ -39,20 +41,26 @@ export class LFMRequest {
 	private response:any;
 	private userAgent:string;
 	private connectionType:string;
+	private context:LastFM;
+	private startTime:number;
 
-	public constructor(key:string, secret:string, userAgent:string, secureConnection:boolean, params:LFMArgumentObject) {
+	public constructor(info:Logger.infoInterface, userAgent:string, secureConnection:boolean, params:LFMArgumentObject) {
 
-		this.key = key;
+		this.key = info.key;
 		this.params = params;
-		this.secret = secret;
+		this.secret = info.secret;
 		this.userAgent = userAgent;
 		this.connectionType = secureConnection ? "https" : "http";
+		this.context = info.context;
+		this.startTime = Date.now();
 
 	}
 
 	public async execute() {
 
 		const isPostRequest = this.isPostRequest();
+		
+		this.context.logger.emitRequest(this.params, isPostRequest ? "POST" : "GET");
 
 		if (isPostRequest) {
 
@@ -60,15 +68,20 @@ export class LFMRequest {
 				throw new SyntaxError("Please enter an api secret key to use post requests with session key.");
 			}
 
+			this.startTime = Date.now();
 			this.response = await this.post();
 
 		} else {
 
+			this.startTime = Date.now();
 			this.response = await this.get();
 			
 		}
 
-		return await this.checkStatus();
+		return {
+			res: await this.checkStatus(),
+			time: Date.now() - this.startTime
+		}
 
 	}
 
@@ -172,7 +185,7 @@ export class LFMRequest {
 
 		let sig = args.reduce((acc, cur) => `${acc}${cur[0]}${cur[1]}`, "");
 
-		sig = md5(sig + this.secret);
+		sig = crypto.createHash('md5').update(sig + this.secret).digest('hex');
 
 		return sig;
 

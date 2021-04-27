@@ -1,17 +1,21 @@
 import {LFMArgumentObject, LFMRequest} from "./request";
+import LastFM from "./index";
+import { infoInterface } from "./interfaces/loggerInterface";
 
 export default class LFMBase {
 
 	protected key:string;
 	protected secret:string;
 	protected userAgent:string;
-	protected secureConnection: boolean;
+	protected secureConnection:boolean;
+	protected info:infoInterface;
 
-	public constructor(apiKey:string, apiSecret:string = "", userAgent:string = "lastfm-typed-npm", secureConnection:boolean = false) {
+	public constructor(apiKey:string, lastfm:LastFM, apiSecret:string = "", userAgent:string = "lastfm-typed-npm", secureConnection:boolean = false) {
 		this.key = apiKey;
 		this.secret = apiSecret;
 		this.userAgent = userAgent;
 		this.secureConnection = secureConnection;
+		this.info = lastfm.info;
 	}
 	
 	protected checkLimit(limit:number|undefined, maxLimit:number) {
@@ -49,8 +53,10 @@ export default class LFMBase {
 		return query.replace(/:/g, " ");
 	}
 
-	protected async sendRequest(apiKey:string, apiSecret:string, params:LFMArgumentObject) {
-		return await new LFMRequest(apiKey, apiSecret, this.userAgent, this.secureConnection, params).execute();
+	protected async sendRequest(params:LFMArgumentObject) {
+		const res = await new LFMRequest(this.info, this.userAgent, this.secureConnection, params).execute();
+		this.info.context.logger.emitRequestComplete(params, res.time, res.res);
+		return res.res;
 	}
 
 }

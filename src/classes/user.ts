@@ -7,7 +7,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getFriends", user: usernameOrSessionKey, ...params })).friends as any;
+		let res = (await this.sendRequest({ method: "user.getFriends", user: usernameOrSessionKey, ...params })).friends as any;
 
 		res.user.forEach((e:any) => {
 			e.registered.datetime = e.registered["#text"];
@@ -27,7 +27,7 @@ export default class UserClass extends Base {
 
 	public async getInfo(usernameOrSessionKey:string) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getInfo", user: usernameOrSessionKey })).user as any;
+		let res = (await this.sendRequest({ method: "user.getInfo", user: usernameOrSessionKey })).user as any;
 
 		res.registered.datetime = res.registered["#text"];
 		delete res.registered["#text"];
@@ -44,7 +44,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as any;
+		let res = (await this.sendRequest({ method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as any;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -66,7 +66,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as any;
+		let res = (await this.sendRequest({ method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as any;
 
 		if (res.hasOwnProperty("artists")) {
 			res.artists = res.artists.artist;
@@ -102,7 +102,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getRecentTracks", user: usernameOrSessionKey, ...params })).recenttracks;
+		let res = (await this.sendRequest({ method: "user.getRecentTracks", user: usernameOrSessionKey, ...params })).recenttracks;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -146,7 +146,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as any;
+		let res = (await this.sendRequest({ method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as any;
 	
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -170,7 +170,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
+		let res = (await this.sendRequest({ method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
 		
 		res.artists = res.artist;
 		delete res.artist;
@@ -189,7 +189,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as any;
+		let res = (await this.sendRequest({ method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as any;
 
 		res.tags = res.tag;
 		delete res.tag;
@@ -204,7 +204,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
+		let res = (await this.sendRequest({ method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
 
 		res.tracks = res.track;
 		delete res.track;
@@ -225,7 +225,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 		
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params })).weeklyalbumchart;
+		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params })).weeklyalbumchart;
 		
 		res.albums = res.album;
 		delete res.album;
@@ -247,7 +247,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as any;
+		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as any;
 
 		res.artists = res.artist;
 		delete res.artist;
@@ -264,7 +264,7 @@ export default class UserClass extends Base {
 
 	public async getWeeklyChartList() {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyChartList"})).weeklychartlist as any;
+		let res = (await this.sendRequest({ method: "user.getWeeklyChartList"})).weeklychartlist as any;
 
 		res.charts = res.chart;
 		delete res.chart;
@@ -277,7 +277,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as any;
+		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as any;
 
 		res.tracks = res.track;
 		delete res.track;

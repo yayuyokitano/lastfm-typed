@@ -10,13 +10,13 @@ export default class AlbumClass extends Base {
 			tags = tags.join(",");
 		}
 
-		return await this.sendRequest(this.key, this.secret, { method: "album.addTags", tags, sk, artist, album }) as {};
+		return await this.sendRequest({ method: "album.addTags", tags, sk, artist, album }) as {};
 
 	}
 
 	public async getInfo(album:AlbumInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "album.getInfo", ...album, ...params })).album as any;
+		let res = (await this.sendRequest({ method: "album.getInfo", ...album, ...params })).album as any;
 
 		res.tracks = res.tracks.track;
 		res.tracks.forEach((e:any) => {
@@ -38,7 +38,7 @@ export default class AlbumClass extends Base {
 	
 	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		let res = this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as any;
+		let res = this.convertGetTags((await this.sendRequest({ method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as any;
 		res.meta = res["@attr"];
 		delete res["@attr"];
 		res.tags = res.tag;
@@ -50,7 +50,7 @@ export default class AlbumClass extends Base {
 
 	public async getTopTags(album:AlbumInput, params?:{autocorrect?:0|1}) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "album.getTopTags", ...album, ...params })).toptags as any;
+		let res = (await this.sendRequest({ method: "album.getTopTags", ...album, ...params })).toptags as any;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -63,7 +63,7 @@ export default class AlbumClass extends Base {
 
 	public async removeTag(artist:string, album:string, tag:string, sk:string) {
 
-		return await this.sendRequest(this.key, this.secret, { method: "album.removeTag", tag, sk, artist, album }) as {};
+		return await this.sendRequest({ method: "album.removeTag", tag, sk, artist, album }) as {};
 
 	}
 
@@ -71,7 +71,7 @@ export default class AlbumClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, {method: "album.search", album, ...params })).results as any;
+		let res = (await this.sendRequest({method: "album.search", album, ...params })).results as any;
 		delete res["opensearch:Query"]["#text"];
 		res.meta = res["@attr"];
 		delete res["@attr"];

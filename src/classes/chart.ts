@@ -51,7 +51,7 @@ export default class ChartClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await this.sendRequest(this.key, this.secret, {method, ...params});
+		return await this.sendRequest({method, ...params});
 
 	}
 

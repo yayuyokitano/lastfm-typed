@@ -10,13 +10,13 @@ export default class ArtistClass extends Base {
 			tags = tags.join(",");
 		}
 
-		return await this.sendRequest(this.key, this.secret, { method: "artist.addTags", tags, sk, artist }) as {};
+		return await this.sendRequest({ method: "artist.addTags", tags, sk, artist }) as {};
 
 	}
 
 	public async getCorrection(artist:string) {
 		
-		let res = (((await this.sendRequest(this.key, this.secret, { method: "artist.getCorrection", artist }))?.corrections?.correction) || {}) as any;
+		let res = (((await this.sendRequest({ method: "artist.getCorrection", artist }))?.corrections?.correction) || {}) as any;
 
 		res.index = res["@attr"].index;
 		delete res["@attr"];
@@ -27,7 +27,7 @@ export default class ArtistClass extends Base {
 
 	public async getInfo(artist:ArtistInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "artist.getInfo", ...artist, ...params })).artist as any;
+		let res = (await this.sendRequest({ method: "artist.getInfo", ...artist, ...params })).artist as any;
 
 		res.similarArtists = res.similar.artist;
 		delete res.similar;
@@ -43,7 +43,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "artist.getSimilar", ...artist, ...params })).similarartists as any;
+		let res = (await this.sendRequest({ method: "artist.getSimilar", ...artist, ...params })).similarartists as any;
 
 		res.artists = res.artist;
 		delete res.artist;
@@ -56,7 +56,7 @@ export default class ArtistClass extends Base {
 	
 	public async getTags(artist:ArtistInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		let res = this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params })).tags) as any;
+		let res = this.convertGetTags((await this.sendRequest({ method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params })).tags) as any;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -69,7 +69,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "artist.getTopAlbums", ...artist, ...params })).topalbums as any;
+		let res = (await this.sendRequest({ method: "artist.getTopAlbums", ...artist, ...params })).topalbums as any;
 
 		res.albums = res.album;
 		delete res.album;
@@ -88,7 +88,7 @@ export default class ArtistClass extends Base {
 
 	public async getTopTags(artist:ArtistInput, params?:{autocorrect?:0|1}) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "artist.getTopTags", ...artist, ...params })).toptags as any;
+		let res = (await this.sendRequest({ method: "artist.getTopTags", ...artist, ...params })).toptags as any;
 		
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -101,7 +101,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "artist.getTopTracks", ...artist, ...params })).toptracks as any;
+		let res = (await this.sendRequest({ method: "artist.getTopTracks", ...artist, ...params })).toptracks as any;
 		res.track.forEach((e:any) => {
 			e.rank = e["@attr"].rank;
 			delete e["@attr"];
@@ -125,7 +125,7 @@ export default class ArtistClass extends Base {
 
 	public async removeTag(artist:string, tag:string, sk:string) {
 
-		return await this.sendRequest(this.key, this.secret, { method: "artist.removeTag", tag, sk, artist }) as {};
+		return await this.sendRequest({ method: "artist.removeTag", tag, sk, artist }) as {};
 
 	}
 
@@ -133,7 +133,7 @@ export default class ArtistClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, {method: "artist.search", artist, ...params})).results as any;
+		let res = (await this.sendRequest({method: "artist.search", artist, ...params})).results as any;
 
 		delete res["opensearch:Query"]["#text"];
 		res.meta = res["@attr"];

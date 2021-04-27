@@ -38,7 +38,7 @@ export default class GeoClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		return await this.sendRequest(this.key, this.secret, {method, country, ...params});
+		return await this.sendRequest({method, country, ...params});
 
 	}
 

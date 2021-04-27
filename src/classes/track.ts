@@ -22,13 +22,13 @@ export default class TrackClass extends Base {
 			tags = tags.join(",");
 		}
 
-		return await this.sendRequest(this.key, this.secret, { method: "track.addTags", tags, sk, artist, track }) as {};
+		return await this.sendRequest({ method: "track.addTags", tags, sk, artist, track }) as {};
 
 	}
 
 	public async getCorrection(artist:string, track:string) {
 		
-		let res = (((await this.sendRequest(this.key, this.secret, { method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
+		let res = (((await this.sendRequest({ method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
 		if (res === {}) {
 			return res as {};
 		}
@@ -42,7 +42,7 @@ export default class TrackClass extends Base {
 
 	public async getInfo(track:TrackInput, params?:{autocorrect?:0|1, username?:string, sk?:string}) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "track.getInfo", ...track, ...params })).track as any;
+		let res = (await this.sendRequest({ method: "track.getInfo", ...track, ...params })).track as any;
 
 		res.toptags = res.toptags.tag;
 		if (res.album) {
@@ -64,7 +64,7 @@ export default class TrackClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "track.getSimilar", ...track, ...params })).similartracks as any;
+		let res = (await this.sendRequest({ method: "track.getSimilar", ...track, ...params })).similartracks as any;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -82,7 +82,7 @@ export default class TrackClass extends Base {
 	
 	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
-		let res = this.convertGetTags((await this.sendRequest(this.key, this.secret, { method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
+		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -94,7 +94,7 @@ export default class TrackClass extends Base {
 
 	public async getTopTags(track:TrackInput, params?:{autocorrect?:0|1}) {
 
-		let res = (await this.sendRequest(this.key, this.secret, { method: "track.getTopTags", ...track, ...params })).toptags as any;
+		let res = (await this.sendRequest({ method: "track.getTopTags", ...track, ...params })).toptags as any;
 
 		res.meta = res["@attr"];
 		delete res["@attr"];
@@ -107,13 +107,13 @@ export default class TrackClass extends Base {
 
 	public async love(artist:string, track:string, sk:string) {
 
-		return await this.sendRequest(this.key, this.secret, { method: "track.love", artist, track, sk }) as {};
+		return await this.sendRequest({ method: "track.love", artist, track, sk }) as {};
 
 	}
 
 	public async removeTag(artist:string, track:string, tag:string, sk:string) {
 
-		return await this.sendRequest(this.key, this.secret, { method: "track.removeTag", tag, sk, artist, track }) as {};
+		return await this.sendRequest({ method: "track.removeTag", tag, sk, artist, track }) as {};
 
 	}
 
@@ -129,7 +129,7 @@ export default class TrackClass extends Base {
 			}
 		}
 
-		let res = (await this.sendRequest(this.key, this.secret, {method: "track.scrobble", ...params, sk})).scrobbles as any;
+		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk})).scrobbles as any;
 
 		res.head = res["@attr"];
 		delete res["@attr"];
@@ -170,7 +170,7 @@ export default class TrackClass extends Base {
 
 		this.checkLimit(params?.limit, 1000);
 
-		let res = (await this.sendRequest(this.key, this.secret, {method: "track.search", track, ...params})).results as any;
+		let res = (await this.sendRequest({method: "track.search", track, ...params})).results as any;
 
 		delete res["opensearch:Query"]["#text"];
 		res.itemsPerPage = res["opensearch:itemsPerPage"];
@@ -196,7 +196,7 @@ export default class TrackClass extends Base {
 
 	public async unlove(artist:string, track:string, sk:string) {
 
-		return await this.sendRequest(this.key, this.secret, { method: "track.unlove", artist, track, sk }) as {};
+		return await this.sendRequest({ method: "track.unlove", artist, track, sk }) as {};
 
 	}
 
@@ -208,7 +208,7 @@ export default class TrackClass extends Base {
 		albumArtist?:string;
 	}) {
 
-		return await this.sendRequest(this.key, this.secret, { method: "track.updateNowPlaying", artist, track, sk, ...params }) as {};
+		return await this.sendRequest({ method: "track.updateNowPlaying", artist, track, sk, ...params }) as {};
 
 	}
 

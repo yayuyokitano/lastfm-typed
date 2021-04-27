@@ -6,7 +6,7 @@ export default class TagClass extends Base {
 
 	public async getInfo(tag:string, params?:{lang?:string}) {
 
-		return (await this.sendRequest(this.key, this.secret, {method: "tag.getInfo", tag, ...params})).tag as TagInterface.getInfo;
+		return (await this.sendRequest({method: "tag.getInfo", tag, ...params})).tag as TagInterface.getInfo;
 
 	}
 	
@@ -98,7 +98,7 @@ export default class TagClass extends Base {
 
 		this.checkLimit(params?.limit || params?.num_res, 1000);
 
-		return await this.sendRequest(this.key, this.secret, {method, tag, ...params});
+		return await this.sendRequest({method, tag, ...params});
 
 	}
 
