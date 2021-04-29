@@ -24,11 +24,9 @@ lastfm-typed is a fully typed library for interaction with the [Last.FM API](htt
 It comes with a bunch of changes to attribute names in responses, so many that I will not list them all. Most notably, all instances of "#text" and "@attr" have been replaced with a descriptive name like "name" or "meta". Your IDE should help you deal with this, though I plan to make a full documentation of this later.
 Additionally, the constructor call has changed. See [Usage](#usage) for the new way to call the class constructor.
 
-### Changes: 1.3.0
+### Changes: 1.3.1
 
-1.3.0 adds some simple but fairly powerful logging functionality to lastfm-typed. You can read more about it under [Logging](#logging).
-
-1.3.0 also lightens the weight of the package a bit by removing dependency on md5 package and moving typing packages to dev dependencies.
+1.3.1 tweaks helper.getNowPlaying to allow you to specify extended, and if set to "1" it will send that with the user.getRecentTracks request and return relevant results in details.
 
 ## Usage
 
@@ -136,10 +134,12 @@ There are also some helper functions that add some basic functionality:
 
 ### getNowPlaying
 
-`helper.getNowPlaying` allows you to get the last played track of a specified user, or currently playing if possible. The optional second argument allows you to get details about the artist, album, and/or track for further processing. If multiple are specified, they are called simultaneously, with await on a Promise.all(), so it shouldn't increase response time, but it will still require an additional request per bit of info.
+`helper.getNowPlaying` allows you to get the last played track of a specified user, or currently playing if possible.
+The optional second argument allows you to get details about the artist, album, and/or track for further processing. If multiple are specified, they are called simultaneously, with await on a Promise.all(), so it shouldn't increase response time, but it will still require an additional request per bit of info.
+The optional third argument allows you to specify additional options, currently only the option `extended`, which when set to "1" will return some additional info from the user.getRecentTracks request.
 
 <details>
-  <summary>Example</summary>
+  <summary>Example. NOTE: this response contains artist photos, which is not cleaned and is intentionally left out of typings as artist photos have been removed from the platform.</summary>
   
   ```ts
   console.log(await lastfm.helper.getNowPlaying("Mexdeep", ["album"]));
@@ -148,75 +148,194 @@ There are also some helper functions that add some basic functionality:
   ```ts
   {
     "recent": {
-      "artist": "ヤユヨ",
-      "album": "さよなら前夜",
-      "track": "七月",
+      "artist": "ひかりのなかに",
+      "album": "まっすぐなままでいい",
+      "track": "ひかり",
       "image": [
         {
           "size": "small",
-          "#text": "https://lastfm.freetls.fastly.net/i/u/34s/0f7512e6b4c20138b8d42fabb41508c4.jpg"
+          "url": "https://lastfm.freetls.fastly.net/i/u/34s/885a4f992b02a38b33adf88886ca4234.jpg"
         },
         {
           "size": "medium",
-          "#text": "https://lastfm.freetls.fastly.net/i/u/64s/0f7512e6b4c20138b8d42fabb41508c4.jpg"
+          "url": "https://lastfm.freetls.fastly.net/i/u/64s/885a4f992b02a38b33adf88886ca4234.jpg"
         },
         {
           "size": "large",
-          "#text": "https://lastfm.freetls.fastly.net/i/u/174s/0f7512e6b4c20138b8d42fabb41508c4.jpg"
+          "url": "https://lastfm.freetls.fastly.net/i/u/174s/885a4f992b02a38b33adf88886ca4234.jpg"
         },
         {
           "size": "extralarge",
-          "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/0f7512e6b4c20138b8d42fabb41508c4.jpg"
+          "url": "https://lastfm.freetls.fastly.net/i/u/300x300/885a4f992b02a38b33adf88886ca4234.jpg"
         }
       ],
-      "url": "https://www.last.fm/music/%E3%83%A4%E3%83%A6%E3%83%A8/_/%E4%B8%83%E6%9C%88",
+      "url": "https://www.last.fm/music/%E3%81%B2%E3%81%8B%E3%82%8A%E3%81%AE%E3%81%AA%E3%81%8B%E3%81%AB/_/%E3%81%B2%E3%81%8B%E3%82%8A",
+      "username": "Mexdeep",
       "nowplaying": true
     },
     "details": {
+      "recent": {
+        "data": {
+          "meta": {
+            "page": "1",
+            "total": "22337",
+            "user": "Mexdeep",
+            "perPage": "1",
+            "totalPages": "22337"
+          },
+          "tracks": [
+            {
+              "artist": {
+                "url": "https://www.last.fm/music/%E3%81%B2%E3%81%8B%E3%82%8A%E3%81%AE%E3%81%AA%E3%81%8B%E3%81%AB",
+                "mbid": "",
+                "image": [
+                  {
+                    "size": "small",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  },
+                  {
+                    "size": "medium",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  },
+                  {
+                    "size": "large",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  },
+                  {
+                    "size": "extralarge",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  }
+                ],
+                "name": "ひかりのなかに"
+              },
+              "mbid": "",
+              "image": [
+                {
+                  "size": "small",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/34s/885a4f992b02a38b33adf88886ca4234.jpg"
+                },
+                {
+                  "size": "medium",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/64s/885a4f992b02a38b33adf88886ca4234.jpg"
+                },
+                {
+                  "size": "large",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/174s/885a4f992b02a38b33adf88886ca4234.jpg"
+                },
+                {
+                  "size": "extralarge",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/300x300/885a4f992b02a38b33adf88886ca4234.jpg"
+                }
+              ],
+              "url": "https://www.last.fm/music/%E3%81%B2%E3%81%8B%E3%82%8A%E3%81%AE%E3%81%AA%E3%81%8B%E3%81%AB/_/%E3%81%B2%E3%81%8B%E3%82%8A",
+              "streamable": "0",
+              "album": {
+                "mbid": "",
+                "name": "まっすぐなまま でいい"
+              },
+              "name": "ひかり",
+              "loved": "1",
+              "nowplaying": "true"
+            },
+            {
+              "mbid": "",
+              "loved": "0",
+              "artist": {
+                "url": "https://www.last.fm/music/%E3%81%B2%E3%81%8B%E3%82%8A%E3%81%AE%E3%81%AA%E3%81%8B%E3%81%AB",
+                "mbid": "",
+                "image": [
+                  {
+                    "size": "small",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  },
+                  {
+                    "size": "medium",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  },
+                  {
+                    "size": "large",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  },
+                  {
+                    "size": "extralarge",
+                    "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"
+                  }
+                ],
+                "name": "ひかりのなかに"
+              },
+              "image": [
+                {
+                  "size": "small",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/34s/885a4f992b02a38b33adf88886ca4234.jpg"
+                },
+                {
+                  "size": "medium",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/64s/885a4f992b02a38b33adf88886ca4234.jpg"
+                },
+                {
+                  "size": "large",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/174s/885a4f992b02a38b33adf88886ca4234.jpg"
+                },
+                {
+                  "size": "extralarge",
+                  "url": "https://lastfm.freetls.fastly.net/i/u/300x300/885a4f992b02a38b33adf88886ca4234.jpg"
+                }
+              ],
+              "date": {
+                "uts": "1619716422",
+                "imf": "29 Apr 2021, 17:13"
+              },
+              "streamable": "0",
+              "url": "https://www.last.fm/music/%E3%81%B2%E3%81%8B%E3%82%8A%E3%81%AE%E3%81%AA%E3%81%8B%E3%81%AB/_/%E3%81%9D%E3%81%B0%E3%81%AB%E3%81%84%E3%81%9F%E3%81%84%E3%82%93%E3%81%A7%E3%81%99",
+              "name": "そばにいたいんです",
+              "album": {
+                "mbid": "",
+                "name": "まっすぐなままでいい"
+              }
+            }
+          ]
+        }
+      },
       "artist": {
         "successful": false
       },
       "album": {
         "successful": true,
         "data": {
-          "name": "さよなら前夜",
-          "artist": "ヤユヨ",
-          "url": "https://www.last.fm/music/%E3%83%A4%E3%83%A6%E3%83%A8/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89%E5%89%8D%E5%A4%9C",
+          "name": "まっすぐなままでいい",
+          "artist": "ひかりのなか に",
+          "url": "https://www.last.fm/music/%E3%81%B2%E3%81%8B%E3%82%8A%E3%81%AE%E3%81%AA%E3%81%8B%E3%81%AB/%E3%81%BE%E3%81%A3%E3%81%99%E3%81%90%E3%81%AA%E3%81%BE%E3%81%BE%E3%81%A7%E3%81%84%E3%81%84",
           "image": [
             {
-              "#text": "https://lastfm.freetls.fastly.net/i/u/34s/0f7512e6b4c20138b8d42fabb41508c4.png",
-              "size": "small"
+              "size": "small",
+              "url": "https://lastfm.freetls.fastly.net/i/u/34s/885a4f992b02a38b33adf88886ca4234.png"
             },
             {
-              "#text": "https://lastfm.freetls.fastly.net/i/u/64s/0f7512e6b4c20138b8d42fabb41508c4.png",
-              "size": "medium"
+              "size": "medium",
+              "url": "https://lastfm.freetls.fastly.net/i/u/64s/885a4f992b02a38b33adf88886ca4234.png"
             },
             {
-              "#text": "https://lastfm.freetls.fastly.net/i/u/174s/0f7512e6b4c20138b8d42fabb41508c4.png",
-              "size": "large"
+              "size": "large",
+              "url": "https://lastfm.freetls.fastly.net/i/u/174s/885a4f992b02a38b33adf88886ca4234.png"
             },
             {
-              "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/0f7512e6b4c20138b8d42fabb41508c4.png",
-              "size": "extralarge"
+              "size": "extralarge",
+              "url": "https://lastfm.freetls.fastly.net/i/u/300x300/885a4f992b02a38b33adf88886ca4234.png"
             },
             {
-              "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/0f7512e6b4c20138b8d42fabb41508c4.png",
-              "size": "mega"
+              "size": "mega",
+              "url": "https://lastfm.freetls.fastly.net/i/u/300x300/885a4f992b02a38b33adf88886ca4234.png"
             },
             {
-              "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/0f7512e6b4c20138b8d42fabb41508c4.png",
-              "size": ""
+              "size": "",
+              "url": "https://lastfm.freetls.fastly.net/i/u/300x300/885a4f992b02a38b33adf88886ca4234.png"
             }
           ],
-          "listeners": "12",
-          "playcount": "917",
-          "userplaycount": "923",
-          "tracks": {
-            "track": []
-          },
-          "tags": {
-            "tag": []
-          }
+          "listeners": "104",
+          "playcount": "609",
+          "userplaycount": "155",
+          "tracks": [],
+          "tags": []
         }
       },
       "track": {
