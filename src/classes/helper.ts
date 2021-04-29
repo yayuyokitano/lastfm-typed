@@ -117,9 +117,9 @@ export default class HelperClass {
 		};
 	}
 
-	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = []) {
+	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = [], options:{extended:string} = {extended: "0"}) {
 
-		const curr = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1}));
+		const curr = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1, extended: options.extended}));
 		const currTrack = curr.tracks[0]
 
 		const artist = currTrack.artist.name;
