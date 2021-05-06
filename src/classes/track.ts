@@ -30,7 +30,7 @@ export default class TrackClass extends Base {
 		
 		let res = (((await this.sendRequest({ method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
 
-		if (res) {
+		if (Object.keys(res).length) {
 			res.meta = res["@attr"];
 			delete res["@attr"];
 		}
