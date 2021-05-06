@@ -26,7 +26,7 @@ Additionally, the constructor call has changed. See [Usage](#usage) for the new 
 
 ### Changes: 1.3.2
 
-1.3.2 fixes fatal bugs with artist.getCorrection and track.getCorrection.
+1.3.3 fixes fatal bugs with artist.getCorrection and track.getCorrection.
 
 ## Usage
 
