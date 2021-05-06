@@ -18,10 +18,12 @@ export default class ArtistClass extends Base {
 		
 		let res = (((await this.sendRequest({ method: "artist.getCorrection", artist }))?.corrections?.correction) || {}) as any;
 
-		res.index = res["@attr"].index;
-		delete res["@attr"];
+		if (res) {
+			res.index = res["@attr"].index;
+			delete res["@attr"];
+		}
 
-		return res as ArtistInterface.getCorrection|{};
+		return res as ArtistInterface.getCorrection;
 
 	}
 

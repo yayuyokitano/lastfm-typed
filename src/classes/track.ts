@@ -29,12 +29,11 @@ export default class TrackClass extends Base {
 	public async getCorrection(artist:string, track:string) {
 		
 		let res = (((await this.sendRequest({ method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
-		if (res === {}) {
-			return res as {};
-		}
 
-		res.meta = res["@attr"];
-		delete res["@attr"];
+		if (res) {
+			res.meta = res["@attr"];
+			delete res["@attr"];
+		}
 
 		return res as TrackInterface.getCorrection;
 
