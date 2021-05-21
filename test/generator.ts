@@ -18,12 +18,15 @@ const basePath = "./my-dir";
 
 
 const types = {
-	album: ["getInfo", "getTags", "getTopTags", "search"]
+	album: ["getInfo", "getTags", "getTopTags", "search"],
+	artist: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopAlbums", "getTopTags", "getTopTracks", "search"]
 }
+
+console.log("\nGenerating typing schemas...");
 
 for (let [processingType, typeList] of Object.entries(types)) {
 
-	console.log(`${processingType}`);
+	console.log(`\n${processingType}`);
 
 	const program = TJS.getProgramFromFiles(
 		[resolve(`src/interfaces/${processingType}Interface.ts`)],
