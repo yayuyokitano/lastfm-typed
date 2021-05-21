@@ -1,11 +1,7 @@
-import { TagAlbum, TagArtist, TagBasic, TagTrack, Wiki } from "./shared";
+import { ShortMetadata, TagAlbum, TagArtist, TagBasic, TagTrack, Wiki } from "./shared";
 
-interface Metadata {
+interface Metadata extends ShortMetadata {
 	tag:string;
-	page:string;
-	perPage:string;
-	totalPages:string;
-	total:string;
 }
 
 export interface getInfo {

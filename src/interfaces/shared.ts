@@ -45,10 +45,10 @@ interface MBIDTrackInput {
 export type TrackInput = ArtistTrackInput | MBIDTrackInput;
 
 export interface ShortMetadata {
-	page:string;
-	perPage:string;
-	totalPages:string;
-	total:string;
+	page:number;
+	perPage:number;
+	totalPages:number;
+	total:number;
 }
 
 export interface Image {
@@ -89,7 +89,7 @@ interface BasicOptionalMBID extends InfoNoMBID {
 
 export interface StringAlbum extends BasicInfo {
 	artist:string;
-	streamable:string;
+	streamable:boolean;
 }
 
 export interface Album extends BasicInfo {
@@ -105,36 +105,36 @@ export interface AlbumGlobal extends AlbumOptionalMBID {
 }
 
 export interface TagAlbum extends Album {
-	rank:string;
+	rank:number;
 }
 
 export interface GlobalAlbum extends BasicInfo {
 	artist:string;
-	listeners:string;
-	playcount:string;
+	listeners:number;
+	playcount:number;
 }
 
 export interface Artist extends ArtistBasic {
-	streamable:string;
+	streamable:boolean;
 }
 
 export interface TagArtist extends ArtistBasic {
-	rank:string;
+	rank:number;
 }
 
 export interface ListenerArtist extends Artist {
-	listeners:string;
+	listeners:number;
 }
 
 export interface GlobalArtist extends ListenerArtist {
-	playcount:string;
+	playcount:number;
 }
 
 interface Track extends ArtistNoMBID {
-	duration:string;
+	duration:number;
 	streamable: {
-		isStreamable:string;
-		fulltrack:string;
+		isStreamable:boolean;
+		fulltrack:boolean;
 	}
 }
 
@@ -153,21 +153,21 @@ export interface TrackOptionalMBIDImg extends TrackOptionalMBID {
 }
 
 export interface TagTrack extends TrackMBID {
-	rank:string;
+	rank:number;
 }
 
 export interface ListenerTrack extends TrackMBID {
-	listeners:string;
+	listeners:number;
 }
 
 export interface GlobalTrack extends ListenerTrack {
-	playcount:string;
+	playcount:number;
 }
 
 export interface GlobalTrackOptionalMBID extends TrackOptionalMBID {
-	playcount:string;
-	listeners:string;
-	userplaycount?:string;
+	playcount:number;
+	listeners:number;
+	userplaycount?:number;
 }
 
 interface Tag {
@@ -189,7 +189,7 @@ export interface TagBasic extends Tag {
 
 export interface TagGlobalNoWiki extends Tag {
 	url:string;
-	reach:string;
+	reach:number;
 	taggings:string;
-	streamable:string;
+	streamable:boolean;
 }

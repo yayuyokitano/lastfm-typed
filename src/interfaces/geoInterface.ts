@@ -1,11 +1,7 @@
-import {ListenerArtist, ListenerTrack} from "./shared";
+import {ListenerArtist, ListenerTrack, ShortMetadata} from "./shared";
 
-interface Metadata {
+interface Metadata extends ShortMetadata {
 	country:string;
-	page:string;
-	perPage:string;
-	totalPages:string;
-	total:string;
 }
 
 export interface getTopArtists {
