@@ -23,8 +23,7 @@
     "typescript-json-schema": "^0.50.0"
   },
   "scripts": {
-    "test": "tsc && mocha --config mocharc.json test/test.ts",
-    "generate": "tsc && ts-node test/generator.ts"
+    "test": "tsc && ts-node test/generator.ts && mocha --config mocharc.json test/test.ts"
   },
   "repository": {
     "type": "git",
