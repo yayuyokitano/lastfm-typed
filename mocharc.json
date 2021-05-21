@@ -1,4 +1,4 @@
 {
 	"require": ["ts-node/register"],
-	"watch-files": ["./src/**/*.ts"]
+	"watch-files": ["./test/test.ts"]
 }
