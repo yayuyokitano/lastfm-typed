@@ -37,7 +37,7 @@ export default class AlbumClass extends Base {
 		res.tags.map((e:any) => {
 			e.rank = toInt(e.rank);
 			return e;
-		})
+		});
 		res.image.map((e:any) => {
 			e.url = e["#text"];
 			e["#text"] = void 0;

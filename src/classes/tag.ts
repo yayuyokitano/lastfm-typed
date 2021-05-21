@@ -74,7 +74,7 @@ export default class TagClass extends Base {
 		res.tags.map((e: any) => {
 			e.rank = toInt(e.rank);
 			return e;
-		})
+		});
 
 		res.tag = void 0;
 		return res as TagInterface.getTopTags;
