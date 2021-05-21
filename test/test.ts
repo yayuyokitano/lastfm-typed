@@ -2,10 +2,20 @@ import * as chai from "chai";
 chai.use(require("chai-json-schema-ajv"));
 const expect = chai.expect;
 import LastFM from "../dist/index";
-import config from "./config.json";
+
+import {env} from "process";
+
+let config = {
+	key: env.LASTFMKEY,
+	secret: env.LASTFMSECRET
+}
+
+if (!config.key) {
+	config = require("./config.json");
+}
 import albumSchema from "./schema/albumSchema.json";
 
-const lastfm = new LastFM(config.key, { apiSecret: config.secret });
+const lastfm = new LastFM(config.key as string, { apiSecret: config.secret as string });
 
 function lfmError(code:number, message:string) {
 	return {code, message} as any;

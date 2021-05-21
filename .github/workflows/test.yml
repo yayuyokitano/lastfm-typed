@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+        env:
+          LASTFMKEY: ${{ secrets.LASTFMKEY }}
+          LASTFMSECRET: ${{ secrets.LASTFMSECRET }}
         with:
           node-version: "14"
           registry-url: <registry url>
