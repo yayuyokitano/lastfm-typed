@@ -108,7 +108,7 @@ export interface TagAlbum extends Album {
 	rank:number;
 }
 
-export interface GlobalAlbum extends BasicInfo {
+export interface GlobalAlbum extends BasicOptionalMBID {
 	artist:string;
 	listeners:number;
 	playcount:number;

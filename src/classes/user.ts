@@ -1,5 +1,6 @@
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
+import { toInt, toBool, toArray } from "../caster";
 
 export default class UserClass extends Base {
 
@@ -122,7 +123,7 @@ export default class UserClass extends Base {
 			}
 			
 			if (e.hasOwnProperty("date")) {
-				e.date.imf = e.date["#text"];
+				e.date.datetime = e.date["#text"];
 				delete e.date["#text"];
 			}
 
@@ -206,16 +207,21 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
 
-		res.tracks = res.track;
-		delete res.track;
+		res.tracks = toArray(res.track);
+		res.track = void 0;
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 
-		res.tracks.forEach((e:any) => {
+		res.tracks.map((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
-			delete e.streamable["#text"];
+			e.streamable["#text"] = void 0;
 			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+			e["@attr"] = void 0;
+			e.streamable.isStreamable = toBool(e.streamable.isStreamable);
+			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
+			e.duration = toInt(e.duration);
+			e.rank = toInt(e.rank);
+			return e;
 		});
 
 		return res as UserInterface.getTopTracks;

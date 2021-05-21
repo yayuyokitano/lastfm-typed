@@ -105,6 +105,7 @@ interface ChartArtist extends TagArtist {
 	playcount:number;
 }
 
+// For use in helper, not directly used
 export interface TopArtist extends ChartArtist {
 	streamable:boolean;
 }

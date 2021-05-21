@@ -1,6 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
+import { toInt, toBool, toArray } from "../caster";
 
 export default class TagClass extends Base {
 
@@ -60,16 +61,22 @@ export default class TagClass extends Base {
 		let res = (await this.getTop("tag.getTopTags", "", newParams)).toptags as any;
 
 		let attr:ShortMetadata = {
-			total: res["@attr"].total as string,
-			page: ((newParams.offset / newParams.num_res) + 1).toString(),
-			perPage: newParams.num_res.toString(),
-			totalPages: Math.ceil(parseInt(res["@attr"].total) / newParams.num_res).toString()
+			total: toInt(res["@attr"].total),
+			page: ((newParams.offset / newParams.num_res) + 1),
+			perPage: newParams.num_res,
+			totalPages: Math.ceil(toInt(res["@attr"].total) / newParams.num_res)
 		};
 
 		res.meta = attr;
-		delete res["@attr"];
-		res.tags = res.tag;
-		delete res.tag;
+		res["@attr"] = void 0;
+		res.tags = toArray(res.tag);
+
+		res.tags.map((e: any) => {
+			e.rank = toInt(e.rank);
+			return e;
+		})
+
+		res.tag = void 0;
 		return res as TagInterface.getTopTags;
 
 	}
