@@ -1,6 +1,6 @@
 import * as ChartInterface from "../interfaces/chartInterface";
 import Base from "../base";
-import { toInt, toBool, toArray, convertMeta } from "../caster";
+import { convertMeta, convertEntryArray } from "../caster";
 
 export default class ChartClass extends Base {
 
@@ -10,14 +10,7 @@ export default class ChartClass extends Base {
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-		res.artists = toArray(res.artist).map((e:any) => {
-
-			e.playcount = toInt(e.playcount);
-			e.listeners = toInt(e.listeners);
-			e.streamable = toBool(e.streamable);
-			return e;
-
-		});
+		res.artists = convertEntryArray(res.artist);
 		res.artist = void 0;
 
 		return res as ChartInterface.getTopArtists;
@@ -30,14 +23,7 @@ export default class ChartClass extends Base {
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-		res.tags = toArray(res.tag).map((e:any) => {
-
-			e.reach = toInt(e.reach);
-			e.taggings = toInt(e.taggings);
-			e.streamable = toBool(e.streamable);
-			return e;
-
-		});
+		res.tags = convertEntryArray(res.tag);
 		res.tag = void 0;
 
 		return res as ChartInterface.getTopTags;
@@ -50,16 +36,7 @@ export default class ChartClass extends Base {
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-		res.tracks = toArray(res.track).map((e:any) => {
-
-			e.streamable.isStreamable = toBool(e.streamable["#text"]);
-			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
-			e.streamable["#text"] = void 0;
-			e.listeners = toInt(e.listeners);
-			e.duration = toInt(e.duration);
-			return e;
-
-		});
+		res.tracks = convertEntryArray(res.track);
 		res.track = void 0;
 
 		return res as ChartInterface.getTopTracks;

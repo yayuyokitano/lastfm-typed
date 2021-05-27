@@ -1,7 +1,7 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch, convertImage } from "../caster";
+import { toInt, toArray, convertMeta, convertSearch, convertImage, convertEntryArray, convertEntry } from "../caster";
 
 export default class ArtistClass extends Base {
 
@@ -38,11 +38,8 @@ export default class ArtistClass extends Base {
 		res.bio.link = res.bio.links.link;
 		res.bio.links = void 0;
 
-		res.ontour = toBool(res.ontour);
-		res.stats.listeners = toInt(res.stats.listeners);
-		res.stats.playcount = toInt(res.stats.playcount);
-		res.stats.userplaycount = toInt(res.stats.userplaycount);
-		res.streamable = toBool(res.streamable);
+		res = convertEntry(res);
+		res.stats = convertEntry(res.stats);
 
 		return res as ArtistInterface.getInfo;
 
@@ -57,10 +54,7 @@ export default class ArtistClass extends Base {
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
 
-		res.artists = toArray(res.artist).map((e:any) => {
-			e.streamable = toBool(e.streamable);
-			return e;
-		});
+		res.artists = convertEntryArray(res.artist);
 		res.artist = void 0;
 		
 		return res as ArtistInterface.getSimilar;
@@ -86,11 +80,7 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getTopAlbums", ...artist, ...params })).topalbums as any;
 
-		res.albums = toArray(res.album).filter((e:any) => e.name !== "(null)")
-		.map((e:any) => {
-			e.image = convertImage(e.image);
-			return e;
-		});
+		res.albums = toArray(res.album).filter((e:any) => e.name !== "(null)").map(convertEntry);
 		res.album = void 0;
 
 		res.meta = convertMeta(res["@attr"]);
@@ -118,19 +108,7 @@ export default class ArtistClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "artist.getTopTracks", ...artist, ...params })).toptracks as any;
-		res.tracks = toArray(res.track).map((e:any) => {
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-
-			e.image = convertImage(e.image);
-
-			e.playcount = toInt(e.playcount);
-			e.listeners = toInt(e.listeners);
-			e.streamable = toBool(e.streamable);
-
-			return e;
-		});
-
+		res.tracks = convertEntryArray(res.track);
 		res.track = void 0;
 
 		res.meta = convertMeta(res["@attr"]);
@@ -159,15 +137,7 @@ export default class ArtistClass extends Base {
 		
 		res = convertSearch(res);
 
-		res.artistMatches = toArray(res.artistmatches.artist).map((e:any) => {
-
-			e.listeners = toInt(e.listeners);
-			e.streamable = toBool(e.streamable);
-			
-			return e;
-		
-		});
-
+		res.artistMatches = convertEntryArray(res.artistmatches.artist);
 		res.artistmatches = void 0;
 
 		return res as ArtistInterface.search;

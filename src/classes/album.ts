@@ -1,7 +1,7 @@
 import * as AlbumInterface from "../interfaces/albumInterface";
 import Base from "../base";
 import { AlbumInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertSearch, convertImage } from "../caster";
+import { toArray, convertSearch, convertEntryArray, convertEntry } from "../caster";
 
 export default class AlbumClass extends Base {
 
@@ -18,25 +18,10 @@ export default class AlbumClass extends Base {
 	public async getInfo(album:AlbumInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
 
 		let res = (await this.sendRequest({ method: "album.getInfo", ...album, ...params })).album as any;
-		if (res.hasOwnProperty("userplaycount")) {
-			res.userplaycount = toInt(res.userplaycount);
-		}
-		res.listeners = toInt(res.listeners);
-		res.playcount = toInt(res.playcount);
 
-		res.tracks = toArray(res.tracks.track).map((e:any) => {
-			e.streamable.isStreamable = e.streamable["#text"];
-			e.streamable["#text"] = void 0;
-			e.rank = e["@attr"].rank;
-			e["@attr"] = void 0;
-			return e;
-		});
-
-		res.tags = toArray(res.tags.tag).map((e:any) => {
-			e.rank = toInt(e.rank);
-			return e;
-		});
-		res.image = convertImage(res.image);
+		res = convertEntry(res);
+		res.tracks = convertEntryArray(res.tracks.track);
+		res.tags = convertEntryArray(res.tags.tag);
 
 		return res as AlbumInterface.getInfo;
 
@@ -85,13 +70,7 @@ export default class AlbumClass extends Base {
 
 		res = convertSearch(res);
 
-		res.albumMatches = toArray(res.albummatches.album).map((e:any) => {
-
-			e.streamable = toBool(e.streamable);
-			e.image = convertImage(e.image);
-			return e;
-		
-		});
+		res.albumMatches = convertEntryArray(res.albummatches.album);
 		res.albummatches = void 0;
 		
 		return res as AlbumInterface.search;

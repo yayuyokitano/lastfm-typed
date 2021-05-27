@@ -1,6 +1,6 @@
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
-import { toInt, toBool, toArray, convertMeta, convertImage } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertImageArray, convertEntry, convertEntryArray } from "../caster";
 
 export default class UserClass extends Base {
 
@@ -16,9 +16,7 @@ export default class UserClass extends Base {
 			e.registered["#text"] = void 0;
 			e.registered.uts = toInt(e.registered.unixtime);
 			e.registered.unixtime = void 0;
-			e.image = convertImage(e.image);
-			e.subscriber = toBool(e.subscriber);
-			e.bootstrap = toInt(e.bootstrap);
+			e = convertEntry(e);
 			return e;
 
 		});
@@ -35,12 +33,7 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getInfo", user: usernameOrSessionKey })).user as any;
 
 		res.registered = toInt(res.registered.unixtime);
-		res.age = toInt(res.age);
-		res.image = convertImage(res.image);
-
-		res.playcount = toInt(res.playcount);
-		res.subscriber = toBool(res.subscriber);
-		res.bootstrap = toInt(res.bootstrap);
+		res = convertEntry(res);
 
 		return res as UserInterface.getInfo;
 
@@ -59,9 +52,7 @@ export default class UserClass extends Base {
 			e.date.datetime = e.date["#text"];
 			e.date["#text"] = void 0;
 			e.date.uts = toInt(e.date.uts);
-			e.streamable.isStreamable = toBool(e.streamable["#text"]);
-			e.streamable["#text"] = void 0;
-			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
+			e = convertEntry(e);
 			return e;
 
 		});
@@ -79,28 +70,16 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as any;
 
 		if (res.hasOwnProperty("artists")) {
-			res.artists = toArray(res.artists.artist).map((e:any) => {
 
-				e.streamable = toBool(e.streamable);
-				return e;
+			res.artists = convertEntryArray(res.artists.artist);
 
-			});
 		} else if (res.hasOwnProperty("albums")) {
 
-			res.albums = toArray(res.albums.album).map((e:any) => {
-				e.image = convertImage(e.image);
-				return e;
-			});
+			res.albums = convertEntryArray(res.albums.album);
 
 		} else if (res.hasOwnProperty("tracks")) {
 
-			res.tracks = toArray(res.tracks.track).map((e:any) => {
-				e.image = convertImage(e.image);
-				
-				e.streamable.isStreamable = toBool(e.streamable["#text"]);
-				e.streamable["#text"] = void 0;
-				return e;
-			});
+			res.tracks = convertEntryArray(res.tracks.track);
 
 		}
 
@@ -141,10 +120,7 @@ export default class UserClass extends Base {
 				e["@attr"] = void 0;
 			}
 
-			e.image = convertImage(e.image);
-
-			e.streamable = toBool(e.streamable);
-			e.loved = toBool(e.loved);
+			e = convertEntry(e);
 			e.date.uts = toInt(e.date.uts);
 
 			return e;
@@ -166,16 +142,7 @@ export default class UserClass extends Base {
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
-		res.albums = toArray(res.album).map((e:any) => {
-
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			e.image = convertImage(e.image);
-			e.playcount = toInt(e.playcount);
-			return e;
-			
-		});
-
+		res.albums = convertEntryArray(res.album);
 		res.album = void 0;
 
 		return res as UserInterface.getTopAlbums;
@@ -189,15 +156,7 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
 		
 		res.meta = convertMeta(res["@attr"]);
-
-		res.artists = toArray(res.artist).map((e:any) => {
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			e.streamable = toBool(e.streamable);
-			e.playcount = toInt(e.playcount);
-			return e;
-		});
-
+		res.artists = convertEntryArray(res.artist);
 		res.artist = void 0;
 
 		return res as UserInterface.getTopArtists;
@@ -210,10 +169,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as any;
 
-		res.tags = toArray(res.tag).map((e:any) => {
-			e.count = toInt(e.count);
-			return e;
-		});
+		res.tags = convertEntryArray(res.tag);
 		res.tag = void 0;
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
@@ -231,19 +187,7 @@ export default class UserClass extends Base {
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
-		res.tracks = toArray(res.track).map((e:any) => {
-			e.streamable.isStreamable = e.streamable["#text"];
-			e.streamable["#text"] = void 0;
-			e.rank = e["@attr"].rank;
-			e["@attr"] = void 0;
-			e.streamable.isStreamable = toBool(e.streamable.isStreamable);
-			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
-			e.duration = toInt(e.duration);
-			e.rank = toInt(e.rank);
-			e.playcount = toInt(e.playcount);
-			return e;
-		});
-
+		res.tracks = convertEntryArray(res.track);
 		res.track = void 0;
 
 		return res as UserInterface.getTopTracks;
@@ -261,9 +205,7 @@ export default class UserClass extends Base {
 		res.albums = toArray(res.album).map((e:any) => {
 			e.artist.name = e.artist["#text"];
 			e.artist["#text"] = void 0;
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			e.playcount = toInt(e.playcount);
+			e = convertEntry(e);
 			return e;
 		});
 
@@ -282,13 +224,7 @@ export default class UserClass extends Base {
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
-		res.artists = toArray(res.artist).map((e:any) => {
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			e.playcount = toInt(e.playcount);
-			return e;
-		});
-
+		res.artists = convertEntryArray(res.artist);
 		res.artist = void 0;
 
 		return res as UserInterface.getWeeklyArtistChart;
@@ -317,9 +253,7 @@ export default class UserClass extends Base {
 		res.tracks = toArray(res.track).map((e:any) => {
 			e.artist.name = e.artist["#text"];
 			e.artist["#text"] = void 0;
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			e.playcount = toInt(e.playcount);
+			e = convertEntry(e);
 			return e;
 		});
 

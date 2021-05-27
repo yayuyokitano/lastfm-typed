@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch, convertImage } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray } from "../caster";
 
 interface ScrobbleObject {
 	artist:string;
@@ -46,12 +46,8 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({ method: "track.getInfo", ...track, ...params })).track as any;
 
-		res.toptags = res.toptags.tag;
-		res.userloved = toBool(res.userloved);
-		res.playcount = toInt(res.playcount);
-		res.userplaycount = toInt(res.userplaycount);
-		res.listeners = toInt(res.listeners);
-		res.duration = toInt(res.duration);
+		res.toptags = toArray(res.toptags.tag);
+		res = convertEntry(res);
 		if (res.album) {
 			
 			if (res.album["@attr"]) {
@@ -59,7 +55,7 @@ export default class TrackClass extends Base {
 				res.album["@attr"] = void 0;
 			}
 			
-			res.album.image = convertImage(res.album.image);
+			res.album.image = convertImageArray(res.album.image);
 
 		}
 
@@ -75,12 +71,7 @@ export default class TrackClass extends Base {
 
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
-		res.tracks = toArray(res.track).map((e:any) => {
-			e.streamable.isStreamable = toBool(e.streamable["#text"]);
-			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
-			e.streamable["#text"] = void 0;
-			return e;
-		});
+		res.tracks = convertEntryArray(res.track);
 
 		return res as TrackInterface.getSimilar;
 
@@ -92,7 +83,7 @@ export default class TrackClass extends Base {
 
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
-		res.tags = res.tag;
+		res.tags = toArray(res.tag);
 		res.tag = void 0;
 
 		return res as TrackInterface.getTags;
@@ -104,7 +95,7 @@ export default class TrackClass extends Base {
 
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
-		res.tags = res.tag;
+		res.tags = toArray(res.tag);
 		res.tag = void 0;
 
 		return res as TrackInterface.getTopTags;
@@ -184,19 +175,7 @@ export default class TrackClass extends Base {
 		let res = (await this.sendRequest({method: "track.search", track, ...params})).results as any;
 
 		res = convertSearch(res);
-
-		res.trackMatches = toArray(res.trackmatches.track).map((e:any) => {
-
-			e.streamable = toBool(e.streamable);
-			e.listeners = toInt(e.listeners);
-			e.playcount = toInt(e.playcount);
-
-			e.image = convertImage(e.image);
-
-			return e;
-
-		});
-
+		res.trackMatches = convertEntryArray(res.trackmatches.track);
 		res.trackmatches = void 0;
 
 		return res as TrackInterface.search;

@@ -59,7 +59,7 @@ export function convertSearch(res:any) {
 
 }
 
-function convertImageArray(img:any) {
+export function convertImage(img:any) {
 
 	img.url = img["#text"];
 	img["#text"] = void 0;
@@ -67,4 +67,44 @@ function convertImageArray(img:any) {
 
 }
 
-export const convertImage = (img:any) => toArray(img).map(convertImageArray);
+export const convertImageArray = (img:any) => toArray(img).map(convertImage);
+
+export function convertEntry(e:any) {
+
+	for (let key of ["playcount", "listeners", "tagcount", "userplaycount", "rank", "duration", "taggings", "reach", "bootstrap", "age", "count"]) {
+		if (e.hasOwnProperty(key)) {
+			e[key] = toInt(e[key]); // eslint-disable-line
+			continue;
+		}
+
+		if (e["@attr"]?.hasOwnProperty(key)) {
+			e[key] = toInt(e["@attr"][key]); // eslint-disable-line
+			e["@attr"] = void 0;
+		}
+	}
+
+	for (let key of ["ontour", "userloved", "subscriber", "loved"]) {
+		if (e.hasOwnProperty(key)) {
+			e[key] = toBool(e[key]); // eslint-disable-line
+		}
+	}
+
+	if (e.hasOwnProperty("streamable")) {
+		if (e.streamable.hasOwnProperty("fulltrack")) {
+			e.streamable.isStreamable = toBool(e.streamable["#text"]);
+			e.streamable["#text"] = void 0;
+			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
+		} else {
+			e.streamable = toBool(e.streamable?.["#text"] ?? e.streamable);
+		}
+	}
+
+	if (e.hasOwnProperty("image")) {
+		e.image = convertImageArray(e.image);
+	}
+
+	return e;
+
+}
+
+export const convertEntryArray = (e:any) => toArray(e).map(convertEntry);

@@ -1,7 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, toBool, toArray, convertMeta, convertImage } from "../caster";
+import { toInt, convertMeta, convertEntryArray } from "../caster";
 
 export default class TagClass extends Base {
 
@@ -17,23 +17,9 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopAlbums", tag, params)).albums as any;
 		
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-		res.albums = toArray(res.album).map((e:any) => {
-
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-
-			e.image = convertImage(e.image);
-
-			return e;
-
-		});
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
+		res.albums = convertEntryArray(res.album);
 
 		return res as TagInterface.getTopAlbums;
 
@@ -46,13 +32,7 @@ export default class TagClass extends Base {
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
-		res.artists = toArray(res.artist).map((e:any) => {
-
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			return e;
-
-		});
+		res.artists = convertEntryArray(res.artist);
 
 		return res as TagInterface.getTopArtists;
 
@@ -79,10 +59,7 @@ export default class TagClass extends Base {
 
 		res.meta = attr;
 		res["@attr"] = void 0;
-		res.tags = toArray(res.tag).map((e: any) => {
-			e.rank = toInt(e.rank);
-			return e;
-		});
+		res.tags = convertEntryArray(res.tag);
 
 		res.tag = void 0;
 		return res as TagInterface.getTopTags;
@@ -95,17 +72,7 @@ export default class TagClass extends Base {
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-		res.tracks = toArray(res.track).map((e:any) => {
-
-			e.streamable.isStreamable = toBool(e.streamable["#text"]);
-			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
-			e.streamable["#text"] = void 0;
-			e.duration = toInt(e.duration);
-			e.rank = toInt(e["@attr"].rank);
-			e["@attr"] = void 0;
-			return e;
-
-		});
+		res.tracks = convertEntryArray(res.track);
 
 		return res as TagInterface.getTopTracks;
 
