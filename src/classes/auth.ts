@@ -1,5 +1,6 @@
 import * as AuthInterface from "../interfaces/authInterface";
 import Base from "../base";
+import { toBool } from "../caster";
 
 export default class AuthClass extends Base {
 
@@ -16,7 +17,10 @@ export default class AuthClass extends Base {
 
 	public async getSession(token:string) {
 
-		return (await this.sendRequest({ method: "auth.getSession", token })).session as AuthInterface.getSession;
+		const res = (await this.sendRequest({ method: "auth.getSession", token })).session as any;
+		res.subscriber = toBool(res.subscriber);
+		
+		return res as AuthInterface.getSession;
 
 	}
 

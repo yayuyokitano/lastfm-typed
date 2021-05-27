@@ -128,7 +128,7 @@ export default class HelperClass {
 		const album = currTrack.album?.name;
 		const url = currTrack.url;
 		const username = curr.meta.user;
-		const nowplaying = currTrack?.nowplaying === "true";
+		const nowplaying = currTrack?.nowplaying;
 
 		const details:{
 			recent:{
@@ -294,7 +294,7 @@ export default class HelperClass {
 	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
 		let count:number;
 		try {
-			count = parseInt((await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total);
+			count = (await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total;
 		} catch {
 			let rateLimitInterval = setInterval(() => {
 				
@@ -336,7 +336,7 @@ export default class HelperClass {
 				complete++;
 				let data2 = data as UserInterface.getRecentTracks;
 
-				if (parseInt(data2.meta.page) === totalPages) {
+				if (data2.meta.page === totalPages) {
 					data2.tracks = data2.tracks.slice(0, newCount % 1000);
 				}
 				
@@ -429,7 +429,7 @@ export default class HelperClass {
 				common.push({
 					name: aSort[i1].name,
 					url: aSort[i1].url,
-					playcount: [parseInt(aSort[i1].playcount), parseInt(bSort[i2].playcount)]
+					playcount: [aSort[i1].playcount, bSort[i2].playcount]
 				});
 				i1++;
 				i2++;

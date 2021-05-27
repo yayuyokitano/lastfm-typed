@@ -9,10 +9,10 @@ interface TrackMetadata extends Metadata {
 }
 
 interface SimilarTrack extends ArtistNoMBID {
-	duration:number;
+	duration?:number;
 	streamable: {
-		isStreamable:string;
-		fulltrack:string;
+		isStreamable:boolean;
+		fulltrack:boolean;
 	}
 	match:number;
 	playcount:number;
@@ -23,33 +23,34 @@ interface searchTrack {
 	name:string;
 	artist:string;
 	url:string;
-	streamable:string;
-	listeners:string;
+	streamable:boolean;
+	listeners:number;
 	image:Image[];
 	mbid:string;
 }
 
-export interface getCorrection {
+interface Correction {
 	track:TrackBasic;
 	meta: {
-		index:string;
-		artistcorrected:string;
-		trackcorrected:string;
+		index:number;
+		artistcorrected:boolean;
+		trackcorrected:boolean;
 	}
 }
 
+export type getCorrection = Correction | {};
+
 export interface getInfo extends GlobalTrackOptionalMBID {
-	userplaycount?:string;
-	userloved?:string;
+	userloved?:boolean;
 	wiki?:Wiki;
 	toptags:TagWUrl[];
 	album?: {
 		artist:string;
 		title:string;
-		mbid:string;
+		mbid?:string;
 		url:string;
 		image:Image[];
-		position:string;
+		position?:number;
 	}
 	artist:ArtistOptionalMBID;
 }
@@ -72,23 +73,23 @@ export interface getTopTags {
 }
 
 interface ScrobbleEntry {
-	corrected:string;
+	corrected:boolean;
 	name?:string;
 }
 
 export interface scrobble {
-	head: {
+	meta: {
 		accepted:number;
 		ignored:number;
 	}
 	scrobbles: {
 		artist:ScrobbleEntry;
 		ignoredMessage: {
-			code:string;
+			code:number;
 			message:string;
 		}
 		albumArtist:ScrobbleEntry;
-		timestamp:string;
+		timestamp:number;
 		album:ScrobbleEntry;
 		track:ScrobbleEntry;
 	}[]
@@ -97,10 +98,10 @@ export interface scrobble {
 export interface search {
 	query: {
 		role:string;
-		startPage:string;
+		startPage:number;
 	}
-	totalResults:string;
-	startIndex:string;
-	itemsPerPage:string;
+	totalResults:number;
+	startIndex:number;
+	itemsPerPage:number;
 	trackMatches:searchTrack[];
 }

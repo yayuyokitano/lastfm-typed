@@ -6,7 +6,7 @@ interface Metadata {
 }
 
 export interface getInfo extends GlobalAlbum {
-	userplaycount?:string;
+	userplaycount?:number;
 	wiki?:Wiki;
 	tags:TagWUrl[];
 	tracks:TagTrack[];
@@ -26,11 +26,11 @@ export interface search {
 	query: {
 		role:string;
 		searchTerms:string;
-		startPage:string;
+		startPage:number;
 	}
-	totalResults:string;
-	startIndex:string;
-	itemsPerPage:string;
+	totalResults:number;
+	startIndex:number;
+	itemsPerPage:number;
 	albumMatches:StringAlbum[];
 	meta: {
 		query:string;

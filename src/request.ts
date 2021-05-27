@@ -90,12 +90,19 @@ export class LFMRequest {
 		//request errors
 		if (!this.response.ok) {
 
-			let error = {
-				message: this.response.statusText,
-				response: await this.response.json()
-			};
+			const response = await this.response.json();
 
-			throw error;
+			if (typeof response === "object" && response !== null && response.hasOwnProperty("error") && response.hasOwnProperty("message")) {
+				throw {
+					code: response.error,
+					message: response.message
+				};
+			} else {
+				throw {
+					message: this.response.statusText,
+					response
+				};
+			}
 
 		}
 

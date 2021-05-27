@@ -1,40 +1,37 @@
-import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist } from "./shared";
+import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist, ShortMetadata, ArtistStreamableOptionalMBID } from "./shared";
 
 interface Metadata {
 	artist:string;
 }
 
-interface LargeMetadata extends Metadata {
-	page:string;
-	perPage:string;
-	totalPages:string;
-	total:string;
-}
+type LargeMetadata = Metadata & ShortMetadata;
 
-interface SimilarArtist extends Artist {
+interface SimilarArtist extends ArtistStreamableOptionalMBID {
 	match:string;
 }
 
 interface TrackData extends ArtistOptionalMBID {
-	playcount:string;
-	listeners:string;
-	streamable:string;
+	playcount:number;
+	listeners:number;
+	streamable:boolean;
 	artist:ArtistOptionalMBID;
 	image:Image[];
-	rank:string;
+	rank:number;
 }
 
-export interface getCorrection {
-	artist:ArtistBasic;
-	index:string;
+interface correctionInterface {
+	artist:ArtistOptionalMBID;
+	index:number;
 }
 
-export interface getInfo extends Artist {
-	ontour:string;
+export type getCorrection = correctionInterface | {};
+
+export interface getInfo extends ArtistStreamableOptionalMBID {
+	ontour:boolean;
 	stats: {
-		listeners:string;
-		playcount:string;
-		userplaycount:string;
+		listeners:number;
+		playcount:number;
+		userplaycount?:number;
 	}
 	similarArtists:ArtistNoMBID[];
 	tags:TagWUrl[];
@@ -55,7 +52,7 @@ export interface getSimilar {
 }
 
 export interface getTags {
-	tag:TagWUrl[];
+	tags:TagWUrl[];
 	meta:Metadata;
 }
 
@@ -65,7 +62,7 @@ export interface getTopAlbums {
 }
 
 export interface getTopTags {
-	tag:TagUrlCount[];
+	tags:TagUrlCount[];
 	meta:Metadata;
 }
 
@@ -78,11 +75,11 @@ export interface search {
 	query: {
 		role:string;
 		searchTerms:string;
-		startPage:string;
+		startPage:number;
 	}
-	totalResults:string;
-	startIndex:string;
-	itemsPerPage:string;
+	totalResults:number;
+	startIndex:number;
+	itemsPerPage:number;
 	artistMatches:ListenerArtist[];
 	meta: {
 		query:string;

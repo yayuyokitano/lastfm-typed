@@ -45,10 +45,10 @@ interface MBIDTrackInput {
 export type TrackInput = ArtistTrackInput | MBIDTrackInput;
 
 export interface ShortMetadata {
-	page:string;
-	perPage:string;
-	totalPages:string;
-	total:string;
+	page:number;
+	perPage:number;
+	totalPages:number;
+	total:number;
 }
 
 export interface Image {
@@ -65,12 +65,12 @@ export interface ArtistBasic extends ArtistNoMBID {
 	mbid:string;
 }
 
-export interface TrackBasic extends ArtistNoMBID {
-	artist:ArtistBasic;
-}
-
 export interface ArtistOptionalMBID extends ArtistNoMBID {
 	mbid?:string;
+}
+
+export interface TrackBasic extends ArtistNoMBID {
+	artist:ArtistOptionalMBID;
 }
 
 interface InfoNoMBID {
@@ -89,7 +89,7 @@ interface BasicOptionalMBID extends InfoNoMBID {
 
 export interface StringAlbum extends BasicInfo {
 	artist:string;
-	streamable:string;
+	streamable:boolean;
 }
 
 export interface Album extends BasicInfo {
@@ -104,37 +104,44 @@ export interface AlbumGlobal extends AlbumOptionalMBID {
 	playcount:number;
 }
 
-export interface TagAlbum extends Album {
-	rank:string;
+export interface TagAlbum extends AlbumOptionalMBID {
+	rank:number;
 }
 
-export interface GlobalAlbum extends BasicInfo {
+export interface GlobalAlbum extends BasicOptionalMBID {
 	artist:string;
-	listeners:string;
-	playcount:string;
+	listeners:number;
+	playcount:number;
+}
+
+export interface ArtistStreamableOptionalMBID extends ArtistOptionalMBID {
+	streamable:boolean;
 }
 
 export interface Artist extends ArtistBasic {
-	streamable:string;
+	streamable:boolean;
 }
 
-export interface TagArtist extends ArtistBasic {
-	rank:string;
+export interface TagArtist extends ArtistOptionalMBID {
+	rank:number;
 }
 
 export interface ListenerArtist extends Artist {
-	listeners:string;
+	listeners:number;
 }
 
 export interface GlobalArtist extends ListenerArtist {
-	playcount:string;
+	playcount:number;
 }
 
-interface Track extends ArtistNoMBID {
-	duration:string;
+interface TrackNoStreamable extends ArtistNoMBID {
+	duration:number;
+}
+
+interface Track extends TrackNoStreamable {
 	streamable: {
-		isStreamable:string;
-		fulltrack:string;
+		isStreamable:boolean;
+		fulltrack:boolean;
 	}
 }
 
@@ -152,22 +159,24 @@ export interface TrackOptionalMBIDImg extends TrackOptionalMBID {
 	image:Image[];
 }
 
-export interface TagTrack extends TrackMBID {
-	rank:string;
+export interface TagTrack extends TrackOptionalMBID {
+	rank:number;
 }
 
 export interface ListenerTrack extends TrackMBID {
-	listeners:string;
+	listeners:number;
 }
 
 export interface GlobalTrack extends ListenerTrack {
-	playcount:string;
+	playcount:number;
 }
 
-export interface GlobalTrackOptionalMBID extends TrackOptionalMBID {
-	playcount:string;
-	listeners:string;
-	userplaycount?:string;
+export interface GlobalTrackOptionalMBID extends TrackNoStreamable {
+	playcount:number;
+	listeners:number;
+	userplaycount?:number;
+	mbid?:string;
+	artist:ArtistOptionalMBID;
 }
 
 interface Tag {
@@ -189,7 +198,7 @@ export interface TagBasic extends Tag {
 
 export interface TagGlobalNoWiki extends Tag {
 	url:string;
-	reach:string;
-	taggings:string;
-	streamable:string;
+	reach:number;
+	taggings:number;
+	streamable:boolean;
 }

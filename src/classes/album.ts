@@ -1,14 +1,13 @@
 import * as AlbumInterface from "../interfaces/albumInterface";
 import Base from "../base";
 import { AlbumInput } from "../interfaces/shared";
+import { convertEntryArray, convertEntry, joinArray, convertSearchWithQuery, convertBasicMetaTag } from "../caster";
 
 export default class AlbumClass extends Base {
 
 	public async addTags(artist:string, album:string, tags:string[]|string, sk:string) {
 
-		if (Array.isArray(tags)) {
-			tags = tags.join(",");
-		}
+		tags = joinArray(tags);
 
 		return await this.sendRequest({ method: "album.addTags", tags, sk, artist, album }) as {};
 
@@ -18,19 +17,9 @@ export default class AlbumClass extends Base {
 
 		let res = (await this.sendRequest({ method: "album.getInfo", ...album, ...params })).album as any;
 
-		res.tracks = res.tracks.track;
-		res.tracks.forEach((e:any) => {
-			e.streamable.isStreamable = e.streamable["#text"];
-			delete e.streamable["#text"];
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
-		});
-
-		res.tags = res.tags.tag;
-		res.image.forEach((e:any) => {
-			e.url = e["#text"];
-			delete e["#text"];
-		});
+		res = convertEntry(res);
+		res.tracks = convertEntryArray(res.tracks.track);
+		res.tags = convertEntryArray(res.tags.tag);
 
 		return res as AlbumInterface.getInfo;
 
@@ -39,12 +28,8 @@ export default class AlbumClass extends Base {
 	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as any;
-		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.tags = res.tag;
-		delete res.tag;
 
-		return res as AlbumInterface.getTags;
+		return convertBasicMetaTag(res) as AlbumInterface.getTags;
 
 	}
 
@@ -52,12 +37,7 @@ export default class AlbumClass extends Base {
 
 		let res = (await this.sendRequest({ method: "album.getTopTags", ...album, ...params })).toptags as any;
 
-		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.tags = res.tag;
-		delete res.tag;
-
-		return res as AlbumInterface.getTopTags;
+		return convertBasicMetaTag(res) as AlbumInterface.getTopTags;
 
 	}
 
@@ -72,28 +52,11 @@ export default class AlbumClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({method: "album.search", album, ...params })).results as any;
-		delete res["opensearch:Query"]["#text"];
-		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.meta.query = res.meta.for;
-		delete res.meta.for;
-		res.itemsPerPage = res["opensearch:itemsPerPage"];
-		delete res["opensearch:itemsPerPage"];
-		res.startIndex = res["opensearch:startIndex"];
-		delete res["opensearch:startIndex"];
-		res.totalResults = res["opensearch:totalResults"];
-		delete res["opensearch:totalResults"];
-		res.query = res["opensearch:Query"];
-		delete res["opensearch:Query"];
-		res.albumMatches = res.albummatches.album;
-		delete res.albummatches;
+		
+		res = convertSearchWithQuery(res);
 
-		res.albumMatches.forEach((e:any) => {
-			e.image.forEach((f:any) => {
-				f.url = f["#text"];
-				delete f["#text"];
-			});
-		});
+		res.albumMatches = convertEntryArray(res.albummatches.album);
+		res.albummatches = void 0;
 		
 		return res as AlbumInterface.search;
 

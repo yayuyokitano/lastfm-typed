@@ -1,5 +1,6 @@
 import * as LibraryInterface from "../interfaces/libraryInterface";
 import Base from "../base";
+import { convertExtendedMeta } from "../caster";
 
 export default class LibraryClass extends Base {
 
@@ -9,10 +10,7 @@ export default class LibraryClass extends Base {
 
 		let res = (await this.sendRequest({ method: "library.getArtists", user: usernameOrSessionKey, ...params })).artists as any;
 
-		res.meta = res["@attr"];
-		delete res["@attr"];
-
-		return res as LibraryInterface.getArtists;
+		return convertExtendedMeta(res, "artist") as LibraryInterface.getArtists;
 
 	}
 

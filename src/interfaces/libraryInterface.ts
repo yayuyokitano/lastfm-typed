@@ -1,19 +1,15 @@
-import { Artist } from "./shared";
+import { Artist, ShortMetadata } from "./shared";
 
-interface Metadata {
-	page:string;
-	perPage:string;
-	totalPages:string;
-	total:string;
+interface Metadata extends ShortMetadata {
 	user:string;
 }
 
 interface LocalArtist extends Artist {
-	playcount:string;
-	tagcount:string;
+	playcount:number;
+	tagcount:number;
 }
 
 export interface getArtists {
-	artist:LocalArtist;
+	artists:LocalArtist[];
 	meta:Metadata;
 }

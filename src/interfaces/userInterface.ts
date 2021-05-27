@@ -1,37 +1,41 @@
-import { Album, Artist, ArtistBasic, Image, TagAlbum, TagArtist, TagTrack, TagUrlCount, TrackOptionalMBIDImg } from "./shared";
+import { Album, Artist, ArtistBasic, Image, ShortMetadata, TagAlbum, TagArtist, TagTrack, TagUrlCount, TrackOptionalMBIDImg } from "./shared";
 
-interface Metadata {
+interface Metadata extends ShortMetadata {
 	user:string;
-	page:string;
-	total:string;
-	perPage:string;
-	totalPages:string;
+}
+
+interface TagMetadata extends ShortMetadata {
+	tag:string;
 }
 
 interface User { //playcount and playlist seem to just not work.
-	subscriber:string;
+	subscriber:boolean;
 	name:string;
 	country:string;
 	image:Image[];
-	registered: {
-		unixtime:string;
-		datetime:string;
-	}
 	url:string;
 	realname:string;
-	bootstrap:string;
+	bootstrap:number;
 	type:string;
 }
 
+interface UserDualTimestamp extends User {
+	registered: {
+		uts:number,
+		datetime:string
+	}
+}
+
 export interface getFriends {
-	user:User[];
+	user:UserDualTimestamp[];
 	meta:Metadata;
 }
 
 export interface getInfo extends User {
-	age:string;
+	age:number;
 	gender:string;
-	playcount:string;
+	playcount:number;
+	registered:number;
 }
 
 export interface getLovedTracks {
@@ -40,54 +44,47 @@ export interface getLovedTracks {
 		artist:ArtistBasic;
 		mbid:string;
 		date: {
-			uts:string;
+			uts:number;
 			datetime:string;
 		}
 		url:string;
 		name:string;
 		streamable:{
-			fulltrack:string;
-			isStreamable:string;
+			fulltrack:boolean;
+			isStreamable:boolean;
 		}
 	}[]
 }
 
-interface PersonalTags extends Metadata {
-	tag:string;
+export interface getPersonalTags {
+	artists?:Artist[];
+	albums?:Album[];
+	tracks?:TrackOptionalMBIDImg[];
+	meta:TagMetadata;
 }
-
-interface ArtistPersonalTags extends PersonalTags {
-	artists:Artist[];
-}
-
-interface AlbumPersonalTags extends PersonalTags {
-	albums:Album[];
-}
-
-interface TrackPersonalTags extends PersonalTags {
-	tracks:TrackOptionalMBIDImg[];
-}
-
-export type getPersonalTags = ArtistPersonalTags|AlbumPersonalTags|TrackPersonalTags;
 
 interface ShortInfo {
 	mbid:string;
 	name:string;
 }
 
+interface getRecentArtist extends ShortInfo {
+	url?:string;
+}
+
 interface RecentTrack {
-	artist: ShortInfo&ArtistBasic;
-	nowplaying?:string;
+	artist: getRecentArtist;
+	nowplaying:boolean;
 	mbid:string;
 	album:ShortInfo;
-	streamable:string;
+	streamable:boolean;
 	url:string;
 	name:string;
 	image:Image[];
-	loved?:string;
+	loved?:boolean;
 	date?: {
-		uts:string;
-		imf:string;
+		uts:number;
+		datetime:string;
 	}
 }
 
@@ -97,7 +94,7 @@ export interface getRecentTracks {
 }
 
 interface TopAlbum extends TagAlbum {
-	playcount:string;
+	playcount:number;
 }
 
 export interface getTopAlbums {
@@ -106,11 +103,12 @@ export interface getTopAlbums {
 }
 
 interface ChartArtist extends TagArtist {
-	playcount:string;
+	playcount:number;
 }
 
+// For use in helper, not directly used
 export interface TopArtist extends ChartArtist {
-	streamable:string;
+	streamable:boolean;
 }
 
 export interface getTopArtists {
@@ -126,7 +124,7 @@ export interface getTopTags {
 }
 
 interface TopTrack extends TagTrack {
-	playcount:string;
+	playcount:number;
 }
 
 export interface getTopTracks {
@@ -136,15 +134,15 @@ export interface getTopTracks {
 
 interface ChartMetadata {
 	user:string;
-	from:string;
-	to:string;
+	from:number;
+	to:number;
 }
 
 interface ChartAlbum {
 	artist:ShortInfo;
-	rank:string;
+	rank:number;
 	mbid:string;
-	playcount:string;
+	playcount:number;
 	name:string;
 	url:string;
 }
@@ -160,8 +158,8 @@ export interface getWeeklyArtistChart {
 }
 
 interface ChartEntry {
-	from:string;
-	to:string;
+	from:number;
+	to:number;
 }
 
 export interface getWeeklyChartList {
@@ -173,11 +171,11 @@ interface ChartTrack {
 		mbid:string;
 		name:string;
 	}
-	rank:string;
+	rank:number;
 	mbid:string;
 	url:string;
 	name:string;
-	playcount:string;
+	playcount:number;
 }
 
 export interface getWeeklyTrackChart {
