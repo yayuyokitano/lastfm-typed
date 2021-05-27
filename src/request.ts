@@ -133,12 +133,12 @@ export class LFMRequest {
 
 		if (this.params.hasOwnProperty("user")) {
 			this.params.sk = this.params.user;
-			this.params.user = void 0;
+			delete this.params.user;
 		}
 
 		if (this.params.hasOwnProperty("username")) {
 			this.params.sk = this.params.username;
-			this.params.username = void 0;
+			delete this.params.username;
 		}
 
 		const api_sig = this.getSignature();
