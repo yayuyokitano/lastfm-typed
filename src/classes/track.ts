@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray } from "../caster";
+import { toInt, toBool, toArray, convertMeta } from "../caster";
 
 interface ScrobbleObject {
 	artist:string;
@@ -32,12 +32,9 @@ export default class TrackClass extends Base {
 		let res = (((await this.sendRequest({ method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
 
 		if (Object.keys(res).length) {
-			res.meta = res["@attr"];
-			res["@attr"] = void 0;
 
-			res.meta.index = toInt(res.meta.index);
-			res.meta.artistcorrected = toBool(res.meta.artistcorrected);
-			res.meta.trackcorrected = toBool(res.meta.trackcorrected);
+			res.meta = convertMeta(res["@attr"]);
+			res["@attr"] = void 0;
 			
 		}
 
@@ -144,11 +141,8 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk})).scrobbles as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.meta.accepted = toInt(res.meta.accepted);
-		res.meta.ignored = toInt(res.meta.ignored);
 
 		res.scrobbles = toArray(res.scrobble).map((e:any) => {
 			e.ignoredMessage.message = e.ignoredMessage["#text"];

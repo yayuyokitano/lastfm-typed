@@ -1,7 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, toBool, toArray } from "../caster";
+import { toInt, toBool, toArray, convertMeta } from "../caster";
 
 export default class TagClass extends Base {
 
@@ -47,7 +47,7 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopArtists", tag, params)).topartists as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.artists = toArray(res.artist).map((e:any) => {
@@ -57,11 +57,6 @@ export default class TagClass extends Base {
 			return e;
 
 		});
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as TagInterface.getTopArtists;
 
@@ -74,7 +69,7 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopTags", "", newParams)).toptags as any;
 
-		const total = toInt(res["@attr"].total)
+		const total = toInt(res["@attr"].total);
 		if (typeof total === "undefined") {
 			throw "Total is not a number";
 		}
@@ -102,7 +97,7 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopTracks", tag, params)).tracks as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 		res.tracks = toArray(res.track).map((e:any) => {
 
@@ -115,11 +110,6 @@ export default class TagClass extends Base {
 			return e;
 
 		});
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as TagInterface.getTopTracks;
 

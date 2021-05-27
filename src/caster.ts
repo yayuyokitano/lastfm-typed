@@ -23,3 +23,21 @@ export function toArray(arr:any) {
 	return [arr];
 
 }
+
+export function convertMeta(meta:any) {
+
+	for (let key of ["page", "perPage", "total", "totalPages", "from", "to", "index", "accepted", "ignored"]) {
+		if (meta.hasOwnProperty(key)) {
+			meta[key] = toInt(meta[key]);
+		}
+	}
+
+	for (let key of ["artistcorrected", "trackcorrected"]) {
+		if (meta.hasOwnProperty(key)) {
+			meta[key] = toBool(meta[key]);
+		}
+	}
+
+	return meta;
+
+}

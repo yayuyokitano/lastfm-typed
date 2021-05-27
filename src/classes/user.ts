@@ -1,6 +1,6 @@
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
-import { toInt, toBool, toArray } from "../caster";
+import { toInt, toBool, toArray, convertMeta } from "../caster";
 
 export default class UserClass extends Base {
 
@@ -27,13 +27,8 @@ export default class UserClass extends Base {
 
 		});
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getFriends;
 
@@ -65,7 +60,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 		res.tracks = toArray(res.track).map((e:any) => {
 
@@ -80,11 +75,6 @@ export default class UserClass extends Base {
 		});
 
 		res.track = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getLovedTracks;
 
@@ -130,13 +120,8 @@ export default class UserClass extends Base {
 
 		}
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getPersonalTags;
 
@@ -148,7 +133,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getRecentTracks", user: usernameOrSessionKey, ...params })).recenttracks;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.tracks = toArray(res.track).map((e:any) => {
@@ -188,11 +173,6 @@ export default class UserClass extends Base {
 
 		res.track = void 0;
 
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
-
 		return res as UserInterface.getRecentTracks;
 		
 	}
@@ -203,7 +183,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as any;
 	
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.albums = toArray(res.album).map((e:any) => {
@@ -222,11 +202,6 @@ export default class UserClass extends Base {
 
 		res.album = void 0;
 
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
-
 		return res as UserInterface.getTopAlbums;
 
 	}
@@ -237,7 +212,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
 		
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 
 		res.artists = toArray(res.artist).map((e:any) => {
 			e.rank = toInt(e["@attr"].rank);
@@ -248,11 +223,6 @@ export default class UserClass extends Base {
 		});
 
 		res.artist = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getTopArtists;
 
@@ -269,13 +239,8 @@ export default class UserClass extends Base {
 			return e;
 		});
 		res.tag = void 0;
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getTopTags;
 
@@ -287,7 +252,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.tracks = toArray(res.track).map((e:any) => {
@@ -305,11 +270,6 @@ export default class UserClass extends Base {
 
 		res.track = void 0;
 
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
-
 		return res as UserInterface.getTopTracks;
 	}
 
@@ -319,7 +279,7 @@ export default class UserClass extends Base {
 		
 		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params })).weeklyalbumchart;
 		
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.albums = toArray(res.album).map((e:any) => {
@@ -332,8 +292,6 @@ export default class UserClass extends Base {
 		});
 
 		res.album = void 0;
-		res.meta.from = toInt(res.meta.from);
-		res.meta.to = toInt(res.meta.to);
 
 		return res as UserInterface.getWeeklyAlbumChart;
 
@@ -345,7 +303,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as any;
 		
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.artists = toArray(res.artist).map((e:any) => {
@@ -356,8 +314,6 @@ export default class UserClass extends Base {
 		});
 
 		res.artist = void 0;
-		res.meta.from = toInt(res.meta.from);
-		res.meta.to = toInt(res.meta.to);
 
 		return res as UserInterface.getWeeklyArtistChart;
 	}
@@ -366,13 +322,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyChartList"})).weeklychartlist as any;
 
-		res.charts = toArray(res.chart).map((e:any) => {
-
-			e.from = toInt(e.from);
-			e.to = toInt(e.to);
-			return e;
-
-		});
+		res.charts = toArray(res.chart).map(convertMeta);
 		res.chart = void 0;
 
 		return res as UserInterface.getWeeklyChartList;
@@ -385,7 +335,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 
 		res.tracks = toArray(res.track).map((e:any) => {
@@ -398,8 +348,6 @@ export default class UserClass extends Base {
 		});
 
 		res.track = void 0;
-		res.meta.from = toInt(res.meta.from);
-		res.meta.to = toInt(res.meta.to);
 
 		return res as UserInterface.getWeeklyTrackChart;
 

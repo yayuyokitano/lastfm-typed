@@ -1,6 +1,6 @@
 import * as ChartInterface from "../interfaces/chartInterface";
 import Base from "../base";
-import { toInt, toBool, toArray } from "../caster";
+import { toInt, toBool, toArray, convertMeta } from "../caster";
 
 export default class ChartClass extends Base {
 
@@ -8,7 +8,7 @@ export default class ChartClass extends Base {
 
 		let res = (await this.getTop("chart.getTopArtists", params)).artists as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 		res.artists = toArray(res.artist).map((e:any) => {
 
@@ -20,11 +20,6 @@ export default class ChartClass extends Base {
 		});
 		res.artist = void 0;
 
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
-
 		return res as ChartInterface.getTopArtists;
 
 	}
@@ -33,7 +28,7 @@ export default class ChartClass extends Base {
 
 		let res = (await this.getTop("chart.getTopTags", params)).tags as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 		res.tags = toArray(res.tag).map((e:any) => {
 
@@ -45,11 +40,6 @@ export default class ChartClass extends Base {
 		});
 		res.tag = void 0;
 
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
-
 		return res as ChartInterface.getTopTags;
 
 	}
@@ -58,7 +48,7 @@ export default class ChartClass extends Base {
 
 		let res = (await this.getTop("chart.getTopTracks", params)).tracks as any;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
 		res.tracks = toArray(res.track).map((e:any) => {
 
@@ -71,11 +61,6 @@ export default class ChartClass extends Base {
 
 		});
 		res.track = void 0;
-		
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as ChartInterface.getTopTracks;
 

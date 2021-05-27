@@ -1,7 +1,7 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
-import { toInt, toBool, toArray } from "../caster";
+import { toInt, toBool, toArray, convertMeta } from "../caster";
 
 export default class ArtistClass extends Base {
 
@@ -60,7 +60,7 @@ export default class ArtistClass extends Base {
 		res.artists = toArray(res.artist).map((e:any) => {
 			e.streamable = toBool(e.streamable);
 			return e;
-		})
+		});
 		res.artist = void 0;
 		
 		return res as ArtistInterface.getSimilar;
@@ -97,13 +97,8 @@ export default class ArtistClass extends Base {
 		});
 		res.album = void 0;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as ArtistInterface.getTopAlbums;
 
@@ -146,13 +141,8 @@ export default class ArtistClass extends Base {
 
 		res.track = void 0;
 
-		res.meta = res["@attr"];
+		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.meta.page = toInt(res.meta.page);
-		res.meta.perPage = toInt(res.meta.perPage);
-		res.meta.totalPages = toInt(res.meta.totalPages);
-		res.meta.total = toInt(res.meta.total);
 
 		return res as ArtistInterface.getTopTracks;
 
