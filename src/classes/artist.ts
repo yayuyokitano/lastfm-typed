@@ -1,7 +1,7 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertImage } from "../caster";
 
 export default class ArtistClass extends Base {
 
@@ -88,11 +88,7 @@ export default class ArtistClass extends Base {
 
 		res.albums = toArray(res.album).filter((e:any) => e.name !== "(null)")
 		.map((e:any) => {
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 			return e;
 		});
 		res.album = void 0;
@@ -126,11 +122,7 @@ export default class ArtistClass extends Base {
 			e.rank = toInt(e["@attr"].rank);
 			e["@attr"] = void 0;
 
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 
 			e.playcount = toInt(e.playcount);
 			e.listeners = toInt(e.listeners);

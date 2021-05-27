@@ -1,7 +1,7 @@
 import * as AlbumInterface from "../interfaces/albumInterface";
 import Base from "../base";
 import { AlbumInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertSearch } from "../caster";
+import { toInt, toBool, toArray, convertSearch, convertImage } from "../caster";
 
 export default class AlbumClass extends Base {
 
@@ -36,11 +36,7 @@ export default class AlbumClass extends Base {
 			e.rank = toInt(e.rank);
 			return e;
 		});
-		res.image = toArray(res.image).map((e:any) => {
-			e.url = e["#text"];
-			e["#text"] = void 0;
-			return e;
-		});
+		res.image = convertImage(res.image);
 
 		return res as AlbumInterface.getInfo;
 
@@ -92,11 +88,7 @@ export default class AlbumClass extends Base {
 		res.albumMatches = toArray(res.albummatches.album).map((e:any) => {
 
 			e.streamable = toBool(e.streamable);
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 			return e;
 		
 		});

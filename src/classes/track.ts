@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertImage } from "../caster";
 
 interface ScrobbleObject {
 	artist:string;
@@ -59,11 +59,7 @@ export default class TrackClass extends Base {
 				res.album["@attr"] = void 0;
 			}
 			
-			res.album.image = toArray(res.album.image).map((e:any) => {
-				e.url = e["#text"];
-				e["#text"] = void 0;
-				return e;
-			});
+			res.album.image = convertImage(res.album.image);
 
 		}
 
@@ -195,11 +191,7 @@ export default class TrackClass extends Base {
 			e.listeners = toInt(e.listeners);
 			e.playcount = toInt(e.playcount);
 
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 
 			return e;
 

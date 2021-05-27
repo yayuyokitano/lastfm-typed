@@ -1,7 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, toBool, toArray, convertMeta } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertImage } from "../caster";
 
 export default class TagClass extends Base {
 
@@ -24,11 +24,7 @@ export default class TagClass extends Base {
 			e.rank = toInt(e["@attr"].rank);
 			e["@attr"] = void 0;
 
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 
 			return e;
 

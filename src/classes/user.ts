@@ -1,6 +1,6 @@
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
-import { toInt, toBool, toArray, convertMeta } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertImage } from "../caster";
 
 export default class UserClass extends Base {
 
@@ -16,11 +16,7 @@ export default class UserClass extends Base {
 			e.registered["#text"] = void 0;
 			e.registered.uts = toInt(e.registered.unixtime);
 			e.registered.unixtime = void 0;
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 			e.subscriber = toBool(e.subscriber);
 			e.bootstrap = toInt(e.bootstrap);
 			return e;
@@ -40,11 +36,7 @@ export default class UserClass extends Base {
 
 		res.registered = toInt(res.registered.unixtime);
 		res.age = toInt(res.age);
-		res.image = toArray(res.image).map((e:any) => {
-			e.url = e["#text"];
-			e["#text"] = void 0;
-			return e;
-		});
+		res.image = convertImage(res.image);
 
 		res.playcount = toInt(res.playcount);
 		res.subscriber = toBool(res.subscriber);
@@ -96,22 +88,14 @@ export default class UserClass extends Base {
 		} else if (res.hasOwnProperty("albums")) {
 
 			res.albums = toArray(res.albums.album).map((e:any) => {
-				e.image = toArray(e.image).map((f:any) => {
-					f.url = f["#text"];
-					f["#text"] = void 0;
-					return f;
-				});
+				e.image = convertImage(e.image);
 				return e;
 			});
 
 		} else if (res.hasOwnProperty("tracks")) {
 
 			res.tracks = toArray(res.tracks.track).map((e:any) => {
-				e.image = toArray(e.image).map((f:any) => {
-					f.url = f["#text"];
-					f["#text"] = void 0;
-					return f;
-				});
+				e.image = convertImage(e.image);
 				
 				e.streamable.isStreamable = toBool(e.streamable["#text"]);
 				e.streamable["#text"] = void 0;
@@ -157,11 +141,7 @@ export default class UserClass extends Base {
 				e["@attr"] = void 0;
 			}
 
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 
 			e.streamable = toBool(e.streamable);
 			e.loved = toBool(e.loved);
@@ -190,11 +170,7 @@ export default class UserClass extends Base {
 
 			e.rank = toInt(e["@attr"].rank);
 			e["@attr"] = void 0;
-			e.image = toArray(e.image).map((f:any) => {
-				f.url = f["#text"];
-				f["#text"] = void 0;
-				return f;
-			});
+			e.image = convertImage(e.image);
 			e.playcount = toInt(e.playcount);
 			return e;
 			

@@ -8,9 +8,7 @@ export function toInt(num:any) {
 
 }
 
-export function toBool(bool:any) {
-	return bool !== 0 && bool && bool !== "0";
-}
+export const toBool = (bool:any) => bool !== 0 && bool && bool !== "0";
 
 export function toArray(arr:any) {
 
@@ -60,3 +58,13 @@ export function convertSearch(res:any) {
 	return res;
 
 }
+
+function convertImageArray(img:any) {
+
+	img.url = img["#text"];
+	img["#text"] = void 0;
+	return img;
+
+}
+
+export const convertImage = (img:any) => toArray(img).map(convertImageArray);
