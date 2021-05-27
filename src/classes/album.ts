@@ -1,7 +1,7 @@
 import * as AlbumInterface from "../interfaces/albumInterface";
 import Base from "../base";
 import { AlbumInput } from "../interfaces/shared";
-import { toInt, toBool, toArray } from "../caster";
+import { toInt, toBool, toArray, convertSearch } from "../caster";
 
 export default class AlbumClass extends Base {
 
@@ -82,24 +82,12 @@ export default class AlbumClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({method: "album.search", album, ...params })).results as any;
-		res["opensearch:Query"]["#text"] = void 0;
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
 		res.meta.query = res.meta.for;
 		res.meta.for = void 0;
-		res.itemsPerPage = res["opensearch:itemsPerPage"];
-		res["opensearch:itemsPerPage"] = void 0;
-		res.startIndex = res["opensearch:startIndex"];
-		res["opensearch:startIndex"] = void 0;
-		res.totalResults = res["opensearch:totalResults"];
-		res["opensearch:totalResults"] = void 0;
-		res.query = res["opensearch:Query"];
-		res["opensearch:Query"] = void 0;
 
-		res.query.startPage = toInt(res.query.startPage);
-		res.totalResults = toInt(res.totalResults);
-		res.startIndex = toInt(res.startIndex);
-		res.itemsPerPage = toInt(res.itemsPerPage);
+		res = convertSearch(res);
 
 		res.albumMatches = toArray(res.albummatches.album).map((e:any) => {
 

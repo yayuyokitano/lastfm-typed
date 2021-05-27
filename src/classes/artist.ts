@@ -1,7 +1,7 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch } from "../caster";
 
 export default class ArtistClass extends Base {
 
@@ -160,24 +160,12 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({method: "artist.search", artist, ...params})).results as any;
 
-		res["opensearch:Query"]["#text"] = void 0;
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
 		res.meta.query = res.meta.for;
 		res.meta.for = void 0;
-		res.itemsPerPage = res["opensearch:itemsPerPage"];
-		res["opensearch:itemsPerPage"] = void 0;
-		res.startIndex = res["opensearch:startIndex"];
-		res["opensearch:startIndex"] = void 0;
-		res.totalResults = res["opensearch:totalResults"];
-		res["opensearch:totalResults"] = void 0;
-		res.query = res["opensearch:Query"];
-		res["opensearch:Query"] = void 0;
-
-		res.query.startPage = toInt(res.query.startPage);
-		res.totalResults = toInt(res.totalResults);
-		res.startIndex = toInt(res.startIndex);
-		res.itemsPerPage = toInt(res.itemsPerPage);
+		
+		res = convertSearch(res);
 
 		res.artistMatches = toArray(res.artistmatches.artist).map((e:any) => {
 

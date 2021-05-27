@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch } from "../caster";
 
 interface ScrobbleObject {
 	artist:string;
@@ -187,15 +187,7 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({method: "track.search", track, ...params})).results as any;
 
-		res["opensearch:Query"]["#text"] = void 0;
-		res.itemsPerPage = res["opensearch:itemsPerPage"];
-		res["opensearch:itemsPerPage"] = void 0;
-		res.startIndex = res["opensearch:startIndex"];
-		res["opensearch:startIndex"] = void 0;
-		res.totalResults = res["opensearch:totalResults"];
-		res["opensearch:totalResults"] = void 0;
-		res.query = res["opensearch:Query"];
-		res["opensearch:Query"] = void 0;
+		res = convertSearch(res);
 
 		res.trackMatches = toArray(res.trackmatches.track).map((e:any) => {
 
@@ -214,11 +206,6 @@ export default class TrackClass extends Base {
 		});
 
 		res.trackmatches = void 0;
-
-		res.query.startPage = toInt(res.query.startPage);
-		res.totalResults = toInt(res.totalResults);
-		res.startIndex = toInt(res.startIndex);
-		res.itemsPerPage = toInt(res.itemsPerPage);
 
 		return res as TrackInterface.search;
 	}
