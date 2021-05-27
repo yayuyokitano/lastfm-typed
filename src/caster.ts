@@ -169,8 +169,10 @@ function convertGetRecentTracksEntry(e:any) {
 	e = setDate(e, "date");
 
 	if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
-		e.nowplaying = e["@attr"].nowplaying;
+		e.nowplaying = toBool(e["@attr"].nowplaying);
 		e["@attr"] = void 0;
+	} else {
+		e.nowplaying = false;
 	}
 	return convertEntry(e);
 

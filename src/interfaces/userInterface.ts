@@ -74,7 +74,7 @@ interface getRecentArtist extends ShortInfo {
 
 interface RecentTrack {
 	artist: getRecentArtist;
-	nowplaying?:boolean;
+	nowplaying:boolean;
 	mbid:string;
 	album:ShortInfo;
 	streamable:boolean;
