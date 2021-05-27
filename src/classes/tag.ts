@@ -1,7 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, convertMeta, convertEntryArray } from "../caster";
+import { toInt, convertMeta, convertEntryArray, convertExtendedMeta } from "../caster";
 
 export default class TagClass extends Base {
 
@@ -16,12 +16,8 @@ export default class TagClass extends Base {
 	public async getTopAlbums(tag:string, params?:{limit?:number, page?:number}) {
 
 		let res = (await this.getTop("tag.getTopAlbums", tag, params)).albums as any;
-		
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-		res.albums = convertEntryArray(res.album);
 
-		return res as TagInterface.getTopAlbums;
+		return convertExtendedMeta(res, "album") as TagInterface.getTopAlbums;
 
 	}
 
@@ -29,12 +25,7 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopArtists", tag, params)).topartists as any;
 
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-
-		res.artists = convertEntryArray(res.artist);
-
-		return res as TagInterface.getTopArtists;
+		return convertExtendedMeta(res, "artist") as TagInterface.getTopArtists;
 
 	}
 
@@ -70,11 +61,7 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopTracks", tag, params)).tracks as any;
 
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-		res.tracks = convertEntryArray(res.track);
-
-		return res as TagInterface.getTopTracks;
+		return convertExtendedMeta(res, "track") as TagInterface.getTopTracks;
 
 	}
 

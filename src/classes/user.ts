@@ -1,6 +1,6 @@
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
-import { toInt, toBool, toArray, convertMeta, convertImageArray, convertEntry, convertEntryArray } from "../caster";
+import { toInt, toArray, convertMeta, convertEntry, convertEntryArray, convertGetRecentTracks, setDate, convertExtendedMeta } from "../caster";
 
 export default class UserClass extends Base {
 
@@ -12,10 +12,7 @@ export default class UserClass extends Base {
 
 		res.user = toArray(res.user).map((e:any) => {
 
-			e.registered.datetime = e.registered["#text"];
-			e.registered["#text"] = void 0;
-			e.registered.uts = toInt(e.registered.unixtime);
-			e.registered.unixtime = void 0;
+			e = setDate(e, "registered");
 			e = convertEntry(e);
 			return e;
 
@@ -49,9 +46,7 @@ export default class UserClass extends Base {
 		res["@attr"] = void 0;
 		res.tracks = toArray(res.track).map((e:any) => {
 
-			e.date.datetime = e.date["#text"];
-			e.date["#text"] = void 0;
-			e.date.uts = toInt(e.date.uts);
+			e = setDate(e, "date");
 			e = convertEntry(e);
 			return e;
 
@@ -98,35 +93,7 @@ export default class UserClass extends Base {
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
-
-		res.tracks = toArray(res.track).map((e:any) => {
-			if (!e.artist.hasOwnProperty("name")) {
-				e.artist.name = e.artist["#text"];
-				e.artist["#text"] = void 0;
-			}
-
-			if (e.hasOwnProperty("album")) {
-				e.album.name ||= e.album["#text"];
-				e.album["#text"] = void 0;
-			}
-			
-			if (e.hasOwnProperty("date")) {
-				e.date.datetime = e.date["#text"];
-				e.date["#text"] = void 0;
-			}
-
-			if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
-				e.nowplaying = e["@attr"].nowplaying;
-				e["@attr"] = void 0;
-			}
-
-			e = convertEntry(e);
-			e.date.uts = toInt(e.date.uts);
-
-			return e;
-
-		});
-
+		res.tracks = convertGetRecentTracks(res.track);
 		res.track = void 0;
 
 		return res as UserInterface.getRecentTracks;
@@ -138,14 +105,8 @@ export default class UserClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as any;
-	
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
 
-		res.albums = convertEntryArray(res.album);
-		res.album = void 0;
-
-		return res as UserInterface.getTopAlbums;
+		return convertExtendedMeta(res, "album") as UserInterface.getTopAlbums;
 
 	}
 
@@ -154,12 +115,8 @@ export default class UserClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
-		
-		res.meta = convertMeta(res["@attr"]);
-		res.artists = convertEntryArray(res.artist);
-		res.artist = void 0;
 
-		return res as UserInterface.getTopArtists;
+		return convertExtendedMeta(res, "artist") as UserInterface.getTopArtists;
 
 	}
 
@@ -169,12 +126,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as any;
 
-		res.tags = convertEntryArray(res.tag);
-		res.tag = void 0;
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-
-		return res as UserInterface.getTopTags;
+		return convertExtendedMeta(res, "tag") as UserInterface.getTopTags;
 
 	}
 
@@ -184,13 +136,7 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
 
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-
-		res.tracks = convertEntryArray(res.track);
-		res.track = void 0;
-
-		return res as UserInterface.getTopTracks;
+		return convertExtendedMeta(res, "track") as UserInterface.getTopTracks;
 	}
 
 	public async getWeeklyAlbumChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
@@ -220,14 +166,8 @@ export default class UserClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as any;
-		
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
 
-		res.artists = convertEntryArray(res.artist);
-		res.artist = void 0;
-
-		return res as UserInterface.getWeeklyArtistChart;
+		return convertExtendedMeta(res, "artist") as UserInterface.getWeeklyArtistChart;
 	}
 
 	public async getWeeklyChartList() {

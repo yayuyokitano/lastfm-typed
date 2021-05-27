@@ -1,15 +1,13 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
-import { toInt, toArray, convertMeta, convertSearch, convertImage, convertEntryArray, convertEntry } from "../caster";
+import { toInt, toArray, convertMeta, convertEntryArray, convertEntry, joinArray, convertSearchWithQuery, convertBasicMetaTag } from "../caster";
 
 export default class ArtistClass extends Base {
 
 	public async addTags(artist:string, tags:string[]|string, sk:string) {
 
-		if (Array.isArray(tags)) {
-			tags = tags.join(",");
-		}
+		tags = joinArray(tags);
 
 		return await this.sendRequest({ method: "artist.addTags", tags, sk, artist }) as {};
 
@@ -65,12 +63,7 @@ export default class ArtistClass extends Base {
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params })).tags) as any;
 
-		res.meta = res["@attr"];
-		res["@attr"] = void 0;
-		res.tags = toArray(res.tag);
-		res.tag = void 0;
-
-		return res as ArtistInterface.getTags;
+		return convertBasicMetaTag(res) as ArtistInterface.getTags;
 
 	}
 
@@ -93,13 +86,8 @@ export default class ArtistClass extends Base {
 	public async getTopTags(artist:ArtistInput, params?:{autocorrect?:0|1}) {
 
 		let res = (await this.sendRequest({ method: "artist.getTopTags", ...artist, ...params })).toptags as any;
-		
-		res.meta = res["@attr"];
-		res["@attr"] = void 0;
-		res.tags = res.tag;
-		res.tag = void 0;
 
-		return res as ArtistInterface.getTopTags;
+		return convertBasicMetaTag(res) as ArtistInterface.getTopTags;
 
 	}
 
@@ -130,12 +118,7 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({method: "artist.search", artist, ...params})).results as any;
 
-		res.meta = res["@attr"];
-		res["@attr"] = void 0;
-		res.meta.query = res.meta.for;
-		res.meta.for = void 0;
-		
-		res = convertSearch(res);
+		res = convertSearchWithQuery(res);
 
 		res.artistMatches = convertEntryArray(res.artistmatches.artist);
 		res.artistmatches = void 0;

@@ -1,6 +1,6 @@
 import * as ChartInterface from "../interfaces/chartInterface";
 import Base from "../base";
-import { convertMeta, convertEntryArray } from "../caster";
+import { convertExtendedMeta } from "../caster";
 
 export default class ChartClass extends Base {
 
@@ -8,12 +8,7 @@ export default class ChartClass extends Base {
 
 		let res = (await this.getTop("chart.getTopArtists", params)).artists as any;
 
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-		res.artists = convertEntryArray(res.artist);
-		res.artist = void 0;
-
-		return res as ChartInterface.getTopArtists;
+		return convertExtendedMeta(res, "artist") as ChartInterface.getTopArtists;
 
 	}
 
@@ -21,12 +16,7 @@ export default class ChartClass extends Base {
 
 		let res = (await this.getTop("chart.getTopTags", params)).tags as any;
 
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-		res.tags = convertEntryArray(res.tag);
-		res.tag = void 0;
-
-		return res as ChartInterface.getTopTags;
+		return convertExtendedMeta(res, "tag") as ChartInterface.getTopTags;
 
 	}
 
@@ -34,12 +24,7 @@ export default class ChartClass extends Base {
 
 		let res = (await this.getTop("chart.getTopTracks", params)).tracks as any;
 
-		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
-		res.tracks = convertEntryArray(res.track);
-		res.track = void 0;
-
-		return res as ChartInterface.getTopTracks;
+		return convertExtendedMeta(res, "track") as ChartInterface.getTopTracks;
 
 	}
 

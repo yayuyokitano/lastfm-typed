@@ -59,6 +59,17 @@ export function convertSearch(res:any) {
 
 }
 
+export function convertSearchWithQuery(res:any) {
+
+	res.meta = res["@attr"];
+	res["@attr"] = void 0;
+	res.meta.query = res.meta.for;
+	res.meta.for = void 0;
+
+	return convertSearch(res);
+
+}
+
 export function convertImage(img:any) {
 
 	img.url = img["#text"];
@@ -69,7 +80,7 @@ export function convertImage(img:any) {
 
 export const convertImageArray = (img:any) => toArray(img).map(convertImage);
 
-export function convertEntry(e:any) {
+function entryIntConverter(e:any) {
 
 	for (let key of ["playcount", "listeners", "tagcount", "userplaycount", "rank", "duration", "taggings", "reach", "bootstrap", "age", "count"]) {
 		if (e.hasOwnProperty(key)) {
@@ -82,12 +93,11 @@ export function convertEntry(e:any) {
 			e["@attr"] = void 0;
 		}
 	}
+	return e;
 
-	for (let key of ["ontour", "userloved", "subscriber", "loved"]) {
-		if (e.hasOwnProperty(key)) {
-			e[key] = toBool(e[key]); // eslint-disable-line
-		}
-	}
+}
+
+function entryStreamableConverter(e:any) {
 
 	if (e.hasOwnProperty("streamable")) {
 		if (e.streamable.hasOwnProperty("fulltrack")) {
@@ -98,6 +108,21 @@ export function convertEntry(e:any) {
 			e.streamable = toBool(e.streamable?.["#text"] ?? e.streamable);
 		}
 	}
+	return e;
+
+}
+
+export function convertEntry(e:any) {
+
+	e = entryIntConverter(e);
+
+	for (let key of ["ontour", "userloved", "subscriber", "loved"]) {
+		if (e.hasOwnProperty(key)) {
+			e[key] = toBool(e[key]); // eslint-disable-line
+		}
+	}
+
+	e = entryStreamableConverter(e);
 
 	if (e.hasOwnProperty("image")) {
 		e.image = convertImageArray(e.image);
@@ -108,3 +133,69 @@ export function convertEntry(e:any) {
 }
 
 export const convertEntryArray = (e:any) => toArray(e).map(convertEntry);
+
+function setName(e:any) {
+
+	if (!e.artist.hasOwnProperty("name")) {
+		e.artist.name = e.artist["#text"];
+		e.artist["#text"] = void 0;
+	}
+
+	if (e.hasOwnProperty("album")) {
+		e.album.name ||= e.album["#text"];
+		e.album["#text"] = void 0;
+	}
+
+	return e;
+
+}
+
+export function setDate(e:any, prop:string) {
+
+	if (e.hasOwnProperty(prop)) {
+		e[prop].datetime = e[prop]["#text"]; // eslint-disable-line
+		e[prop]["#text"] = void 0; // eslint-disable-line
+		e[prop].uts = toInt(e[prop].uts ?? e[prop].unixtime); // eslint-disable-line
+		e[prop].unixtime = void 0; // eslint-disable-line
+	}
+
+	return e;
+
+}
+
+function convertGetRecentTracksEntry(e:any) {
+
+	e = setName(e);
+	e = setDate(e, "date");
+
+	if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
+		e.nowplaying = e["@attr"].nowplaying;
+		e["@attr"] = void 0;
+	}
+	return convertEntry(e);
+
+}
+
+export const convertGetRecentTracks = (e:any) => toArray(e).map(convertGetRecentTracksEntry);
+
+export const joinArray = (e:string[]|string) => Array.isArray(e) ? e.join(",") : e;
+
+export function convertBasicMetaTag(res:any) {
+
+	res.meta = res["@attr"];
+	res["@attr"] = void 0;
+	res.tags = toArray(res.tag);
+	res.tag = void 0;
+	return res;
+
+}
+
+export function convertExtendedMeta(res:any, type:"tag"|"artist"|"album"|"track") {
+
+	res.meta = convertMeta(res["@attr"]);
+	res["@attr"] = void 0;
+	res[`${type}s`] = convertEntryArray(res[type]); // eslint-disable-line
+	res[type] = void 0; // eslint-disable-line
+	return res;
+	
+}

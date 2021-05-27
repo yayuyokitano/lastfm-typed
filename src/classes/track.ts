@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta } from "../caster";
 
 interface ScrobbleObject {
 	artist:string;
@@ -19,9 +19,7 @@ export default class TrackClass extends Base {
 
 	public async addTags(artist:string, track:string, tags:string[]|string, sk:string) {
 
-		if (Array.isArray(tags)) {
-			tags = tags.join(",");
-		}
+		tags = joinArray(tags);
 
 		return await this.sendRequest({ method: "track.addTags", tags, sk, artist, track }) as {};
 
@@ -69,11 +67,7 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({ method: "track.getSimilar", ...track, ...params })).similartracks as any;
 
-		res.meta = res["@attr"];
-		res["@attr"] = void 0;
-		res.tracks = convertEntryArray(res.track);
-
-		return res as TrackInterface.getSimilar;
+		return convertExtendedMeta(res, "track") as TrackInterface.getSimilar;
 
 	}
 	
@@ -81,24 +75,14 @@ export default class TrackClass extends Base {
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
 
-		res.meta = res["@attr"];
-		res["@attr"] = void 0;
-		res.tags = toArray(res.tag);
-		res.tag = void 0;
-
-		return res as TrackInterface.getTags;
+		return convertBasicMetaTag(res) as TrackInterface.getTags;
 	}
 
 	public async getTopTags(track:TrackInput, params?:{autocorrect?:0|1}) {
 
 		let res = (await this.sendRequest({ method: "track.getTopTags", ...track, ...params })).toptags as any;
 
-		res.meta = res["@attr"];
-		res["@attr"] = void 0;
-		res.tags = toArray(res.tag);
-		res.tag = void 0;
-
-		return res as TrackInterface.getTopTags;
+		return convertBasicMetaTag(res) as TrackInterface.getTopTags;
 
 	}
 
