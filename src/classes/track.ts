@@ -61,7 +61,7 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async getSimilar(track:TrackInput, params?:{limit?:number, autocorrect?:0|1}) {
+	public async getSimilar(track:TrackInput, params?:{limit?:number, autocorrect?:boolean}) {
 
 		this.checkLimit(params?.limit, 1000);
 
@@ -71,7 +71,7 @@ export default class TrackClass extends Base {
 
 	}
 	
-	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
+	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}) {
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
 

@@ -30,7 +30,7 @@ describe("User", async () => {
 		});
 
 		it("Should return properly with recenttracks", async () => {
-			(expect(await lastfm.user.getFriends("Mexdeep", {recenttracks: 1})).to.be as any).jsonSchema(userSchema.getFriends);
+			(expect(await lastfm.user.getFriends("Mexdeep", {recenttracks: true})).to.be as any).jsonSchema(userSchema.getFriends);
 		});
 
 		it("Should error for user with no friends", async () => {

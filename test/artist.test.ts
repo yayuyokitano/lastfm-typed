@@ -48,6 +48,14 @@ describe("Artist", async () => {
 		it("Should return properly for artist.getInfo without username", async () => {
 			(expect(await lastfm.artist.getInfo(lastfm.helper.ArtistFromName("PassCode"))).to.be as any).jsonSchema(artistSchema.getInfo);
 		});
+
+		it("Should return properly for artist.getInfo when autocorrect is specified true", async () => {
+			expect((await lastfm.artist.getInfo(lastfm.helper.ArtistFromName("Sheena Ringo"), {autocorrect: true})).name).to.equal("椎名林檎");
+		});
+
+		it("Should return properly for artist.getInfo when autocorrect is specified false", async () => {
+			expect((await lastfm.artist.getInfo(lastfm.helper.ArtistFromName("Sheena Ringo"), {autocorrect: false})).name).to.equal("Sheena Ringo");
+		});
 	
 		it("Should error when artist.getInfo artist does not exist", async () => {
 			try {

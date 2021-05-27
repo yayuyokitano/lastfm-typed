@@ -21,6 +21,7 @@ const types = {
 	album: ["getInfo", "getTags", "getTopTags", "search"],
 	artist: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopAlbums", "getTopTags", "getTopTracks", "search"],
 	chart: ["getTopArtists", "getTopTags", "getTopTracks"],
+	geo: ["getTopArtists", "getTopTracks"],
 	library: ["getArtists"],
 	tag: ["getInfo", "getTopAlbums", "getTopArtists", "getTopTags", "getTopTracks"],
 	track: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopTags", "scrobble", "search"],

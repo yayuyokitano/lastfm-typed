@@ -25,7 +25,7 @@ export default class AlbumClass extends Base {
 
 	}
 	
-	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
+	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}) {
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as any;
 
@@ -33,7 +33,7 @@ export default class AlbumClass extends Base {
 
 	}
 
-	public async getTopTags(album:AlbumInput, params?:{autocorrect?:0|1}) {
+	public async getTopTags(album:AlbumInput, params?:{autocorrect?:boolean}) {
 
 		let res = (await this.sendRequest({ method: "album.getTopTags", ...album, ...params })).toptags as any;
 

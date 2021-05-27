@@ -1,5 +1,6 @@
 import * as GeoInterface from "../interfaces/geoInterface";
 import Base from "../base";
+import { convertExtendedMeta } from "../caster";
 
 export default class GeoClass extends Base {
 
@@ -7,12 +8,7 @@ export default class GeoClass extends Base {
 
 		let res = (await this.getTop("geo.getTopArtists", country, params)).topartists as any;
 
-		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.artists = res.artist;
-		delete res.artist;
-
-		return res as GeoInterface.getTopArtists;
+		return convertExtendedMeta(res, "artist") as GeoInterface.getTopArtists;
 
 	}
 
@@ -20,17 +16,7 @@ export default class GeoClass extends Base {
 
 		let res = (await this.getTop("geo.getTopTracks", country, params)).tracks as any;
 
-		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.tracks = res.track;
-		delete res.track;
-
-		res.tracks.forEach((e:any) => {
-			e.streamable.isStreamable = e.streamable["#text"];
-			delete e.streamable["#text"];
-		});
-
-		return res as GeoInterface.getTopTracks;
+		return convertExtendedMeta(res, "track") as GeoInterface.getTopTracks;
 
 	}
 

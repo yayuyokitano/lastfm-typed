@@ -4,7 +4,7 @@ import { toInt, toArray, convertMeta, convertEntry, convertEntryArray, convertGe
 
 export default class UserClass extends Base {
 
-	public async getFriends(usernameOrSessionKey:string, params?:{recenttracks?:0|1, limit?:number, page?:number}) {
+	public async getFriends(usernameOrSessionKey:string, params?:{recenttracks?:boolean, limit?:number, page?:number}) {
 
 		this.checkLimit(params?.limit, 1000);
 

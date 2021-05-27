@@ -26,7 +26,7 @@ export default class ArtistClass extends Base {
 
 	}
 
-	public async getInfo(artist:ArtistInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
+	public async getInfo(artist:ArtistInput, params?:{autocorrect?:boolean, username?:string, sk?:string, lang?:string}) {
 
 		let res = (await this.sendRequest({ method: "artist.getInfo", ...artist, ...params })).artist as any;
 
@@ -43,7 +43,7 @@ export default class ArtistClass extends Base {
 
 	}
 
-	public async getSimilar(artist:ArtistInput, params?:{limit?:number, autocorrect?:0|1}) {
+	public async getSimilar(artist:ArtistInput, params?:{limit?:number, autocorrect?:boolean}) {
 
 		this.checkLimit(params?.limit, 1000);
 
@@ -59,7 +59,7 @@ export default class ArtistClass extends Base {
 
 	}
 	
-	public async getTags(artist:ArtistInput, usernameOrSessionKey:string, params?:{autocorrect?:0|1}) {
+	public async getTags(artist:ArtistInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}) {
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params })).tags) as any;
 
@@ -67,7 +67,7 @@ export default class ArtistClass extends Base {
 
 	}
 
-	public async getTopAlbums(artist:ArtistInput, params?:{autocorrect?:0|1, page?:number, limit?:number}) {
+	public async getTopAlbums(artist:ArtistInput, params?:{autocorrect?:boolean, page?:number, limit?:number}) {
 
 		this.checkLimit(params?.limit, 1000);
 
@@ -83,7 +83,7 @@ export default class ArtistClass extends Base {
 
 	}
 
-	public async getTopTags(artist:ArtistInput, params?:{autocorrect?:0|1}) {
+	public async getTopTags(artist:ArtistInput, params?:{autocorrect?:boolean}) {
 
 		let res = (await this.sendRequest({ method: "artist.getTopTags", ...artist, ...params })).toptags as any;
 
@@ -91,7 +91,7 @@ export default class ArtistClass extends Base {
 
 	}
 
-	public async getTopTracks(artist:ArtistInput, params?:{autocorrect?:0|1, page?:number, limit?:number}) {
+	public async getTopTracks(artist:ArtistInput, params?:{autocorrect?:boolean, page?:number, limit?:number}) {
 
 		this.checkLimit(params?.limit, 1000);
 

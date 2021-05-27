@@ -170,7 +170,7 @@ describe("Track", async () => {
 			});
 		});
 
-		it("Should return properly for many track", async () => {
+		it("Should return properly for many tracks", async () => {
 			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "yumeutsutsu", album: "THE PARK", timestamp: Number(new Date()) / 1000},{artist: "赤い公園", track: "yumeutsutsu", album: "THE PARK", timestamp: (Number(new Date()) / 1000) - 1}])).to.be as any).jsonSchema(trackSchema.scrobble);
 		});
 

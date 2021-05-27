@@ -8,6 +8,8 @@ export function toInt(num:any) {
 
 }
 
+export const boolToInt = (bool:boolean):number => Number(bool);
+
 export const toBool = (bool:any) => bool !== 0 && bool && bool !== "0";
 
 export function toArray(arr:any) {

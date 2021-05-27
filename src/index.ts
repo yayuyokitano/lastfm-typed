@@ -11,6 +11,7 @@ import LoggerClass from "./logger";
 import TypedEmitter from "typed-emitter";
 import {EventEmitter} from "events";
 import {LFMArgumentObject} from "./request";
+import GeoClass from "./classes/geo";
 
 interface Logger {
 	requestStart: (args:LFMArgumentObject, HTTPMethod:"GET"|"POST") => void;
@@ -20,6 +21,7 @@ interface Logger {
 export default class LastFM extends (EventEmitter as { new<Logger>(): TypedEmitter<Logger>})<Logger> {
 	public tag:TagClass;
 	public chart:ChartClass;
+	public geo:GeoClass;
 	public auth:AuthClass;
 	public album:AlbumClass;
 	public artist:ArtistClass;
@@ -55,6 +57,7 @@ export default class LastFM extends (EventEmitter as { new<Logger>(): TypedEmitt
 
 		this.tag = new TagClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.chart = new ChartClass(apiKey, this, apiSecret, userAgent, secureConnection);
+		this.geo = new GeoClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.auth = new AuthClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.album = new AlbumClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.artist = new ArtistClass(apiKey, this, apiSecret, userAgent, secureConnection);

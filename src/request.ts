@@ -3,6 +3,7 @@ import {stringify} from "querystring";
 import * as crypto from "crypto";
 import * as Logger from "./interfaces/loggerInterface";
 import LastFM from ".";
+import { boolToInt } from "./caster";
 
 export interface LFMArgumentObject {
 	
@@ -27,8 +28,10 @@ export interface LFMArgumentObject {
 	tags?:string;
 	mbid?:string;
 	track?:string;
-	timestamp?:string;
+	timestamp?:number;
 	taggingType?:string;
+	autocorrect?:boolean|number;
+	recenttracks?:boolean|number;
 
 }
 
@@ -53,6 +56,14 @@ export class LFMRequest {
 		this.connectionType = secureConnection ? "https" : "http";
 		this.context = info.context;
 		this.startTime = Date.now();
+
+		if (this.params.hasOwnProperty("autocorrect")) {
+			this.params.autocorrect = boolToInt(this.params.autocorrect as boolean ?? true);
+		}
+
+		if (this.params.hasOwnProperty("recenttracks")) {
+			this.params.recenttracks = boolToInt(this.params.recenttracks as boolean ?? true);
+		}
 
 	}
 

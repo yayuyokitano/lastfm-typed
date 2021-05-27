@@ -1,7 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, convertMeta, convertEntryArray, convertExtendedMeta } from "../caster";
+import { toInt, convertEntryArray, convertExtendedMeta } from "../caster";
 
 export default class TagClass extends Base {
 
