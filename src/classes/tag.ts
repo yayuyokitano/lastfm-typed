@@ -18,18 +18,26 @@ export default class TagClass extends Base {
 		let res = (await this.getTop("tag.getTopAlbums", tag, params)).albums as any;
 		
 		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.albums = res.album;
-		delete res.album;
+		res["@attr"] = void 0;
+		res.albums = toArray(res.album).map((e:any) => {
 
-		res.albums.forEach((e:any) => {
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
-			e.image.forEach((f:any) => {
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
+
+			return e;
+
 		});
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as TagInterface.getTopAlbums;
 
@@ -40,14 +48,20 @@ export default class TagClass extends Base {
 		let res = (await this.getTop("tag.getTopArtists", tag, params)).topartists as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.artists = res.artist;
-		delete res.artist;
+		res["@attr"] = void 0;
 
-		res.artists.forEach((e:any) => {
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+		res.artists = toArray(res.artist).map((e:any) => {
+
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			return e;
+
 		});
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as TagInterface.getTopArtists;
 
@@ -60,18 +74,21 @@ export default class TagClass extends Base {
 
 		let res = (await this.getTop("tag.getTopTags", "", newParams)).toptags as any;
 
+		const total = toInt(res["@attr"].total)
+		if (typeof total === "undefined") {
+			throw "Total is not a number";
+		}
+
 		let attr:ShortMetadata = {
-			total: toInt(res["@attr"].total),
+			total,
 			page: ((newParams.offset / newParams.num_res) + 1),
 			perPage: newParams.num_res,
-			totalPages: Math.ceil(toInt(res["@attr"].total) / newParams.num_res)
+			totalPages: Math.ceil(total) / newParams.num_res
 		};
 
 		res.meta = attr;
 		res["@attr"] = void 0;
-		res.tags = toArray(res.tag);
-
-		res.tags.map((e: any) => {
+		res.tags = toArray(res.tag).map((e: any) => {
 			e.rank = toInt(e.rank);
 			return e;
 		});
@@ -86,16 +103,23 @@ export default class TagClass extends Base {
 		let res = (await this.getTop("tag.getTopTracks", tag, params)).tracks as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.tracks = res.track;
-		delete res.track;
+		res["@attr"] = void 0;
+		res.tracks = toArray(res.track).map((e:any) => {
 
-		res.tracks.forEach((e:any) => {
-			e.streamable.isStreamable = e.streamable["#text"];
-			delete e.streamable["#text"];
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+			e.streamable.isStreamable = toBool(e.streamable["#text"]);
+			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
+			e.streamable["#text"] = void 0;
+			e.duration = toInt(e.duration);
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			return e;
+
 		});
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as TagInterface.getTopTracks;
 

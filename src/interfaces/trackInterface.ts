@@ -9,7 +9,7 @@ interface TrackMetadata extends Metadata {
 }
 
 interface SimilarTrack extends ArtistNoMBID {
-	duration:number;
+	duration?:number;
 	streamable: {
 		isStreamable:boolean;
 		fulltrack:boolean;
@@ -29,14 +29,16 @@ interface searchTrack {
 	mbid:string;
 }
 
-export interface getCorrection {
+interface Correction {
 	track:TrackBasic;
 	meta: {
 		index:number;
-		artistcorrected:string;
-		trackcorrected:string;
+		artistcorrected:boolean;
+		trackcorrected:boolean;
 	}
 }
+
+export type getCorrection = Correction | {};
 
 export interface getInfo extends GlobalTrackOptionalMBID {
 	userloved?:boolean;
@@ -45,10 +47,10 @@ export interface getInfo extends GlobalTrackOptionalMBID {
 	album?: {
 		artist:string;
 		title:string;
-		mbid:string;
+		mbid?:string;
 		url:string;
 		image:Image[];
-		position:number;
+		position?:number;
 	}
 	artist:ArtistOptionalMBID;
 }
@@ -76,9 +78,9 @@ interface ScrobbleEntry {
 }
 
 export interface scrobble {
-	head: {
-		accepted:boolean;
-		ignored:boolean;
+	meta: {
+		accepted:number;
+		ignored:number;
 	}
 	scrobbles: {
 		artist:ScrobbleEntry;

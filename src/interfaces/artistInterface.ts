@@ -1,4 +1,4 @@
-import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist, ShortMetadata } from "./shared";
+import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist, ShortMetadata, ArtistStreamableOptionalMBID } from "./shared";
 
 interface Metadata {
 	artist:string;
@@ -6,7 +6,7 @@ interface Metadata {
 
 type LargeMetadata = Metadata & ShortMetadata;
 
-interface SimilarArtist extends Artist {
+interface SimilarArtist extends ArtistStreamableOptionalMBID {
 	match:string;
 }
 
@@ -19,17 +19,19 @@ interface TrackData extends ArtistOptionalMBID {
 	rank:number;
 }
 
-export interface getCorrection {
-	artist:ArtistBasic;
+interface correctionInterface {
+	artist:ArtistOptionalMBID;
 	index:number;
 }
 
-export interface getInfo extends Artist {
+export type getCorrection = correctionInterface | {};
+
+export interface getInfo extends ArtistStreamableOptionalMBID {
 	ontour:boolean;
 	stats: {
 		listeners:number;
 		playcount:number;
-		userplaycount:number;
+		userplaycount?:number;
 	}
 	similarArtists:ArtistNoMBID[];
 	tags:TagWUrl[];
@@ -50,7 +52,7 @@ export interface getSimilar {
 }
 
 export interface getTags {
-	tag:TagWUrl[];
+	tags:TagWUrl[];
 	meta:Metadata;
 }
 
@@ -60,7 +62,7 @@ export interface getTopAlbums {
 }
 
 export interface getTopTags {
-	tag:TagUrlCount[];
+	tags:TagUrlCount[];
 	meta:Metadata;
 }
 

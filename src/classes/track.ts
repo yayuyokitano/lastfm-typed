@@ -1,6 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
+import { toInt, toBool, toArray } from "../caster";
 
 interface ScrobbleObject {
 	artist:string;
@@ -32,7 +33,12 @@ export default class TrackClass extends Base {
 
 		if (Object.keys(res).length) {
 			res.meta = res["@attr"];
-			delete res["@attr"];
+			res["@attr"] = void 0;
+
+			res.meta.index = toInt(res.meta.index);
+			res.meta.artistcorrected = toBool(res.meta.artistcorrected);
+			res.meta.trackcorrected = toBool(res.meta.trackcorrected);
+			
 		}
 
 		return res as TrackInterface.getCorrection;
@@ -44,15 +50,24 @@ export default class TrackClass extends Base {
 		let res = (await this.sendRequest({ method: "track.getInfo", ...track, ...params })).track as any;
 
 		res.toptags = res.toptags.tag;
+		res.userloved = toBool(res.userloved);
+		res.playcount = toInt(res.playcount);
+		res.userplaycount = toInt(res.userplaycount);
+		res.listeners = toInt(res.listeners);
+		res.duration = toInt(res.duration);
 		if (res.album) {
+			
 			if (res.album["@attr"]) {
-				res.album.position = res.album["@attr"].position;
-				delete res.album["@attr"];
+				res.album.position = toInt(res.album["@attr"].position);
+				res.album["@attr"] = void 0;
 			}
-			res.album.image.forEach((e:any) => {
+			
+			res.album.image = toArray(res.album.image).map((e:any) => {
 				e.url = e["#text"];
-				delete e["#text"];
+				e["#text"] = void 0;
+				return e;
 			});
+
 		}
 
 		return res as TrackInterface.getInfo;
@@ -66,13 +81,12 @@ export default class TrackClass extends Base {
 		let res = (await this.sendRequest({ method: "track.getSimilar", ...track, ...params })).similartracks as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.tracks = res.track;
-		delete res.track;
-
-		res.tracks.forEach((e:any) => {
-			e.streamable.isStreamable = e.streamable["#text"];
-			delete e.streamable["#text"];
+		res["@attr"] = void 0;
+		res.tracks = toArray(res.track).map((e:any) => {
+			e.streamable.isStreamable = toBool(e.streamable["#text"]);
+			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
+			e.streamable["#text"] = void 0;
+			return e;
 		});
 
 		return res as TrackInterface.getSimilar;
@@ -84,9 +98,9 @@ export default class TrackClass extends Base {
 		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 		res.tags = res.tag;
-		delete res.tag;
+		res.tag = void 0;
 
 		return res as TrackInterface.getTags;
 	}
@@ -96,9 +110,9 @@ export default class TrackClass extends Base {
 		let res = (await this.sendRequest({ method: "track.getTopTags", ...track, ...params })).toptags as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 		res.tags = res.tag;
-		delete res.tag;
+		res.tag = void 0;
 
 		return res as TrackInterface.getTopTags;
 
@@ -130,36 +144,44 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk})).scrobbles as any;
 
-		res.head = res["@attr"];
-		delete res["@attr"];
-		res.scrobbles = res.scrobble;
-		delete res.scrobble;
-		//consistency woo
-		if (res.scrobbles.artist) {
-			res.scrobbles = [res.scrobbles];
-		}
-		
-		res.scrobbles.forEach((e:any) => {
+		res.meta = res["@attr"];
+		res["@attr"] = void 0;
+
+		res.meta.accepted = toInt(res.meta.accepted);
+		res.meta.ignored = toInt(res.meta.ignored);
+
+		res.scrobbles = toArray(res.scrobble).map((e:any) => {
 			e.ignoredMessage.message = e.ignoredMessage["#text"];
-			delete e.ignoredMessage["#text"];
+			e.ignoredMessage["#text"] = void 0;
 
 			if (e.artist["#text"]) {
 				e.artist.name = e.artist["#text"];
-				delete e.artist["#text"];
+				e.artist["#text"] = void 0;
 			}
 			if (e.album["#text"]) {
 				e.album.name = e.album["#text"];
-				delete e.album["#text"];
+				e.album["#text"] = void 0;
 			}
 			if (e.track["#text"]) {
 				e.track.name = e.track["#text"];
-				delete e.track["#text"];
+				e.track["#text"] = void 0;
 			}
 			if (e.albumArtist["#text"]) {
 				e.albumArtist.name = e.albumArtist["#text"];
-				delete e.albumArtist["#text"];
+				e.albumArtist["#text"] = void 0;
 			}
+
+			e.artist.corrected = toBool(e.artist.corrected);
+			e.album.corrected = toBool(e.album.corrected);
+			e.albumArtist.corrected = toBool(e.albumArtist.corrected);
+			e.track.corrected = toBool(e.track.corrected);
+			e.ignoredMessage.code = toInt(e.ignoredMessage.code);
+			e.timestamp = toInt(e.timestamp);
+
+			return e;
 		});
+
+		res.scrobble = void 0;
 
 		return res as TrackInterface.scrobble;
 
@@ -171,24 +193,38 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({method: "track.search", track, ...params})).results as any;
 
-		delete res["opensearch:Query"]["#text"];
+		res["opensearch:Query"]["#text"] = void 0;
 		res.itemsPerPage = res["opensearch:itemsPerPage"];
-		delete res["opensearch:itemsPerPage"];
+		res["opensearch:itemsPerPage"] = void 0;
 		res.startIndex = res["opensearch:startIndex"];
-		delete res["opensearch:startIndex"];
+		res["opensearch:startIndex"] = void 0;
 		res.totalResults = res["opensearch:totalResults"];
-		delete res["opensearch:totalResults"];
+		res["opensearch:totalResults"] = void 0;
 		res.query = res["opensearch:Query"];
-		delete res["opensearch:Query"];
-		res.trackMatches = res.trackmatches.track;
-		delete res.trackmatches;
+		res["opensearch:Query"] = void 0;
 
-		res.trackMatches.forEach((e:any) => {
-			e.image.forEach((f:any) => {
+		res.trackMatches = toArray(res.trackmatches.track).map((e:any) => {
+
+			e.streamable = toBool(e.streamable);
+			e.listeners = toInt(e.listeners);
+			e.playcount = toInt(e.playcount);
+
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
+
+			return e;
+
 		});
+
+		res.trackmatches = void 0;
+
+		res.query.startPage = toInt(res.query.startPage);
+		res.totalResults = toInt(res.totalResults);
+		res.startIndex = toInt(res.startIndex);
+		res.itemsPerPage = toInt(res.itemsPerPage);
 
 		return res as TrackInterface.search;
 	}

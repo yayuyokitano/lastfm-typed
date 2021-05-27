@@ -65,12 +65,12 @@ export interface ArtistBasic extends ArtistNoMBID {
 	mbid:string;
 }
 
-export interface TrackBasic extends ArtistNoMBID {
-	artist:ArtistBasic;
-}
-
 export interface ArtistOptionalMBID extends ArtistNoMBID {
 	mbid?:string;
+}
+
+export interface TrackBasic extends ArtistNoMBID {
+	artist:ArtistOptionalMBID;
 }
 
 interface InfoNoMBID {
@@ -104,7 +104,7 @@ export interface AlbumGlobal extends AlbumOptionalMBID {
 	playcount:number;
 }
 
-export interface TagAlbum extends Album {
+export interface TagAlbum extends AlbumOptionalMBID {
 	rank:number;
 }
 
@@ -114,11 +114,15 @@ export interface GlobalAlbum extends BasicOptionalMBID {
 	playcount:number;
 }
 
+export interface ArtistStreamableOptionalMBID extends ArtistOptionalMBID {
+	streamable:boolean;
+}
+
 export interface Artist extends ArtistBasic {
 	streamable:boolean;
 }
 
-export interface TagArtist extends ArtistBasic {
+export interface TagArtist extends ArtistOptionalMBID {
 	rank:number;
 }
 
@@ -130,8 +134,11 @@ export interface GlobalArtist extends ListenerArtist {
 	playcount:number;
 }
 
-interface Track extends ArtistNoMBID {
+interface TrackNoStreamable extends ArtistNoMBID {
 	duration:number;
+}
+
+interface Track extends TrackNoStreamable {
 	streamable: {
 		isStreamable:boolean;
 		fulltrack:boolean;
@@ -152,7 +159,7 @@ export interface TrackOptionalMBIDImg extends TrackOptionalMBID {
 	image:Image[];
 }
 
-export interface TagTrack extends TrackMBID {
+export interface TagTrack extends TrackOptionalMBID {
 	rank:number;
 }
 
@@ -164,10 +171,12 @@ export interface GlobalTrack extends ListenerTrack {
 	playcount:number;
 }
 
-export interface GlobalTrackOptionalMBID extends TrackOptionalMBID {
+export interface GlobalTrackOptionalMBID extends TrackNoStreamable {
 	playcount:number;
 	listeners:number;
 	userplaycount?:number;
+	mbid?:string;
+	artist:ArtistOptionalMBID;
 }
 
 interface Tag {
@@ -190,6 +199,6 @@ export interface TagBasic extends Tag {
 export interface TagGlobalNoWiki extends Tag {
 	url:string;
 	reach:number;
-	taggings:string;
+	taggings:number;
 	streamable:boolean;
 }

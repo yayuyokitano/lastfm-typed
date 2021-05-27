@@ -19,7 +19,12 @@ const basePath = "./my-dir";
 
 const types = {
 	album: ["getInfo", "getTags", "getTopTags", "search"],
-	artist: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopAlbums", "getTopTags", "getTopTracks", "search"]
+	artist: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopAlbums", "getTopTags", "getTopTracks", "search"],
+	chart: ["getTopArtists", "getTopTags", "getTopTracks"],
+	library: ["getArtists"],
+	tag: ["getInfo", "getTopAlbums", "getTopArtists", "getTopTags", "getTopTracks"],
+	track: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopTags", "scrobble", "search"],
+	user: ["getFriends", "getInfo", "getLovedTracks", "getPersonalTags", "getRecentTracks", "getTopAlbums", "getTopArtists", "getTopTags", "getTopTracks", "getWeeklyAlbumChart", "getWeeklyArtistChart", "getWeeklyChartList", "getWeeklyTrackChart"]
 }
 
 console.log("\nGenerating typing schemas...");

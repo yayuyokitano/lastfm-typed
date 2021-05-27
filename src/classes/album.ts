@@ -24,8 +24,7 @@ export default class AlbumClass extends Base {
 		res.listeners = toInt(res.listeners);
 		res.playcount = toInt(res.playcount);
 
-		res.tracks = toArray(res.tracks.track);
-		res.tracks.map((e:any) => {
+		res.tracks = toArray(res.tracks.track).map((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
 			e.streamable["#text"] = void 0;
 			e.rank = e["@attr"].rank;
@@ -33,12 +32,11 @@ export default class AlbumClass extends Base {
 			return e;
 		});
 
-		res.tags = toArray(res.tags.tag);
-		res.tags.map((e:any) => {
+		res.tags = toArray(res.tags.tag).map((e:any) => {
 			e.rank = toInt(e.rank);
 			return e;
 		});
-		res.image.map((e:any) => {
+		res.image = toArray(res.image).map((e:any) => {
 			e.url = e["#text"];
 			e["#text"] = void 0;
 			return e;
@@ -53,7 +51,7 @@ export default class AlbumClass extends Base {
 		let res = this.convertGetTags((await this.sendRequest({ method: "album.getTags", ...album, user: usernameOrSessionKey, ...params })).tags) as any;
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
-		res.tags = res.tag;
+		res.tags = toArray(res.tag);
 		res.tag = void 0;
 
 		return res as AlbumInterface.getTags;
@@ -66,7 +64,7 @@ export default class AlbumClass extends Base {
 
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
-		res.tags = res.tag;
+		res.tags = toArray(res.tag);
 		res.tag = void 0;
 
 		return res as AlbumInterface.getTopTags;
@@ -97,18 +95,16 @@ export default class AlbumClass extends Base {
 		res["opensearch:totalResults"] = void 0;
 		res.query = res["opensearch:Query"];
 		res["opensearch:Query"] = void 0;
-		res.albumMatches = res.albummatches.album;
-		res.albummatches = void 0;
 
 		res.query.startPage = toInt(res.query.startPage);
 		res.totalResults = toInt(res.totalResults);
 		res.startIndex = toInt(res.startIndex);
 		res.itemsPerPage = toInt(res.itemsPerPage);
 
-		res.albumMatches.map((e:any) => {
+		res.albumMatches = toArray(res.albummatches.album).map((e:any) => {
 
 			e.streamable = toBool(e.streamable);
-			e.image.map((f:any) => {
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
 				f["#text"] = void 0;
 				return f;
@@ -116,6 +112,7 @@ export default class AlbumClass extends Base {
 			return e;
 		
 		});
+		res.albummatches = void 0;
 		
 		return res as AlbumInterface.search;
 

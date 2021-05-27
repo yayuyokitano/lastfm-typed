@@ -1,9 +1,5 @@
 import {GlobalArtist, ListenerTrack, ShortMetadata, TagGlobalNoWiki} from "./shared";
 
-interface Metadata extends ShortMetadata {
-	country:string;
-}
-
 export interface getTopArtists {
 	artists:GlobalArtist[];
 	meta:ShortMetadata;
@@ -16,5 +12,5 @@ export interface getTopTags {
 
 export interface getTopTracks {
 	tracks:ListenerTrack[];
-	meta:Metadata;
+	meta:ShortMetadata;
 }

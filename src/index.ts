@@ -1,5 +1,4 @@
 import TagClass from "./classes/tag";
-import GeoClass from "./classes/geo";
 import ChartClass from "./classes/chart";
 import AuthClass from "./classes/auth";
 import AlbumClass from "./classes/album";
@@ -20,7 +19,6 @@ interface Logger {
 
 export default class LastFM extends (EventEmitter as { new<Logger>(): TypedEmitter<Logger>})<Logger> {
 	public tag:TagClass;
-	public geo:GeoClass;
 	public chart:ChartClass;
 	public auth:AuthClass;
 	public album:AlbumClass;
@@ -56,7 +54,6 @@ export default class LastFM extends (EventEmitter as { new<Logger>(): TypedEmitt
 		};
 
 		this.tag = new TagClass(apiKey, this, apiSecret, userAgent, secureConnection);
-		this.geo = new GeoClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.chart = new ChartClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.auth = new AuthClass(apiKey, this, apiSecret, userAgent, secureConnection);
 		this.album = new AlbumClass(apiKey, this, apiSecret, userAgent, secureConnection);

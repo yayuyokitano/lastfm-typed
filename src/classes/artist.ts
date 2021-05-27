@@ -1,6 +1,7 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
+import { toInt, toBool, toArray } from "../caster";
 
 export default class ArtistClass extends Base {
 
@@ -19,8 +20,8 @@ export default class ArtistClass extends Base {
 		let res = (((await this.sendRequest({ method: "artist.getCorrection", artist }))?.corrections?.correction) || {}) as any;
 
 		if (Object.keys(res).length) {
-			res.index = res["@attr"].index;
-			delete res["@attr"];
+			res.index = toInt(res["@attr"].index);
+			res["@attr"] = void 0;
 		}
 
 		return res as ArtistInterface.getCorrection;
@@ -31,11 +32,17 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getInfo", ...artist, ...params })).artist as any;
 
-		res.similarArtists = res.similar.artist;
-		delete res.similar;
-		res.tags = res.tags.tag;
+		res.similarArtists = toArray(res.similar.artist);
+		res.similar = void 0;
+		res.tags = toArray(res.tags.tag);
 		res.bio.link = res.bio.links.link;
-		delete res.bio.links;
+		res.bio.links = void 0;
+
+		res.ontour = toBool(res.ontour);
+		res.stats.listeners = toInt(res.stats.listeners);
+		res.stats.playcount = toInt(res.stats.playcount);
+		res.stats.userplaycount = toInt(res.stats.userplaycount);
+		res.streamable = toBool(res.streamable);
 
 		return res as ArtistInterface.getInfo;
 
@@ -47,10 +54,14 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getSimilar", ...artist, ...params })).similarartists as any;
 
-		res.artists = res.artist;
-		delete res.artist;
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+
+		res.artists = toArray(res.artist).map((e:any) => {
+			e.streamable = toBool(e.streamable);
+			return e;
+		})
+		res.artist = void 0;
 		
 		return res as ArtistInterface.getSimilar;
 
@@ -61,7 +72,9 @@ export default class ArtistClass extends Base {
 		let res = this.convertGetTags((await this.sendRequest({ method: "artist.getTags", ...artist, user: usernameOrSessionKey, ...params })).tags) as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+		res.tags = toArray(res.tag);
+		res.tag = void 0;
 
 		return res as ArtistInterface.getTags;
 
@@ -73,16 +86,24 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getTopAlbums", ...artist, ...params })).topalbums as any;
 
-		res.albums = res.album;
-		delete res.album;
-		res.albums.forEach((e:any) => {
-			e.image.forEach((f:any) => {
+		res.albums = toArray(res.album).filter((e:any) => e.name !== "(null)")
+		.map((e:any) => {
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
+			return e;
 		});
+		res.album = void 0;
+
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as ArtistInterface.getTopAlbums;
 
@@ -93,7 +114,9 @@ export default class ArtistClass extends Base {
 		let res = (await this.sendRequest({ method: "artist.getTopTags", ...artist, ...params })).toptags as any;
 		
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+		res.tags = res.tag;
+		res.tag = void 0;
 
 		return res as ArtistInterface.getTopTags;
 
@@ -104,22 +127,32 @@ export default class ArtistClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "artist.getTopTracks", ...artist, ...params })).toptracks as any;
-		res.track.forEach((e:any) => {
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+		res.tracks = toArray(res.track).map((e:any) => {
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
 
-			e.image.forEach((f:any) => {
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
 
+			e.playcount = toInt(e.playcount);
+			e.listeners = toInt(e.listeners);
+			e.streamable = toBool(e.streamable);
+
+			return e;
 		});
 
-		res.tracks = res.track;
-		delete res.track;
+		res.track = void 0;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as ArtistInterface.getTopTracks;
 
@@ -137,21 +170,35 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({method: "artist.search", artist, ...params})).results as any;
 
-		delete res["opensearch:Query"]["#text"];
+		res["opensearch:Query"]["#text"] = void 0;
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 		res.meta.query = res.meta.for;
-		delete res.meta.for;
+		res.meta.for = void 0;
 		res.itemsPerPage = res["opensearch:itemsPerPage"];
-		delete res["opensearch:itemsPerPage"];
+		res["opensearch:itemsPerPage"] = void 0;
 		res.startIndex = res["opensearch:startIndex"];
-		delete res["opensearch:startIndex"];
+		res["opensearch:startIndex"] = void 0;
 		res.totalResults = res["opensearch:totalResults"];
-		delete res["opensearch:totalResults"];
+		res["opensearch:totalResults"] = void 0;
 		res.query = res["opensearch:Query"];
-		delete res["opensearch:Query"];
-		res.artistMatches = res.artistmatches.artist;
-		delete res.artistmatches;
+		res["opensearch:Query"] = void 0;
+
+		res.query.startPage = toInt(res.query.startPage);
+		res.totalResults = toInt(res.totalResults);
+		res.startIndex = toInt(res.startIndex);
+		res.itemsPerPage = toInt(res.itemsPerPage);
+
+		res.artistMatches = toArray(res.artistmatches.artist).map((e:any) => {
+
+			e.listeners = toInt(e.listeners);
+			e.streamable = toBool(e.streamable);
+			
+			return e;
+		
+		});
+
+		res.artistmatches = void 0;
 
 		return res as ArtistInterface.search;
 

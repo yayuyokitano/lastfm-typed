@@ -10,6 +10,6 @@ interface LocalArtist extends Artist {
 }
 
 export interface getArtists {
-	artist:LocalArtist;
+	artists:LocalArtist[];
 	meta:Metadata;
 }

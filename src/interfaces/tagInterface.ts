@@ -23,7 +23,6 @@ export interface getTopArtists {
 
 export interface getTopTags {
 	tags:TagBasic[];
-	meta:Metadata;
 }
 
 export interface getTopTracks {

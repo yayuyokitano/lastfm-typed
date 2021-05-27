@@ -10,17 +10,30 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getFriends", user: usernameOrSessionKey, ...params })).friends as any;
 
-		res.user.forEach((e:any) => {
+		res.user = toArray(res.user).map((e:any) => {
+
 			e.registered.datetime = e.registered["#text"];
-			delete e.registered["#text"];
-			e.image.forEach((f:any) => {
+			e.registered["#text"] = void 0;
+			e.registered.uts = toInt(e.registered.unixtime);
+			e.registered.unixtime = void 0;
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
+			e.subscriber = toBool(e.subscriber);
+			e.bootstrap = toInt(e.bootstrap);
+			return e;
+
 		});
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getFriends;
 
@@ -30,12 +43,17 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getInfo", user: usernameOrSessionKey })).user as any;
 
-		res.registered.datetime = res.registered["#text"];
-		delete res.registered["#text"];
-		res.image.forEach((e:any) => {
+		res.registered = toInt(res.registered.unixtime);
+		res.age = toInt(res.age);
+		res.image = toArray(res.image).map((e:any) => {
 			e.url = e["#text"];
-			delete e["#text"];
+			e["#text"] = void 0;
+			return e;
 		});
+
+		res.playcount = toInt(res.playcount);
+		res.subscriber = toBool(res.subscriber);
+		res.bootstrap = toInt(res.bootstrap);
 
 		return res as UserInterface.getInfo;
 
@@ -48,16 +66,25 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getLovedTracks", user: usernameOrSessionKey, ...params })).lovedtracks as any;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.tracks = res.track;
-		delete res.track;
+		res["@attr"] = void 0;
+		res.tracks = toArray(res.track).map((e:any) => {
 
-		res.tracks.forEach((e:any) => {
 			e.date.datetime = e.date["#text"];
-			delete e.date["#text"];
-			e.streamable.isStreamable = e.streamable["#text"];
-			delete e.streamable["#text"];
+			e.date["#text"] = void 0;
+			e.date.uts = toInt(e.date.uts);
+			e.streamable.isStreamable = toBool(e.streamable["#text"]);
+			e.streamable["#text"] = void 0;
+			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
+			return e;
+
 		});
+
+		res.track = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getLovedTracks;
 
@@ -70,30 +97,46 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getPersonalTags", tag, taggingType, user: usernameOrSessionKey, ...params })).taggings as any;
 
 		if (res.hasOwnProperty("artists")) {
-			res.artists = res.artists.artist;
-		} else if (res.hasOwnProperty("albums")) {
-			res.albums = res.albums.album;
+			res.artists = toArray(res.artists.artist).map((e:any) => {
 
-			res.albums.forEach((e:any) => {
-				e.image.forEach((f:any) => {
+				e.streamable = toBool(e.streamable);
+				return e;
+
+			});
+		} else if (res.hasOwnProperty("albums")) {
+
+			res.albums = toArray(res.albums.album).map((e:any) => {
+				e.image = toArray(e.image).map((f:any) => {
 					f.url = f["#text"];
-					delete f["#text"];
+					f["#text"] = void 0;
+					return f;
 				});
+				return e;
 			});
 
 		} else if (res.hasOwnProperty("tracks")) {
-			res.tracks = res.tracks.track;
 
-			res.tracks.forEach((e:any) => {
-				e.image.forEach((f:any) => {
+			res.tracks = toArray(res.tracks.track).map((e:any) => {
+				e.image = toArray(e.image).map((f:any) => {
 					f.url = f["#text"];
-					delete f["#text"];
+					f["#text"] = void 0;
+					return f;
 				});
 				
-				e.streamable.isStreamable = e.streamable["#text"];
-				delete e.streamable["#text"];
+				e.streamable.isStreamable = toBool(e.streamable["#text"]);
+				e.streamable["#text"] = void 0;
+				return e;
 			});
+
 		}
+
+		res.meta = res["@attr"];
+		res["@attr"] = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getPersonalTags;
 
@@ -106,38 +149,49 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getRecentTracks", user: usernameOrSessionKey, ...params })).recenttracks;
 
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 
-		res.tracks = res.track;
-		delete res.track;
-
-		res.tracks.forEach((e:any) => {
+		res.tracks = toArray(res.track).map((e:any) => {
 			if (!e.artist.hasOwnProperty("name")) {
 				e.artist.name = e.artist["#text"];
-				delete e.artist["#text"];
+				e.artist["#text"] = void 0;
 			}
 
 			if (e.hasOwnProperty("album")) {
 				e.album.name ||= e.album["#text"];
-				delete e.album["#text"];
+				e.album["#text"] = void 0;
 			}
 			
 			if (e.hasOwnProperty("date")) {
 				e.date.datetime = e.date["#text"];
-				delete e.date["#text"];
+				e.date["#text"] = void 0;
 			}
 
 			if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
 				e.nowplaying = e["@attr"].nowplaying;
-				delete e["@attr"];
+				e["@attr"] = void 0;
 			}
 
-			e.image.forEach((f:any) => {
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
 
+			e.streamable = toBool(e.streamable);
+			e.loved = toBool(e.loved);
+			e.date.uts = toInt(e.date.uts);
+
+			return e;
+
 		});
+
+		res.track = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getRecentTracks;
 		
@@ -150,18 +204,28 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getTopAlbums", user: usernameOrSessionKey, ...params })).topalbums as any;
 	
 		res.meta = res["@attr"];
-		delete res["@attr"];
-		res.albums = res.album;
-		delete res.album;
+		res["@attr"] = void 0;
 
-		res.albums.forEach((e:any) => {
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
-			e.image.forEach((f:any) => {
+		res.albums = toArray(res.album).map((e:any) => {
+
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			e.image = toArray(e.image).map((f:any) => {
 				f.url = f["#text"];
-				delete f["#text"];
+				f["#text"] = void 0;
+				return f;
 			});
+			e.playcount = toInt(e.playcount);
+			return e;
+			
 		});
+
+		res.album = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getTopAlbums;
 
@@ -173,14 +237,22 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopArtists", user: usernameOrSessionKey, ...params })).topartists as any;
 		
-		res.artists = res.artist;
-		delete res.artist;
 		res.meta = res["@attr"];
 
-		res.artists.forEach((e:any) => {
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+		res.artists = toArray(res.artist).map((e:any) => {
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			e.streamable = toBool(e.streamable);
+			e.playcount = toInt(e.playcount);
+			return e;
 		});
+
+		res.artist = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getTopArtists;
 
@@ -192,10 +264,18 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTags", user: usernameOrSessionKey, ...params })).toptags as any;
 
-		res.tags = res.tag;
-		delete res.tag;
+		res.tags = toArray(res.tag).map((e:any) => {
+			e.count = toInt(e.count);
+			return e;
+		});
+		res.tag = void 0;
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getTopTags;
 
@@ -207,12 +287,10 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getTopTracks", user: usernameOrSessionKey, ...params })).toptracks as any;
 
-		res.tracks = toArray(res.track);
-		res.track = void 0;
 		res.meta = res["@attr"];
 		res["@attr"] = void 0;
 
-		res.tracks.map((e:any) => {
+		res.tracks = toArray(res.track).map((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
 			e.streamable["#text"] = void 0;
 			e.rank = e["@attr"].rank;
@@ -221,8 +299,16 @@ export default class UserClass extends Base {
 			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
 			e.duration = toInt(e.duration);
 			e.rank = toInt(e.rank);
+			e.playcount = toInt(e.playcount);
 			return e;
 		});
+
+		res.track = void 0;
+
+		res.meta.page = toInt(res.meta.page);
+		res.meta.perPage = toInt(res.meta.perPage);
+		res.meta.totalPages = toInt(res.meta.totalPages);
+		res.meta.total = toInt(res.meta.total);
 
 		return res as UserInterface.getTopTracks;
 	}
@@ -233,17 +319,21 @@ export default class UserClass extends Base {
 		
 		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", user: usernameOrSessionKey, ...params })).weeklyalbumchart;
 		
-		res.albums = res.album;
-		delete res.album;
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 
-		res.albums.forEach((e:any) => {
+		res.albums = toArray(res.album).map((e:any) => {
 			e.artist.name = e.artist["#text"];
-			delete e.artist["#text"];
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+			e.artist["#text"] = void 0;
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			e.playcount = toInt(e.playcount);
+			return e;
 		});
+
+		res.album = void 0;
+		res.meta.from = toInt(res.meta.from);
+		res.meta.to = toInt(res.meta.to);
 
 		return res as UserInterface.getWeeklyAlbumChart;
 
@@ -254,16 +344,20 @@ export default class UserClass extends Base {
 		this.checkLimit(params?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", user: usernameOrSessionKey, ...params })).weeklyartistchart as any;
-
-		res.artists = res.artist;
-		delete res.artist;
+		
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 
-		res.artists.forEach((e:any) => {
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+		res.artists = toArray(res.artist).map((e:any) => {
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			e.playcount = toInt(e.playcount);
+			return e;
 		});
+
+		res.artist = void 0;
+		res.meta.from = toInt(res.meta.from);
+		res.meta.to = toInt(res.meta.to);
 
 		return res as UserInterface.getWeeklyArtistChart;
 	}
@@ -272,8 +366,14 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyChartList"})).weeklychartlist as any;
 
-		res.charts = res.chart;
-		delete res.chart;
+		res.charts = toArray(res.chart).map((e:any) => {
+
+			e.from = toInt(e.from);
+			e.to = toInt(e.to);
+			return e;
+
+		});
+		res.chart = void 0;
 
 		return res as UserInterface.getWeeklyChartList;
 
@@ -285,17 +385,21 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", user: usernameOrSessionKey, ...params })).weeklytrackchart as any;
 
-		res.tracks = res.track;
-		delete res.track;
 		res.meta = res["@attr"];
-		delete res["@attr"];
+		res["@attr"] = void 0;
 
-		res.tracks.forEach((e:any) => {
+		res.tracks = toArray(res.track).map((e:any) => {
 			e.artist.name = e.artist["#text"];
-			delete e.artist["#text"];
-			e.rank = e["@attr"].rank;
-			delete e["@attr"];
+			e.artist["#text"] = void 0;
+			e.rank = toInt(e["@attr"].rank);
+			e["@attr"] = void 0;
+			e.playcount = toInt(e.playcount);
+			return e;
 		});
+
+		res.track = void 0;
+		res.meta.from = toInt(res.meta.from);
+		res.meta.to = toInt(res.meta.to);
 
 		return res as UserInterface.getWeeklyTrackChart;
 
