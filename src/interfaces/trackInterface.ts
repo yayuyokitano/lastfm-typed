@@ -29,16 +29,15 @@ interface searchTrack {
 	mbid:string;
 }
 
-interface Correction {
-	track:TrackBasic;
-	meta: {
+export interface getCorrection {
+	track?:TrackBasic;
+	artist?:ArtistOptionalMBID;
+	meta?: {
 		index:number;
 		artistcorrected:boolean;
 		trackcorrected:boolean;
 	}
 }
-
-export type getCorrection = Correction | {};
 
 export interface getInfo extends GlobalTrackOptionalMBID {
 	userloved?:boolean;

@@ -13,7 +13,7 @@ export default class AlbumClass extends Base {
 
 	}
 
-	public async getInfo(album:AlbumInput, params?:{autocorrect?:0|1, username?:string, sk?:string, lang?:string}) {
+	public async getInfo(album:AlbumInput, params?:{autocorrect?:boolean, username?:string, sk?:string, lang?:string}) {
 
 		let res = (await this.sendRequest({ method: "album.getInfo", ...album, ...params })).album as any;
 

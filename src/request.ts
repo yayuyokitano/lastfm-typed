@@ -1,9 +1,10 @@
-import fetch from "node-fetch";
 import {stringify} from "querystring";
 import * as crypto from "crypto";
 import * as Logger from "./interfaces/loggerInterface";
 import LastFM from ".";
 import { boolToInt } from "./caster";
+import fetch from "cross-fetch"
+
 
 export interface LFMArgumentObject {
 	

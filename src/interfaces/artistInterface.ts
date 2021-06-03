@@ -19,12 +19,10 @@ interface TrackData extends ArtistOptionalMBID {
 	rank:number;
 }
 
-interface correctionInterface {
-	artist:ArtistOptionalMBID;
-	index:number;
+export interface getCorrection {
+	artist?:ArtistOptionalMBID;
+	index?:number;
 }
-
-export type getCorrection = correctionInterface | {};
 
 export interface getInfo extends ArtistStreamableOptionalMBID {
 	ontour:boolean;

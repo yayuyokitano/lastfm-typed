@@ -28,6 +28,9 @@ export default class TrackClass extends Base {
 	public async getCorrection(artist:string, track:string) {
 		
 		let res = (((await this.sendRequest({ method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
+		if (!res.track.hasOwnProperty("name")) {
+			res = {};
+		}
 
 		if (Object.keys(res).length) {
 
