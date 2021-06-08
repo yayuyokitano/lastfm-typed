@@ -1,6 +1,6 @@
 import * as UserInterface from "../interfaces/userInterface";
 import Base from "../base";
-import { toInt, toArray, convertMeta, convertEntry, convertEntryArray, convertGetRecentTracks, setDate, convertExtendedMeta, addConditionals } from "../caster";
+import { toInt, toArray, convertMeta, convertEntry, convertEntryArray, convertGetRecentTracks, setDate, convertExtendedMeta, addConditionals, convertString } from "../caster";
 import { UserPaginatedInput, UserResolvable } from "../interfaces/shared";
 
 export default class UserClass extends Base {
@@ -11,9 +11,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getFriends", ...usernameOrSessionKey, ...params })).friends as any;
 
@@ -36,9 +34,7 @@ export default class UserClass extends Base {
 	public async getInfo(input:UserResolvable):Promise<UserInterface.getInfo>;
 	public async getInfo(usernameOrSessionKey:any) {
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getInfo", ...usernameOrSessionKey })).user as any;
 
@@ -55,9 +51,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getLovedTracks", ...usernameOrSessionKey, ...params })).lovedtracks as any;
 
@@ -83,9 +77,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = addConditionals({user: usernameOrSessionKey}, {tag, taggingType});
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {tag, taggingType});
 
 		let res = (await this.sendRequest({ method: "user.getPersonalTags", ...usernameOrSessionKey, ...params })).taggings as any;
 
@@ -116,14 +108,12 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? firstInput?.limit, 1000);
 
-		if (typeof firstInput === "string") {
-			firstInput = {user: firstInput};
-			if (params?.hasOwnProperty("extended")) {
-				params.extended = toInt(params.extended);
-			} else if (firstInput?.hasOwnProperty("extended")) {
-				firstInput.extended = toInt(firstInput.extended);
-			}
-			
+		firstInput = convertString(firstInput, "user", {});
+
+		if (params?.hasOwnProperty("extended")) {
+			params.extended = toInt(params.extended);
+		} else if (firstInput?.hasOwnProperty("extended")) {
+			firstInput.extended = toInt(firstInput.extended);
 		}
 
 		let res = (await this.sendRequest({ method: "user.getRecentTracks", ...firstInput, ...params })).recenttracks;
@@ -143,9 +133,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getTopAlbums", ...usernameOrSessionKey, ...params })).topalbums as any;
 
@@ -159,9 +147,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getTopArtists", ...usernameOrSessionKey, ...params })).topartists as any;
 
@@ -175,9 +161,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getTopTags", ...usernameOrSessionKey, ...params })).toptags as any;
 
@@ -191,9 +175,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getTopTracks", ...usernameOrSessionKey, ...params })).toptracks as any;
 
@@ -206,9 +188,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 		
 		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", ...usernameOrSessionKey, ...params })).weeklyalbumchart;
 		
@@ -234,9 +214,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", ...usernameOrSessionKey, ...params })).weeklyartistchart as any;
 
@@ -262,9 +240,7 @@ export default class UserClass extends Base {
 
 		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
 
-		if (typeof usernameOrSessionKey === "string") {
-			usernameOrSessionKey = {user: usernameOrSessionKey};
-		}
+		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", ...usernameOrSessionKey, ...params })).weeklytrackchart as any;
 

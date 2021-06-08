@@ -1,6 +1,6 @@
 import * as AuthInterface from "../interfaces/authInterface";
 import Base from "../base";
-import { addConditionals, toBool } from "../caster";
+import { addConditionals, convertString, toBool } from "../caster";
 
 export default class AuthClass extends Base {
 
@@ -20,9 +20,7 @@ export default class AuthClass extends Base {
 	public async getSession(input:{token:string}):Promise<AuthInterface.getSession>;
 	public async getSession(firstInput:any) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {token: firstInput};
-		}
+		firstInput = convertString(firstInput, "token", {});
 
 		const res = (await this.sendRequest({ method: "auth.getSession", ...firstInput })).session as any;
 		res.subscriber = toBool(res.subscriber);
@@ -35,10 +33,7 @@ export default class AuthClass extends Base {
 	public async getMobileSession(input:{username:string, password:string}):Promise<AuthInterface.getSession>;
 	public async getMobileSession(firstInput:any, password?:string) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {username: firstInput}
-		}
-		firstInput = addConditionals(firstInput, {password});
+		firstInput = convertString(firstInput, "username", {password});
 
 		return (await this.sendRequest({ method: "auth.getMobileSession", ...firstInput })).session as AuthInterface.getSession;
 

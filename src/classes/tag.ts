@@ -1,7 +1,7 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, convertEntryArray, convertExtendedMeta, addConditionals } from "../caster";
+import { toInt, convertEntryArray, convertExtendedMeta, addConditionals, convertString } from "../caster";
 
 export default class TagClass extends Base {
 
@@ -9,9 +9,7 @@ export default class TagClass extends Base {
 	public async getInfo(input:TagInterface.getInfoInput):Promise<TagInterface.getInfo>;
 	public async getInfo(firstInput:any, params?:{lang?:string}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = addConditionals({tag: firstInput}, params ?? {})
-		}
+		firstInput = convertString(firstInput, "tag", params ?? {});
 
 		return (await this.sendRequest({method: "tag.getInfo", ...firstInput, ...params})).tag as TagInterface.getInfo;
 
@@ -23,9 +21,7 @@ export default class TagClass extends Base {
 	public async getTopAlbums(input:TagInterface.PaginatedTagInput):Promise<TagInterface.getTopAlbums>;
 	public async getTopAlbums(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = addConditionals({tag: firstInput}, params ?? {})
-		}
+		firstInput = convertString(firstInput, "tag", params ?? {});
 
 		let res = (await this.getTop("tag.getTopAlbums", firstInput, params)).albums as any;
 
@@ -37,9 +33,7 @@ export default class TagClass extends Base {
 	public async getTopArtists(input:TagInterface.PaginatedTagInput):Promise<TagInterface.getTopArtists>;
 	public async getTopArtists(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = addConditionals({tag: firstInput}, params ?? {})
-		}
+		firstInput = convertString(firstInput, "tag", params ?? {});
 
 		let res = (await this.getTop("tag.getTopArtists", firstInput, params)).topartists as any;
 
@@ -79,9 +73,7 @@ export default class TagClass extends Base {
 	public async getTopTracks(input:TagInterface.PaginatedTagInput):Promise<TagInterface.getTopTracks>;
 	public async getTopTracks(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = addConditionals({tag: firstInput}, params ?? {})
-		}
+		firstInput = convertString(firstInput, "tag", params ?? {});
 
 		let res = (await this.getTop("tag.getTopTracks", firstInput, params)).tracks as any;
 

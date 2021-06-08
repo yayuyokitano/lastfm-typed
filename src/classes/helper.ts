@@ -8,7 +8,7 @@ import * as HelperInterface from "../interfaces/helperInterface";
 
 import {EventEmitter} from "events";
 import TypedEmitter from "typed-emitter";
-import { addConditionals } from "../caster";
+import { addConditionals, convertString } from "../caster";
 
 interface ScrobbleEmitter {
 	start: (meta:{totalPages:number, count:number}) => void;
@@ -33,11 +33,7 @@ export default class HelperClass {
 	public async getCombo(input:HelperInterface.getComboInput):Promise<HelperInterface.getCombo>;
 	public async getCombo(firstInput:any, limit?:number) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {usernameOrSessionKey: firstInput}
-		}
-		firstInput = addConditionals(firstInput, {limit: Math.min(1000, limit ?? 200)});
-		limit ??= 0;
+		firstInput = convertString(firstInput, "user", {limit: Math.min(1000, limit ?? 200)});
 
 		let combo = [true, true, true];
 		let comboData:[string,number][] = [["",0],["",0],["",0]];
@@ -45,16 +41,16 @@ export default class HelperClass {
 		let nowplaying = false;
 		let trueLimit = 1000;
 		let image:Image[] = [];
-		while (limit > 0 && combo[0] === combo[1] && combo[1] === combo[2] && combo[2] === true) {
+		while (firstInput.limit > 0 && combo[0] === combo[1] && combo[1] === combo[2] && combo[2] === true) {
 
-			if (limit < 1000 && page > 0) {
+			if (firstInput.limit < 1000 && page > 0) {
 
-				trueLimit = limit;
+				trueLimit = firstInput.limit;
 				limit = 1000;
 
-			} else if (page === 0 && limit <= 1000) {
+			} else if (page === 0 && firstInput.limit <= 1000) {
 
-				trueLimit = limit;
+				trueLimit = firstInput.limit;
 
 			}
 
@@ -132,9 +128,7 @@ export default class HelperClass {
 	public async getNowPlaying(input:HelperInterface.getNowPlayingInput):Promise<HelperInterface.getNowPlaying>;
 	public async getNowPlaying(firstInput:any, detailTypes:("artist"|"album"|"track")[] = [], options:{extended:boolean} = {extended: true}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = addConditionals({user: firstInput}, {detailTypes, ...options})
-		}
+		firstInput = convertString(firstInput, "user", {detailTypes, ...options});
 		firstInput = this.homogenizeUserInput(firstInput);
 
 		const curr = await this.lastfm.user.getRecentTracks(firstInput.user, {limit: 1, extended: firstInput.extended});
@@ -179,7 +173,7 @@ export default class HelperClass {
 			}
 		};
 
-		if (firstInput.detailTypes !== void 0 && firstInput.detailTypes !== []) {
+		if (firstInput.detailTypes) {
 
 			const res = await this.fetchDetails(firstInput.user, firstInput.detailTypes, artist, album, track);
 
@@ -250,10 +244,7 @@ export default class HelperClass {
 	public async getMatchingArtists(input:HelperInterface.getMatchingArtistsInput):Promise<HelperInterface.getMatchingArtists>;
 	public async getMatchingArtists(firstInput:any, user2?:string, limit?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month") {
 
-		if (typeof firstInput === "string") {
-			firstInput = {user1: firstInput};
-		}
-		firstInput = addConditionals(firstInput, {user2, limit, period});
+		firstInput = convertString(firstInput, "user1", {user2, limit, period});
 		
 		this.checkLimit(firstInput.limit, 1000);
 

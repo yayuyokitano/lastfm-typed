@@ -214,3 +214,12 @@ export function addConditionals(req:{[key:string]:any}, props:{[key:string]:any}
 	return req;
 
 }
+
+export function convertString(str:any, name:string, props:{[key:string]:any}) {
+	if (typeof str !== "string") {
+		return str;
+	}
+	let obj:any = {};
+	obj[name] = str;
+	return addConditionals(obj, props);
+}

@@ -1,7 +1,7 @@
 import * as ArtistInterface from "../interfaces/artistInterface";
 import Base from "../base";
 import { ArtistInput } from "../interfaces/shared";
-import { toInt, toArray, convertMeta, convertEntryArray, convertEntry, joinArray, convertSearchWithQuery, convertBasicMetaTag, addConditionals } from "../caster";
+import { toInt, toArray, convertMeta, convertEntryArray, convertEntry, joinArray, convertSearchWithQuery, convertBasicMetaTag, addConditionals, convertString } from "../caster";
 
 export default class ArtistClass extends Base {
 
@@ -9,10 +9,7 @@ export default class ArtistClass extends Base {
 	public async addTags(params:ArtistInterface.addTagsInput):Promise<{}>;
 	public async addTags(firstInput:any, tags?:string|string[], sk?:string) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {artist: firstInput}
-		}
-		firstInput = addConditionals(firstInput, {tags, sk});
+		firstInput = convertString(firstInput, "artist", {tags, sk});
 		firstInput.tags = joinArray(firstInput.tags);
 
 		return await this.sendRequest({ method: "artist.addTags", ...firstInput }) as {};
@@ -23,9 +20,7 @@ export default class ArtistClass extends Base {
 	public async getCorrection(params:{artist:string}):Promise<ArtistInterface.getCorrection>;
 	public async getCorrection(artist:any) {
 		
-		if (typeof artist === "string") {
-			artist = {artist}
-		}
+		artist = convertString(artist, "artist", {});
 		let res = (((await this.sendRequest({ method: "artist.getCorrection", ...artist }))?.corrections?.correction) || {}) as any;
 
 		if (Object.keys(res).length) {
@@ -134,10 +129,7 @@ export default class ArtistClass extends Base {
 	public async removeTag(params:ArtistInterface.removeTagInput):Promise<{}>;
 	public async removeTag(firstInput:any, tag?:string, sk?:string) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {artist: firstInput}
-		}
-		firstInput = addConditionals(firstInput, {tag, sk});
+		firstInput = convertString(firstInput, "artist", {tag, sk});
 		firstInput.tag = joinArray(firstInput.tag);
 
 		return await this.sendRequest({ method: "artist.removeTag", ...firstInput }) as {};

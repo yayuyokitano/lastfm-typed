@@ -1,7 +1,7 @@
 import * as AlbumInterface from "../interfaces/albumInterface";
 import Base from "../base";
 import { AlbumInput } from "../interfaces/shared";
-import { convertEntryArray, convertEntry, joinArray, convertSearchWithQuery, convertBasicMetaTag, addConditionals } from "../caster";
+import { convertEntryArray, convertEntry, joinArray, convertSearchWithQuery, convertBasicMetaTag, addConditionals, convertString } from "../caster";
 
 export default class AlbumClass extends Base {
 
@@ -9,10 +9,7 @@ export default class AlbumClass extends Base {
 	public async addTags(params:AlbumInterface.addTagsInput):Promise<{}>;
 	public async addTags(firstInput:any, album?:string, tags?:string|string[], sk?:string) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {artist: firstInput}
-		}
-		firstInput = addConditionals(firstInput, {album, tags, sk});
+		firstInput = convertString(firstInput, "artist", {album, tags, sk});
 		firstInput.tags = joinArray(firstInput.tags);
 
 		return await this.sendRequest({ method: "album.addTags", ...firstInput }) as {};
@@ -58,10 +55,7 @@ export default class AlbumClass extends Base {
 	public async removeTag(params:AlbumInterface.removeTagInput):Promise<{}>;
 	public async removeTag(firstInput:any, album?:string, tag?:string, sk?:string) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {artist: firstInput}
-		}
-		firstInput = addConditionals(firstInput, {album, tag, sk});
+		firstInput = convertString(firstInput, "artist", {album, tag, sk});
 
 		return await this.sendRequest({ method: "album.removeTag", ...firstInput }) as {};
 
@@ -73,9 +67,7 @@ export default class AlbumClass extends Base {
 
 		this.checkLimit(params?.limit ?? firstInput.limit, 1000);
 
-		if (typeof firstInput === "string") {
-			firstInput = {album: firstInput}
-		}
+		firstInput = convertString(firstInput, "album", {});
 
 		let res = (await this.sendRequest({method: "album.search", ...firstInput, ...params })).results as any;
 		

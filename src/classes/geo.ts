@@ -1,6 +1,6 @@
 import * as GeoInterface from "../interfaces/geoInterface";
 import Base from "../base";
-import { convertExtendedMeta } from "../caster";
+import { convertExtendedMeta, convertString } from "../caster";
 
 export default class GeoClass extends Base {
 
@@ -8,9 +8,7 @@ export default class GeoClass extends Base {
 	public async getTopArtists(input:GeoInterface.GeoBase):Promise<GeoInterface.getTopArtists>;
 	public async getTopArtists(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {country: firstInput};
-		}
+		firstInput = convertString(firstInput, "country", {});
 
 		let res = (await this.getTop("geo.getTopArtists", firstInput, params)).topartists as any;
 
@@ -22,9 +20,7 @@ export default class GeoClass extends Base {
 	public async getTopTracks(input:GeoInterface.getTopTracksInput):Promise<GeoInterface.getTopTracks>;
 	public async getTopTracks(firstInput:any, params?:{limit?:number, page?:number, location?:string}) {
 
-		if (typeof firstInput === "string") {
-			firstInput = {country: firstInput};
-		}
+		firstInput = convertString(firstInput, "country", {});
 
 		let res = (await this.getTop("geo.getTopTracks", firstInput, params)).tracks as any;
 

@@ -20,7 +20,7 @@ export default class LFMBase {
 	
 	protected checkLimit(limit:number|undefined, maxLimit:number) {
 		if (typeof limit !== "undefined" && (limit > maxLimit || limit < 1)) {
-			throw {message: `Limit out of bounds (1-${maxLimit}), ${limit} passed`, code: 6}
+			throw {message: `Limit out of bounds (1-${maxLimit}), ${limit} passed`, code: 6};
 		}
 	}
 

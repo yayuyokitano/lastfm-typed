@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta, addConditionals } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta, addConditionals, convertString } from "../caster";
 
 export default class TrackClass extends Base {
 
@@ -9,9 +9,7 @@ export default class TrackClass extends Base {
 	public async addTags(input:TrackInterface.addTagsInput):Promise<{}>;
 	public async addTags(artist?:any, track?:string, tags?:string[]|string, sk?:string) {
 
-		if (typeof artist === "string") {
-			artist = addConditionals({artist}, {track, tags, sk})
-		}
+		artist = convertString(artist, "artist", {track, tags, sk});
 
 		artist.tags = joinArray(artist.tags);
 
@@ -23,9 +21,7 @@ export default class TrackClass extends Base {
 	public async getCorrection(input:TrackInterface.BaseTrackInput):Promise<TrackInterface.getCorrection>;
 	public async getCorrection(artist:any, track?:string) {
 
-		if (typeof artist === "string") {
-			artist = addConditionals({artist}, {track})
-		}
+		artist = convertString(artist, "artist", {track});
 		
 		let res = (((await this.sendRequest({ method: "track.getCorrection", ...artist }))?.corrections?.correction) || {}) as any;
 		if (!res.track.hasOwnProperty("name")) {
@@ -102,9 +98,7 @@ export default class TrackClass extends Base {
 	public async love(input:TrackInterface.PostTemplate):Promise<{}>;
 	public async love(artist:any, track?:string, sk?:string) {
 
-		if (typeof artist === "string") {
-			artist = addConditionals({artist}, {track, sk})
-		}
+		artist = convertString(artist, "artist", {track, sk});
 
 		return await this.sendRequest({ method: "track.love", ...artist }) as {};
 
@@ -114,9 +108,7 @@ export default class TrackClass extends Base {
 	public async removeTag(input:TrackInterface.removeTagInput):Promise<{}>;
 	public async removeTag(artist:any, track?:string, tag?:string, sk?:string) {
 
-		if (typeof artist === "string") {
-			artist = addConditionals({artist}, {track, sk, tag});
-		}
+		artist = convertString(artist, "artist", {track, sk, tag});
 
 		return await this.sendRequest({ method: "track.removeTag", ...artist }) as {};
 
@@ -126,9 +118,7 @@ export default class TrackClass extends Base {
 	public async scrobble(input:TrackInterface.scrobbleInput):Promise<TrackInterface.scrobble>;
 	public async scrobble(sk:any, scrobbles?:TrackInterface.ScrobbleObject[]) {
 
-		if (typeof sk === "string") {
-			sk = addConditionals({sk}, {scrobbles});
-		}
+		sk = convertString(sk, "sk", {scrobbles});
 
 		this.checkScrobbleCount(sk.scrobbles.length, 50);
 
@@ -186,9 +176,7 @@ export default class TrackClass extends Base {
 	public async search(input:TrackInterface.searchInput):Promise<TrackInterface.search>;
 	public async search(track:any, params?:{limit?:number, page?:number, artist?:string}) {
 
-		if (typeof track === "string") {
-			track = {track};
-		}
+		track = convertString(track, "track", {});
 
 		this.checkLimit(params?.limit ?? track?.limit, 1000);
 
@@ -205,9 +193,7 @@ export default class TrackClass extends Base {
 	public async unlove(input:TrackInterface.PostTemplate):Promise<{}>;
 	public async unlove(artist:any, track?:string, sk?:string) {
 
-		if (typeof artist === "string") {
-			artist = addConditionals({artist}, {track, sk})
-		}
+		artist = convertString(artist, "artist", {track, sk});
 
 		return await this.sendRequest({ method: "track.unlove", ...artist }) as {};
 
@@ -229,9 +215,7 @@ export default class TrackClass extends Base {
 		albumArtist?:string;
 	}) {
 
-		if (typeof artist === "string") {
-			artist = addConditionals({artist}, {track, sk});
-		}
+		artist = convertString(artist, "artist", {track, sk});
 
 		return await this.sendRequest({ method: "track.updateNowPlaying", ...artist, ...params }) as {};
 
