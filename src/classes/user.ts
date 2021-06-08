@@ -9,9 +9,7 @@ export default class UserClass extends Base {
 	public async getFriends(input:UserInterface.getFriendsInput):Promise<UserInterface.getFriends>;
 	public async getFriends(usernameOrSessionKey:any, params?:{recenttracks?:boolean, limit?:number, page?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getFriends", ...usernameOrSessionKey, ...params })).friends as any;
 
@@ -49,9 +47,7 @@ export default class UserClass extends Base {
 	public async getLovedTracks(input:UserPaginatedInput):Promise<UserInterface.getLovedTracks>;
 	public async getLovedTracks(usernameOrSessionKey:any, params?:{limit?:number, page?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getLovedTracks", ...usernameOrSessionKey, ...params })).lovedtracks as any;
 
@@ -106,9 +102,7 @@ export default class UserClass extends Base {
 	public async getRecentTracks(usernameOrSessionKey:UserInterface.getRecentTracksInput):Promise<UserInterface.getRecentTracks>;
 	public async getRecentTracks(firstInput:any, params?:{limit?:number, page?:number, from?:string, to?:string, extended?:boolean|number}) {
 
-		this.checkLimit(params?.limit ?? firstInput?.limit, 1000);
-
-		firstInput = convertString(firstInput, "user", {});
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
 		if (params?.hasOwnProperty("extended")) {
 			params.extended = toInt(params.extended);
@@ -131,9 +125,7 @@ export default class UserClass extends Base {
 	public async getTopAlbums(input:UserInterface.getTopEntriesInput):Promise<UserInterface.getTopAlbums>;
 	public async getTopAlbums(usernameOrSessionKey:any, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getTopAlbums", ...usernameOrSessionKey, ...params })).topalbums as any;
 
@@ -145,9 +137,7 @@ export default class UserClass extends Base {
 	public async getTopArtists(input:UserInterface.getTopEntriesInput):Promise<UserInterface.getTopArtists>;
 	public async getTopArtists(usernameOrSessionKey:any, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getTopArtists", ...usernameOrSessionKey, ...params })).topartists as any;
 
@@ -159,9 +149,7 @@ export default class UserClass extends Base {
 	public async getTopTags(input:UserInterface.getTopTagsInput):Promise<UserInterface.getTopTags>;
 	public async getTopTags(usernameOrSessionKey:any, params?:{limit?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getTopTags", ...usernameOrSessionKey, ...params })).toptags as any;
 
@@ -173,9 +161,7 @@ export default class UserClass extends Base {
 	public async getTopTracks(input:UserInterface.getTopEntriesInput):Promise<UserInterface.getTopTracks>;
 	public async getTopTracks(usernameOrSessionKey:any, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getTopTracks", ...usernameOrSessionKey, ...params })).toptracks as any;
 
@@ -186,9 +172,7 @@ export default class UserClass extends Base {
 	public async getWeeklyAlbumChart(input:UserInterface.getWeeklyChartInput):Promise<UserInterface.getWeeklyAlbumChart>;
 	public async getWeeklyAlbumChart(usernameOrSessionKey:any, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 		
 		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", ...usernameOrSessionKey, ...params })).weeklyalbumchart;
 		
@@ -212,9 +196,7 @@ export default class UserClass extends Base {
 	public async getWeeklyArtistChart(input:UserInterface.getWeeklyChartInput):Promise<UserInterface.getWeeklyArtistChart>;
 	public async getWeeklyArtistChart(usernameOrSessionKey:any, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", ...usernameOrSessionKey, ...params })).weeklyartistchart as any;
 
@@ -238,9 +220,7 @@ export default class UserClass extends Base {
 	public async getWeeklyTrackChart(input:UserInterface.getWeeklyChartInput):Promise<UserInterface.getWeeklyTrackChart>;
 	public async getWeeklyTrackChart(usernameOrSessionKey:any, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
 
 		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", ...usernameOrSessionKey, ...params })).weeklytrackchart as any;
 
@@ -257,6 +237,13 @@ export default class UserClass extends Base {
 		res.track = void 0;
 
 		return res as UserInterface.getWeeklyTrackChart;
+
+	}
+
+	private checkLimitAndConvertString(usernameOrSessionKey:any, params:any) {
+
+		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
+		return convertString(usernameOrSessionKey, "user", {});
 
 	}
 
