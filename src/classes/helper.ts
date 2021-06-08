@@ -8,7 +8,7 @@ import * as HelperInterface from "../interfaces/helperInterface";
 
 import {EventEmitter} from "events";
 import TypedEmitter from "typed-emitter";
-import { addConditionals, convertString } from "../caster";
+import { convertString, toInt } from "../caster";
 
 interface ScrobbleEmitter {
 	start: (meta:{totalPages:number, count:number}) => void;
@@ -16,8 +16,8 @@ interface ScrobbleEmitter {
 	close: () => void;
 	internalDontUse: (data:UserInterface.getRecentTracks|number) => void;
 	error: (err:{
-		message:string,
-		code:string
+		message:string;
+		code:number;
 	}, intendedPage:number) => void;
 }
 
@@ -236,7 +236,7 @@ export default class HelperClass {
 					successful: false
 				},
 			}
-		}
+		};
 
 	}
 
@@ -304,9 +304,9 @@ export default class HelperClass {
 				
 					clearInterval(rateLimitInterval);
 				} catch (err) {
-
+					// ignore this. Why? I forgot
 				}
-			})
+			});
 			return;
 		}
 
@@ -380,14 +380,14 @@ export default class HelperClass {
 
 		scrobbleEmitter.on("error", (err, page) => {
 
-			if (err.code == "29") {
+			if (toInt(err.code) === 29) {
 				rateLimited = true;
 				setTimeout(() => {
 					rateLimited = false;
 				}, limitTime);
 			}
 
-			scrobbleEmitter.emit("internalDontUse", page)
+			scrobbleEmitter.emit("internalDontUse", page);
 
 		});
 
