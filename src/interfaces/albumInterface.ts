@@ -1,4 +1,4 @@
-import { GlobalAlbum, StringAlbum, TagUrlCount, TagWUrl, TagTrack, Wiki } from "./shared";
+import { GlobalAlbum, StringAlbum, TagUrlCount, TagWUrl, TagTrack, Wiki, StaticAlbumInput, UserResolvable } from "./shared";
 
 interface Metadata {
 	artist:string;
@@ -35,4 +35,34 @@ export interface search {
 	meta: {
 		query:string;
 	}
+}
+
+export interface BasicAlbumInput extends StaticAlbumInput {
+	autocorrect?:boolean
+}
+
+export type getTagsInput = BasicAlbumInput & UserResolvable;
+
+export interface getInfoInput extends getTagsInput {
+	lang?:string;
+}
+
+interface PostTemplate {
+	artist:string;
+	album:string;
+	sk:string;
+}
+
+export interface addTagsInput extends PostTemplate {
+	tags:string|string[];
+}
+
+export interface removeTagInput extends PostTemplate {
+	tag:string;
+}
+
+export interface searchInput {
+	album:string;
+	limit?:number;
+	page?:number;
 }

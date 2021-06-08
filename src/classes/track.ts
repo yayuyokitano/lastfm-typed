@@ -1,33 +1,33 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta } from "../caster";
-
-interface ScrobbleObject {
-	artist:string;
-	track:string;
-	timestamp:number;
-	album?:string;
-	chosenByUser?:0|1;
-	trackNumber?:number;
-	mbid?:string;
-	albumArtist?:string;
-	duration?:number;
-}
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta, addConditionals } from "../caster";
 
 export default class TrackClass extends Base {
 
-	public async addTags(artist:string, track:string, tags:string[]|string, sk:string) {
+	public async addTags(artist:string, track:string, tags:string[]|string, sk:string):Promise<{}>;
+	public async addTags(input:TrackInterface.addTagsInput):Promise<{}>;
+	public async addTags(artist?:any, track?:string, tags?:string[]|string, sk?:string) {
 
-		tags = joinArray(tags);
+		if (typeof artist === "string") {
+			artist = addConditionals({artist}, {track, tags, sk})
+		}
 
-		return await this.sendRequest({ method: "track.addTags", tags, sk, artist, track }) as {};
+		artist.tags = joinArray(artist.tags);
+
+		return await this.sendRequest({ method: "track.addTags", ...artist }) as {};
 
 	}
 
-	public async getCorrection(artist:string, track:string) {
+	public async getCorrection(artist:string, track:string):Promise<TrackInterface.getCorrection>;
+	public async getCorrection(input:TrackInterface.BaseTrackInput):Promise<TrackInterface.getCorrection>;
+	public async getCorrection(artist:any, track?:string) {
+
+		if (typeof artist === "string") {
+			artist = addConditionals({artist}, {track})
+		}
 		
-		let res = (((await this.sendRequest({ method: "track.getCorrection", artist, track }))?.corrections?.correction) || {}) as any;
+		let res = (((await this.sendRequest({ method: "track.getCorrection", ...artist }))?.corrections?.correction) || {}) as any;
 		if (!res.track.hasOwnProperty("name")) {
 			res = {};
 		}
@@ -42,8 +42,9 @@ export default class TrackClass extends Base {
 		return res as TrackInterface.getCorrection;
 
 	}
-
-	public async getInfo(track:TrackInput, params?:{autocorrect?:0|1, username?:string, sk?:string}) {
+	public async getInfo(track:TrackInput, params?:{autocorrect?:boolean, username?:string, sk?:string}):Promise<TrackInterface.getInfo>;
+	public async getInfo(input:TrackInterface.getInfoInput):Promise<TrackInterface.getInfo>;
+	public async getInfo(track:any, params?:{autocorrect?:boolean, username?:string, sk?:string}) {
 
 		let res = (await this.sendRequest({ method: "track.getInfo", ...track, ...params })).track as any;
 
@@ -64,24 +65,32 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async getSimilar(track:TrackInput, params?:{limit?:number, autocorrect?:boolean}) {
+	public async getSimilar(track:TrackInput, params?:{limit?:number, autocorrect?:boolean}):Promise<TrackInterface.getSimilar>;
+	public async getSimilar(input:TrackInterface.getSimilarInput):Promise<TrackInterface.getSimilar>;
+	public async getSimilar(track:any, params?:{limit?:number, autocorrect?:boolean}) {
 
-		this.checkLimit(params?.limit, 1000);
+		this.checkLimit(params?.limit ?? track?.limit, 1000);
 
 		let res = (await this.sendRequest({ method: "track.getSimilar", ...track, ...params })).similartracks as any;
 
 		return convertExtendedMeta(res, "track") as TrackInterface.getSimilar;
 
 	}
-	
-	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}) {
 
-		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, user: usernameOrSessionKey, ...params })).tags) as any;
+	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}):Promise<TrackInterface.getTags>;
+	public async getTags(input:TrackInterface.getInfoInput):Promise<TrackInterface.getTags>;
+	public async getTags(track:any, usernameOrSessionKey?:string, params?:{autocorrect?:boolean}) {
+
+		track = addConditionals(track, {usernameOrSessionKey});
+
+		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, ...params })).tags) as any;
 
 		return convertBasicMetaTag(res) as TrackInterface.getTags;
 	}
 
-	public async getTopTags(track:TrackInput, params?:{autocorrect?:0|1}) {
+	public async getTopTags(track:TrackInput, params?:{autocorrect?:boolean}):Promise<TrackInterface.getTopTags>;
+	public async getTopTags(input:TrackInterface.getTagsInput):Promise<TrackInterface.getTopTags>;
+	public async getTopTags(track:any, params?:{autocorrect?:boolean}) {
 
 		let res = (await this.sendRequest({ method: "track.getTopTags", ...track, ...params })).toptags as any;
 
@@ -89,31 +98,49 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async love(artist:string, track:string, sk:string) {
+	public async love(artist:string, track:string, sk:string):Promise<{}>;
+	public async love(input:TrackInterface.PostTemplate):Promise<{}>;
+	public async love(artist:any, track?:string, sk?:string) {
 
-		return await this.sendRequest({ method: "track.love", artist, track, sk }) as {};
+		if (typeof artist === "string") {
+			artist = addConditionals({artist}, {track, sk})
+		}
+
+		return await this.sendRequest({ method: "track.love", ...artist }) as {};
 
 	}
 
-	public async removeTag(artist:string, track:string, tag:string, sk:string) {
+	public async removeTag(artist:string, track:string, tag:string, sk:string):Promise<{}>;
+	public async removeTag(input:TrackInterface.removeTagInput):Promise<{}>;
+	public async removeTag(artist:any, track?:string, tag?:string, sk?:string) {
 
-		return await this.sendRequest({ method: "track.removeTag", tag, sk, artist, track }) as {};
+		if (typeof artist === "string") {
+			artist = addConditionals({artist}, {track, sk, tag});
+		}
+
+		return await this.sendRequest({ method: "track.removeTag", ...artist }) as {};
 
 	}
 
-	public async scrobble(sk:string, scrobbles:ScrobbleObject[]) {
+	public async scrobble(sk:string, scrobbles:TrackInterface.ScrobbleObject[]):Promise<TrackInterface.scrobble>;
+	public async scrobble(input:TrackInterface.scrobbleInput):Promise<TrackInterface.scrobble>;
+	public async scrobble(sk:any, scrobbles?:TrackInterface.ScrobbleObject[]) {
 
-		this.checkScrobbleCount(scrobbles.length, 50);
+		if (typeof sk === "string") {
+			sk = addConditionals({sk}, {scrobbles});
+		}
+
+		this.checkScrobbleCount(sk.scrobbles.length, 50);
 
 		let params:any = {};
 
-		for (let [index, scrobble] of scrobbles.entries()) {
+		for (let [index, scrobble] of sk.scrobbles.entries()) {
 			for (let [key, value] of Object.entries(scrobble)) {
 				params[`${key}[${index}]`] = value;
 			}
 		}
 
-		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk})).scrobbles as any;
+		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk: sk.sk})).scrobbles as any;
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;
@@ -155,11 +182,17 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async search(track:string, params?:{limit?:number, page?:number, artist?:string}) {
+	public async search(track:string, params?:{limit?:number, page?:number, artist?:string}):Promise<TrackInterface.search>;
+	public async search(input:TrackInterface.searchInput):Promise<TrackInterface.search>;
+	public async search(track:any, params?:{limit?:number, page?:number, artist?:string}) {
 
-		this.checkLimit(params?.limit, 1000);
+		if (typeof track === "string") {
+			track = {track};
+		}
 
-		let res = (await this.sendRequest({method: "track.search", track, ...params})).results as any;
+		this.checkLimit(params?.limit ?? track?.limit, 1000);
+
+		let res = (await this.sendRequest({method: "track.search", ...track, ...params})).results as any;
 
 		res = convertSearch(res);
 		res.trackMatches = convertEntryArray(res.trackmatches.track);
@@ -168,9 +201,15 @@ export default class TrackClass extends Base {
 		return res as TrackInterface.search;
 	}
 
-	public async unlove(artist:string, track:string, sk:string) {
+	public async unlove(artist:string, track:string, sk:string):Promise<{}>;
+	public async unlove(input:TrackInterface.PostTemplate):Promise<{}>;
+	public async unlove(artist:any, track?:string, sk?:string) {
 
-		return await this.sendRequest({ method: "track.unlove", artist, track, sk }) as {};
+		if (typeof artist === "string") {
+			artist = addConditionals({artist}, {track, sk})
+		}
+
+		return await this.sendRequest({ method: "track.unlove", ...artist }) as {};
 
 	}
 
@@ -180,9 +219,21 @@ export default class TrackClass extends Base {
 		mbid?:string;
 		duration?:number;
 		albumArtist?:string;
+	}):Promise<{}>;
+	public async updateNowPlaying(input:TrackInterface.updateNowPlayingInput):Promise<{}>;
+	public async updateNowPlaying(artist:any, track?:string, sk?:string, params?: {
+		album?:string;
+		trackNumber?:number;
+		mbid?:string;
+		duration?:number;
+		albumArtist?:string;
 	}) {
 
-		return await this.sendRequest({ method: "track.updateNowPlaying", artist, track, sk, ...params }) as {};
+		if (typeof artist === "string") {
+			artist = addConditionals({artist}, {track, sk});
+		}
+
+		return await this.sendRequest({ method: "track.updateNowPlaying", ...artist, ...params }) as {};
 
 	}
 

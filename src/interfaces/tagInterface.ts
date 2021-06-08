@@ -29,3 +29,14 @@ export interface getTopTracks {
 	tracks:TagTrack[];
 	meta:Metadata;
 }
+
+export interface getInfoInput {
+	tag:string;
+	lang?:string;
+}
+
+export interface PaginatedTagInput {
+	tag:string;
+	page?:number;
+	limit?:number;
+}

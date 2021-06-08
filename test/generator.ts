@@ -22,6 +22,7 @@ const types = {
 	artist: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopAlbums", "getTopTags", "getTopTracks", "search"],
 	chart: ["getTopArtists", "getTopTags", "getTopTracks"],
 	geo: ["getTopArtists", "getTopTracks"],
+	helper: ["getCombo", "getNowPlaying", "getMatchingArtists"],
 	library: ["getArtists"],
 	tag: ["getInfo", "getTopAlbums", "getTopArtists", "getTopTags", "getTopTracks"],
 	track: ["getCorrection", "getInfo", "getSimilar", "getTags", "getTopTags", "scrobble", "search"],

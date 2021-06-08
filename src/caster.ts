@@ -203,3 +203,14 @@ export function convertExtendedMeta(res:any, type:"tag"|"artist"|"album"|"track"
 	return res;
 	
 }
+
+export function addConditionals(req:{[key:string]:any}, props:{[key:string]:any}) {
+	
+	for (let [key, value] of Object.entries(props)) {
+		if (value !== void 0) {
+			req[key] = value;
+		}
+	}
+	return req;
+
+}

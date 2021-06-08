@@ -1,4 +1,4 @@
-import { AlbumGlobal, Artist, ArtistBasic, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist, ShortMetadata, ArtistStreamableOptionalMBID } from "./shared";
+import { AlbumGlobal, StaticArtistInput, ArtistNoMBID, TagUrlCount, TagWUrl, ArtistOptionalMBID, Image, ListenerArtist, ShortMetadata, ArtistStreamableOptionalMBID, UserResolvable } from "./shared";
 
 interface Metadata {
 	artist:string;
@@ -82,4 +82,40 @@ export interface search {
 	meta: {
 		query:string;
 	}
+}
+
+export interface BasicArtistInput extends StaticArtistInput {
+	autocorrect?:boolean;
+}
+
+export type getTagsInput = BasicArtistInput & UserResolvable
+
+export interface getInfoInput extends getTagsInput {
+	lang?:string;
+}
+
+export interface getSimilarInput extends BasicArtistInput {
+	limit?:number;
+}
+
+export interface PageLimitInput extends getSimilarInput {
+	page?:number;
+}
+
+export interface searchInput extends BasicArtistInput {
+	page?:number;
+	limit?:number;
+}
+
+interface PostTemplate {
+	artist:string;
+	sk:string;
+}
+
+export interface addTagsInput extends PostTemplate {
+	tags:string|string[];
+}
+
+export interface removeTagInput extends PostTemplate {
+	tag:string;
 }

@@ -20,13 +20,13 @@ export default class LFMBase {
 	
 	protected checkLimit(limit:number|undefined, maxLimit:number) {
 		if (typeof limit !== "undefined" && (limit > maxLimit || limit < 1)) {
-			throw new Error(`Limit out of bounds (1-${maxLimit}), ${limit} passed`);
+			throw {message: `Limit out of bounds (1-${maxLimit}), ${limit} passed`, code: 6}
 		}
 	}
 
 	protected checkScrobbleCount(scrobbleCount:number|undefined, maxScrobbleCount:number) {
 		if (typeof scrobbleCount === "undefined" || (scrobbleCount > maxScrobbleCount || scrobbleCount < 1)) {
-			throw new Error(`Scrobble count out of bounds (1-${maxScrobbleCount}), ${scrobbleCount} passed`);
+			throw {message: `Scrobble count out of bounds (1-${maxScrobbleCount}), ${scrobbleCount} passed`, code: 6};
 		}
 	}
 
@@ -47,10 +47,6 @@ export default class LFMBase {
 			delete res["#text"];
 		}
 		return res;
-	}
-
-	protected formatSearch(query:string) {
-		return query.replace(/:/g, " ");
 	}
 
 	protected async sendRequest(params:LFMArgumentObject) {

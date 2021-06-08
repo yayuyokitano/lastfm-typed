@@ -4,9 +4,11 @@ import * as ArtistInterface from "../interfaces/artistInterface";
 import * as AlbumInterface from "../interfaces/albumInterface";
 import * as TrackInterface from "../interfaces/trackInterface";
 import * as UserInterface from "../interfaces/userInterface";
+import * as HelperInterface from "../interfaces/helperInterface";
 
 import {EventEmitter} from "events";
 import TypedEmitter from "typed-emitter";
+import { addConditionals } from "../caster";
 
 interface ScrobbleEmitter {
 	start: (meta:{totalPages:number, count:number}) => void;
@@ -27,7 +29,16 @@ export default class HelperClass {
 		this.lastfm = lastfm;
 	}
 
-	public async getCombo(usernameOrSessionKey:string, limit:number) {
+	public async getCombo(usernameOrSessionKey:string, limit:number):Promise<HelperInterface.getCombo>;
+	public async getCombo(input:HelperInterface.getComboInput):Promise<HelperInterface.getCombo>;
+	public async getCombo(firstInput:any, limit?:number) {
+
+		if (typeof firstInput === "string") {
+			firstInput = {usernameOrSessionKey: firstInput}
+		}
+		firstInput = addConditionals(firstInput, {limit: Math.min(1000, limit ?? 200)});
+		limit ??= 0;
+
 		let combo = [true, true, true];
 		let comboData:[string,number][] = [["",0],["",0],["",0]];
 		let page = 0;
@@ -49,7 +60,7 @@ export default class HelperClass {
 
 			page++;
 
-			let res = await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: Math.min(1000, limit), page});
+			let res = await this.lastfm.user.getRecentTracks({...firstInput, page});
 
 			if (page === 1) {
 				comboData[0][0] = res.tracks[0].artist.name;
@@ -117,9 +128,16 @@ export default class HelperClass {
 		};
 	}
 
-	public async getNowPlaying(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[] = [], options:{extended:string} = {extended: "0"}) {
+	public async getNowPlaying(usernameOrSessionKey:string, detailTypes?:("artist"|"album"|"track")[], options?:{extended:boolean}):Promise<HelperInterface.getNowPlaying>;
+	public async getNowPlaying(input:HelperInterface.getNowPlayingInput):Promise<HelperInterface.getNowPlaying>;
+	public async getNowPlaying(firstInput:any, detailTypes:("artist"|"album"|"track")[] = [], options:{extended:boolean} = {extended: true}) {
 
-		const curr = (await this.lastfm.user.getRecentTracks(usernameOrSessionKey, {limit: 1, extended: options.extended}));
+		if (typeof firstInput === "string") {
+			firstInput = addConditionals({user: firstInput}, {detailTypes, ...options})
+		}
+		firstInput = this.homogenizeUserInput(firstInput);
+
+		const curr = await this.lastfm.user.getRecentTracks(firstInput.user, {limit: 1, extended: firstInput.extended});
 		const currTrack = curr.tracks[0]
 
 		const artist = currTrack.artist.name;
@@ -161,25 +179,25 @@ export default class HelperClass {
 			}
 		};
 
-		if (detailTypes !== []) {
+		if (firstInput.detailTypes !== void 0 && firstInput.detailTypes !== []) {
 
-			const res = await this.fetchDetails(usernameOrSessionKey, detailTypes, artist, album, track);
+			const res = await this.fetchDetails(firstInput.user, firstInput.detailTypes, artist, album, track);
 
 			const exists = res.map((e) => typeof e !== "undefined" && typeof e.error === "undefined");
 
 			let i = 0;
 
-			if (detailTypes.includes("artist")) {
+			if (firstInput.detailTypes.includes("artist")) {
 				details.artist.data = res[i];
 				details.artist.successful = exists[i];
 				i++;
 			}
-			if (detailTypes.includes("album") && album) {
+			if (firstInput.detailTypes.includes("album") && album) {
 				details.album.data = res[i];
 				details.album.successful = exists[i];
 				i++;
 			}
-			if (detailTypes.includes("track")) {
+			if (firstInput.detailTypes.includes("track")) {
 				details.track.data = res[i];
 				details.track.successful = exists[i];
 				i++;
@@ -228,13 +246,20 @@ export default class HelperClass {
 
 	}
 
-	public async getMatchingArtists(user1:string, user2:string, limit:number, period:"overall"|"7day"|"1month"|"3month"|"6month"|"12month") {
+	public async getMatchingArtists(user1:string, user2:string, limit:number, period:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"):Promise<HelperInterface.getMatchingArtists>;
+	public async getMatchingArtists(input:HelperInterface.getMatchingArtistsInput):Promise<HelperInterface.getMatchingArtists>;
+	public async getMatchingArtists(firstInput:any, user2?:string, limit?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month") {
+
+		if (typeof firstInput === "string") {
+			firstInput = {user1: firstInput};
+		}
+		firstInput = addConditionals(firstInput, {user2, limit, period});
 		
-		this.checkLimit(limit, 1000);
+		this.checkLimit(firstInput.limit, 1000);
 
 		let request = [
-			this.lastfm.user.getTopArtists(user1, {limit, period}),
-			this.lastfm.user.getTopArtists(user2, {limit, period})
+			this.lastfm.user.getTopArtists(firstInput.user1, {limit: firstInput.limit, period: firstInput.period}),
+			this.lastfm.user.getTopArtists(firstInput.user2, {limit: firstInput.limit, period: firstInput.period})
 		];
 
 		const res = await Promise.all(request);
@@ -243,45 +268,30 @@ export default class HelperClass {
 
 	}
 
-	public ArtistFromMBID(mbid:string) {
-		return {
-			mbid
-		}
-	}
+	public ArtistFromMBID = (mbid:string) => ({ mbid });
 
-	public ArtistFromName(artist:string) {
-		return {
-			artist
-		}
-	}
+	public ArtistFromName = (artist:string) => ({ artist });
 
-	public AlbumFromMBID(mbid:string) {
-		return {
-			mbid
-		}
-	}
+	public AlbumFromMBID = (mbid:string) => ({ mbid });
 
-	public AlbumFromName(artist:string, album:string) {
-		return {
-			artist,
-			album
-		}
-	}
+	public AlbumFromName = (artist:string, album:string) => ({ artist, album });
 
-	public TrackFromMBID(mbid:string) {
-		return {
-			mbid
-		}
-	}
+	public TrackFromMBID = (mbid:string) => ({ mbid });
 
-	public TrackFromName(artist:string, track:string) {
-		return {
-			artist,
-			track,
-		}
-	}
+	public TrackFromName = (artist:string, track:string) => ({ artist, track });
 
-	public async cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
+	public cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}):TypedEmitter<ScrobbleEmitter>;
+	public cacheScrobbles(input:HelperInterface.cacheScrobblesInput):TypedEmitter<ScrobbleEmitter>;
+	public cacheScrobbles(user:any, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
+
+		options ??= {};
+
+		if (typeof user !== "string") {
+			options.previouslyCached = user.previouslyCached;
+			options.parallelCaches = user.parallelCaches;
+			options.rateLimitTimeout = user.rateLimitTimeout;
+			user = user.user;
+		}
 
 		let scrobbleEmitter = new EventEmitter() as TypedEmitter<ScrobbleEmitter>;
 
@@ -441,6 +451,12 @@ export default class HelperClass {
 		return common;
 	}
 
+	private checkLimit(limit:number|undefined, maxLimit:number) {
+		if (typeof limit !== "undefined" && (limit > maxLimit || limit < 1)) {
+			throw new Error(`Limit out of bounds (1-${maxLimit}), ${limit} passed`);
+		}
+	}
+
 
 	private async fetchDetails(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[], artist:string, album:string, track:string) {
 
@@ -460,10 +476,17 @@ export default class HelperClass {
 
 	}
 
-	private checkLimit(limit:number|undefined, maxLimit:number) {
-		if (typeof limit !== "undefined" && (limit > maxLimit || limit < 1)) {
-			throw new Error(`Limit out of bounds (1-${maxLimit}), ${limit} passed`);
+	private homogenizeUserInput(input:any) {
+		if (input.hasOwnProperty("user")) {
+			return input;
 		}
+		for (let userInput of ["username", "sk", "usernameOrSessionKey"]) {
+			if (input.hasOwnProperty(userInput)) {
+				input.user = input[userInput];
+				delete input[userInput];
+			}
+		}
+		throw "No valid user input";
 	}
 
 }

@@ -1,1 +1,0 @@
-{"getSession":{"type":"object","properties":{"name":{"type":"string"},"key":{"type":"string"},"subscriber":{"type":"boolean"}},"required":["key","name","subscriber"],"$schema":"http://json-schema.org/draft-07/schema#"}}

@@ -18,6 +18,17 @@ interface MBIDAlbumInput {
 
 export type AlbumInput = ArtistAlbumInput | MBIDAlbumInput;
 
+export interface StaticAlbumInput {
+	artist?:string;
+	album?:string;
+	mbid?:string;
+}
+
+export interface StaticArtistInput {
+	artist?:string;
+	mbid?:string;
+}
+
 interface ArtistNameInput {
 	artist:string;
 	mbid?:string;
@@ -201,4 +212,16 @@ export interface TagGlobalNoWiki extends Tag {
 	reach:number;
 	taggings:number;
 	streamable:boolean;
+}
+
+export interface UserResolvable {
+	user?:string;
+	username?:string;
+	usernameOrSessionKey?:string;
+	sk?:string;
+}
+
+export interface UserPaginatedInput extends UserResolvable {
+	page?:number;
+	limit?:number;
 }

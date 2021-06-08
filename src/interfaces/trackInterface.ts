@@ -1,4 +1,4 @@
-import { Image, TagUrlCount, TagWUrl, TrackBasic, Wiki, ArtistOptionalMBID, GlobalTrackOptionalMBID, ArtistNoMBID } from "./shared";
+import { Image, TagUrlCount, TagWUrl, TrackBasic, Wiki, ArtistOptionalMBID, GlobalTrackOptionalMBID, ArtistNoMBID, UserResolvable } from "./shared";
 
 interface Metadata {
 	artist:string;
@@ -103,4 +103,63 @@ export interface search {
 	startIndex:number;
 	itemsPerPage:number;
 	trackMatches:searchTrack[];
+}
+
+export interface ScrobbleObject {
+	artist:string;
+	track:string;
+	timestamp:number;
+	album?:string;
+	chosenByUser?:0|1;
+	trackNumber?:number;
+	mbid?:string;
+	albumArtist?:string;
+	duration?:number;
+}
+
+export interface BaseTrackInput {
+	artist:string;
+	track:string;
+}
+
+export interface PostTemplate extends BaseTrackInput {
+	sk:string;
+}
+
+export interface addTagsInput extends PostTemplate {
+	tags:string[]|string;
+}
+
+export interface getTagsInput extends BaseTrackInput {
+	autocorrect?:boolean;
+}
+
+export type getInfoInput = getTagsInput & UserResolvable;
+
+export interface getSimilarInput extends getTagsInput {
+	limit?:number;
+}
+
+export interface removeTagInput extends PostTemplate {
+	tag:string;
+}
+
+export interface scrobbleInput {
+	sk:string;
+	scrobbles:ScrobbleObject[];
+}
+
+export interface searchInput {
+	track:string;
+	artist?:string;
+	page?:number;
+	limit?:number;
+}
+
+export interface updateNowPlayingInput extends PostTemplate {
+	album?:string;
+	trackNumber?:number;
+	mbid?:string;
+	duration?:number;
+	albumArtist?:string;
 }

@@ -5,7 +5,6 @@ import LastFM from ".";
 import { boolToInt } from "./caster";
 import fetch from "cross-fetch"
 
-
 export interface LFMArgumentObject {
 	
 	method:string;
@@ -33,6 +32,7 @@ export interface LFMArgumentObject {
 	taggingType?:string;
 	autocorrect?:boolean|number;
 	recenttracks?:boolean|number;
+	usernameOrSessionKey?:string;
 
 }
 
@@ -64,6 +64,11 @@ export class LFMRequest {
 
 		if (this.params.hasOwnProperty("recenttracks")) {
 			this.params.recenttracks = boolToInt(this.params.recenttracks as boolean ?? true);
+		}
+
+		if (this.params.hasOwnProperty("usernameOrSessionKey")) {
+			this.params.user = this.params.usernameOrSessionKey;
+			delete this.params.usernameOrSessionKey;
 		}
 
 	}

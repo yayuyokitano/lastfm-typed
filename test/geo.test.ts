@@ -29,6 +29,10 @@ describe("Geo", async () => {
 			(expect(await lastfm.geo.getTopArtists("spain")).to.be as any).jsonSchema(geoSchema.getTopArtists);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.geo.getTopArtists({country: "spain"})).to.be as any).jsonSchema(geoSchema.getTopArtists);
+		});
+
 		it("Should error when user does not exist", async () => {
 
 			try {
@@ -46,6 +50,10 @@ describe("Geo", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.geo.getTopTracks("spain")).to.be as any).jsonSchema(geoSchema.getTopTracks);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.geo.getTopTracks({country: "spain"})).to.be as any).jsonSchema(geoSchema.getTopTracks);
 		});
 
 		it("Should error when user does not exist", async () => {

@@ -33,6 +33,10 @@ describe("User", async () => {
 			(expect(await lastfm.user.getFriends("Mexdeep", {recenttracks: true})).to.be as any).jsonSchema(userSchema.getFriends);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getFriends({user: "Mexdeep", recenttracks: true})).to.be as any).jsonSchema(userSchema.getFriends);
+		});
+
 		it("Should error for user with no friends", async () => {
 			
 			try {
@@ -63,6 +67,10 @@ describe("User", async () => {
 			(expect(await lastfm.user.getInfo("Mexdeep")).to.be as any).jsonSchema(userSchema.getInfo);
 		});
 
+		it("Should return properly", async () => {
+			(expect(await lastfm.user.getInfo({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getInfo);
+		});
+
 		it("Should error when user does not exist", async () => {
 
 			try {
@@ -80,6 +88,10 @@ describe("User", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.user.getLovedTracks("Mexdeep")).to.be as any).jsonSchema(userSchema.getLovedTracks);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getLovedTracks({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getLovedTracks);
 		});
 
 		it("Should return properly for account with no loved tracks", async () => {
@@ -103,6 +115,10 @@ describe("User", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.user.getPersonalTags("Mexdeep", "singer-songwriter", "artist")).to.be as any).jsonSchema(userSchema.getPersonalTags);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getPersonalTags({user: "Mexdeep", tag: "singer-songwriter", taggingType: "artist"})).to.be as any).jsonSchema(userSchema.getPersonalTags);
 		});
 
 		it("Should return properly with no tag", async () => {
@@ -129,7 +145,11 @@ describe("User", async () => {
 		});
 
 		it("Should return properly for extended", async () => {
-			(expect(await lastfm.user.getRecentTracks("Mexdeep", {extended: "1", limit: 20})).to.be as any).jsonSchema(userSchema.getRecentTracks);
+			(expect(await lastfm.user.getRecentTracks("Mexdeep", {extended: true, limit: 20})).to.be as any).jsonSchema(userSchema.getRecentTracks);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getRecentTracks({user: "Mexdeep", extended: true, limit: 20})).to.be as any).jsonSchema(userSchema.getRecentTracks);
 		});
 
 		it("Should return properly for user with no scrobbles", async () => {
@@ -155,6 +175,10 @@ describe("User", async () => {
 			(expect(await lastfm.user.getTopAlbums("Mexdeep")).to.be as any).jsonSchema(userSchema.getTopAlbums);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getTopAlbums({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getTopAlbums);
+		});
+
 		it("Should return properly for user with no scrobbles", async () => {
 			(expect(await lastfm.user.getTopAlbums("Shaun__")).to.be as any).jsonSchema(userSchema.getTopAlbums);
 		});
@@ -176,6 +200,10 @@ describe("User", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.user.getTopArtists("Mexdeep")).to.be as any).jsonSchema(userSchema.getTopArtists);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getTopArtists({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getTopArtists);
 		});
 
 		it("Should return properly for user with no scrobbles", async () => {
@@ -201,6 +229,10 @@ describe("User", async () => {
 			(expect(await lastfm.user.getTopTags("Mexdeep")).to.be as any).jsonSchema(userSchema.getTopTags);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getTopTags({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getTopTags);
+		});
+
 		it("Should return properly for user with no tags/scrobbles", async () => {
 			(expect(await lastfm.user.getTopTags("Shaun__")).to.be as any).jsonSchema(userSchema.getTopTags);
 		});
@@ -222,6 +254,10 @@ describe("User", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.user.getTopTracks("Mexdeep")).to.be as any).jsonSchema(userSchema.getTopTracks);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getTopTracks({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getTopTracks);
 		});
 
 		it("Should return properly for user with no scrobbles", async () => {
@@ -247,6 +283,10 @@ describe("User", async () => {
 			(expect(await lastfm.user.getWeeklyAlbumChart("Mexdeep")).to.be as any).jsonSchema(userSchema.getWeeklyAlbumChart);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getWeeklyAlbumChart({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getWeeklyAlbumChart);
+		});
+
 		it("Should return properly for user with no scrobbles", async () => {
 			(expect(await lastfm.user.getWeeklyAlbumChart("Shaun__")).to.be as any).jsonSchema(userSchema.getWeeklyAlbumChart);
 		});
@@ -268,6 +308,10 @@ describe("User", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.user.getWeeklyArtistChart("Mexdeep")).to.be as any).jsonSchema(userSchema.getWeeklyArtistChart);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getWeeklyArtistChart({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getWeeklyArtistChart);
 		});
 
 		it("Should return properly for user with no scrobbles", async () => {
@@ -293,12 +337,20 @@ describe("User", async () => {
 			(expect(await lastfm.user.getWeeklyChartList()).to.be as any).jsonSchema(userSchema.getWeeklyChartList);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getWeeklyChartList({})).to.be as any).jsonSchema(userSchema.getWeeklyChartList);
+		});
+
 	});
 
 	describe(".getWeeklyTrackChart", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.user.getWeeklyTrackChart("Mexdeep")).to.be as any).jsonSchema(userSchema.getWeeklyTrackChart);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.user.getWeeklyTrackChart({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getWeeklyTrackChart);
 		});
 
 		it("Should return properly for user with no scrobbles", async () => {

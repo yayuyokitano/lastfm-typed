@@ -27,15 +27,19 @@ describe("Album", async () => {
 	
 	describe(".getInfo", async () => {
 
-		it("Should return properly for album.getInfo with username", async () => {
+		it("Should return properly with username", async () => {
 			(expect(await lastfm.album.getInfo(lastfm.helper.AlbumFromName("KITANO REM", "RAINSICK/オレンジ"), {username: "Mexdeep"})).to.be as any).jsonSchema(albumSchema.getInfo);
 		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.album.getInfo({artist: "KITANO REM", album: "RAINSICK/オレンジ", username: "Mexdeep"})).to.be as any).jsonSchema(albumSchema.getInfo);
+		});
 	
-		it("Should return properly for album.getInfo without username", async () => {
+		it("Should return properly without username", async () => {
 			(expect(await lastfm.album.getInfo(lastfm.helper.AlbumFromName("ヤユヨ", "ヤユヨ"))).to.be as any).jsonSchema(albumSchema.getInfo);
 		});
 	
-		it("Should error when album.getInfo album does not exist", async () => {
+		it("Should error when album does not exist", async () => {
 			try {
 				await lastfm.album.getInfo(lastfm.helper.AlbumFromName("ヤユヨ", "ヨユヤ"));
 				throw "Did not error";
@@ -48,11 +52,15 @@ describe("Album", async () => {
 
 	describe(".getTags", async () => {
 
-		it("Should return properly for album.getTags when there are tags", async () => {
+		it("Should return properly when there are tags", async () => {
 			(expect(await lastfm.album.getTags(lastfm.helper.AlbumFromName("鈴", "ベランダのその先へ"), "Mexdeep")).to.be as any).jsonSchema(albumSchema.getTags);
 		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.album.getTags({artist: "鈴", album: "ベランダのその先へ", username: "Mexdeep"})).to.be as any).jsonSchema(albumSchema.getTags);
+		});
 	
-		it("Should return properly for album.getTags when there are no tags", async () => {
+		it("Should return properly when there are no tags", async () => {
 			(expect(await lastfm.album.getTags(lastfm.helper.AlbumFromName("ひかりのなかに", "まっすぐなままでいい"), "Mexdeep")).to.be as any).jsonSchema(albumSchema.getTags);
 		});
 
@@ -60,7 +68,7 @@ describe("Album", async () => {
 			expect((await lastfm.album.getTags(lastfm.helper.AlbumFromName("ひかりのなかに", "まっすぐなままでいい"), "Mexdeep")).tags.length).to.equal(0);
 		});
 	
-		it("Should error when album.getTags album does not exist", async () => {
+		it("Should error when album does not exist", async () => {
 			try {
 				await lastfm.album.getTags(lastfm.helper.AlbumFromName("ヤユヨ", "ヨユヤ"), "Mexdeep");
 				throw "Did not error";
@@ -73,11 +81,15 @@ describe("Album", async () => {
 
 	describe(".getTopTags", async () => {
 
-		it("Should return properly for album.getTopTags when there are tags", async () => {
+		it("Should return properly when there are tags", async () => {
 			(expect(await lastfm.album.getTopTags(lastfm.helper.AlbumFromName("鈴", "ベランダのその先へ"))).to.be as any).jsonSchema(albumSchema.getTopTags);
 		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.album.getTopTags({artist: "鈴", album: "ベランダのその先へ"})).to.be as any).jsonSchema(albumSchema.getTopTags);
+		});
 	
-		it("Should return properly for album.getTopTags when there are no tags", async () => {
+		it("Should return properly when there are no tags", async () => {
 			(expect(await lastfm.album.getTopTags(lastfm.helper.AlbumFromName("聴色", "さよならを交わすとき"))).to.be as any).jsonSchema(albumSchema.getTopTags);
 		});
 
@@ -85,7 +97,7 @@ describe("Album", async () => {
 			expect((await lastfm.album.getTopTags(lastfm.helper.AlbumFromName("聴色", "さよならを交わすとき"))).tags.length).to.equal(0);
 		});
 	
-		it("Should error when album.getTopTags album does not exist", async () => {
+		it("Should error when album does not exist", async () => {
 			try {
 				await lastfm.album.getTopTags(lastfm.helper.AlbumFromName("ヤユヨ", "ヨユヤ"));
 				throw "Did not error";
@@ -98,7 +110,7 @@ describe("Album", async () => {
 
 	describe(".search", async () => {
 
-		it("Should return properly for album.search when there is one result", async () => {
+		it("Should return properly when there is one result", async () => {
 			(expect(await lastfm.album.search("ベランダのその先へ")).to.be as any).jsonSchema(albumSchema.search);
 		});
 
@@ -106,12 +118,16 @@ describe("Album", async () => {
 			expect((await lastfm.album.search("ベランダのその先へ")).albumMatches.length).to.equal(1);
 		});
 	
-		it("Should return properly for album.search when there are many results", async () => {
+		it("Should return properly when there are many results", async () => {
 			(expect(await lastfm.album.search("RAINSICK")).to.be as any).jsonSchema(albumSchema.search);
 		});
 	
-		it("Should return properly for album.search when there is no result", async () => {
+		it("Should return properly when there is no result", async () => {
 			(expect(await lastfm.album.search("ssdafsdaf")).to.be as any).jsonSchema(albumSchema.search);
+		});
+
+		it("Should return properly when params are by object", async () => {
+			(expect(await lastfm.album.search({album: "RAINSICK", limit: 2})).to.be as any).jsonSchema(albumSchema.search);
 		});
 	
 		it("Should verify that album checked actually returns no result", async () => {

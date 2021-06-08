@@ -1,29 +1,47 @@
 import * as TagInterface from "../interfaces/tagInterface";
 import {ShortMetadata} from "../interfaces/shared";
 import Base from "../base";
-import { toInt, convertEntryArray, convertExtendedMeta } from "../caster";
+import { toInt, convertEntryArray, convertExtendedMeta, addConditionals } from "../caster";
 
 export default class TagClass extends Base {
 
-	public async getInfo(tag:string, params?:{lang?:string}) {
+	public async getInfo(tag:string, params?:{lang?:string}):Promise<TagInterface.getInfo>;
+	public async getInfo(input:TagInterface.getInfoInput):Promise<TagInterface.getInfo>;
+	public async getInfo(firstInput:any, params?:{lang?:string}) {
 
-		return (await this.sendRequest({method: "tag.getInfo", tag, ...params})).tag as TagInterface.getInfo;
+		if (typeof firstInput === "string") {
+			firstInput = addConditionals({tag: firstInput}, params ?? {})
+		}
+
+		return (await this.sendRequest({method: "tag.getInfo", ...firstInput, ...params})).tag as TagInterface.getInfo;
 
 	}
 	
 	//skip tag.getSimilar because i have been unable to find any instance of it returning anything
 
-	public async getTopAlbums(tag:string, params?:{limit?:number, page?:number}) {
+	public async getTopAlbums(tag:string, params?:{limit?:number, page?:number}):Promise<TagInterface.getTopAlbums>;
+	public async getTopAlbums(input:TagInterface.PaginatedTagInput):Promise<TagInterface.getTopAlbums>;
+	public async getTopAlbums(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		let res = (await this.getTop("tag.getTopAlbums", tag, params)).albums as any;
+		if (typeof firstInput === "string") {
+			firstInput = addConditionals({tag: firstInput}, params ?? {})
+		}
+
+		let res = (await this.getTop("tag.getTopAlbums", firstInput, params)).albums as any;
 
 		return convertExtendedMeta(res, "album") as TagInterface.getTopAlbums;
 
 	}
 
-	public async getTopArtists(tag:string, params?:{limit?:number, page?:number}) {
+	public async getTopArtists(tag:string, params?:{limit?:number, page?:number}):Promise<TagInterface.getTopArtists>;
+	public async getTopArtists(input:TagInterface.PaginatedTagInput):Promise<TagInterface.getTopArtists>;
+	public async getTopArtists(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		let res = (await this.getTop("tag.getTopArtists", tag, params)).topartists as any;
+		if (typeof firstInput === "string") {
+			firstInput = addConditionals({tag: firstInput}, params ?? {})
+		}
+
+		let res = (await this.getTop("tag.getTopArtists", firstInput, params)).topartists as any;
 
 		return convertExtendedMeta(res, "artist") as TagInterface.getTopArtists;
 
@@ -34,7 +52,7 @@ export default class TagClass extends Base {
 		//set arguments in a way consistent with other endpoints
 		const newParams = this.convertNumRes(params);
 
-		let res = (await this.getTop("tag.getTopTags", "", newParams)).toptags as any;
+		let res = (await this.getTop("tag.getTopTags", {}, newParams)).toptags as any;
 
 		const total = toInt(res["@attr"].total);
 		if (typeof total === "undefined") {
@@ -57,19 +75,25 @@ export default class TagClass extends Base {
 
 	}
 
-	public async getTopTracks(tag:string, params?:{limit?:number, page?:number}) {
+	public async getTopTracks(tag:string, params?:{limit?:number, page?:number}):Promise<TagInterface.getTopTracks>;
+	public async getTopTracks(input:TagInterface.PaginatedTagInput):Promise<TagInterface.getTopTracks>;
+	public async getTopTracks(firstInput:any, params?:{limit?:number, page?:number}) {
 
-		let res = (await this.getTop("tag.getTopTracks", tag, params)).tracks as any;
+		if (typeof firstInput === "string") {
+			firstInput = addConditionals({tag: firstInput}, params ?? {})
+		}
+
+		let res = (await this.getTop("tag.getTopTracks", firstInput, params)).tracks as any;
 
 		return convertExtendedMeta(res, "track") as TagInterface.getTopTracks;
 
 	}
 
-	private async getTop(method:string, tag:string, params?:{limit?:number, page?:number, num_res?:number, offset?:number}) {
+	private async getTop(method:string, firstInput:any, params?:{limit?:number, page?:number, num_res?:number, offset?:number}) {
 
-		this.checkLimit(params?.limit || params?.num_res, 1000);
+		this.checkLimit((params?.limit ?? firstInput?.limit) || (params?.num_res ?? firstInput?.num_res), 1000);
 
-		return await this.sendRequest({method, tag, ...params});
+		return await this.sendRequest({method, ...firstInput, ...params});
 
 	}
 

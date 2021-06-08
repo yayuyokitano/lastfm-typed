@@ -25,6 +25,10 @@ describe("Tag", async () => {
 			(expect(await lastfm.tag.getInfo("japanese")).to.be as any).jsonSchema(tagSchema.getInfo);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.tag.getInfo({tag: "japanese"})).to.be as any).jsonSchema(tagSchema.getInfo);
+		});
+
 		it("Should return properly with unused tag", async () => {
 			(expect(await lastfm.tag.getInfo("sodkjfklasdjfkl")).to.be as any).jsonSchema(tagSchema.getInfo);
 		});
@@ -35,6 +39,10 @@ describe("Tag", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.tag.getTopAlbums("japanese")).to.be as any).jsonSchema(tagSchema.getTopAlbums);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.tag.getTopAlbums({tag: "japanese"})).to.be as any).jsonSchema(tagSchema.getTopAlbums);
 		});
 
 		it("Should return properly with unused tag", async () => {
@@ -49,6 +57,10 @@ describe("Tag", async () => {
 			(expect(await lastfm.tag.getTopArtists("japanese")).to.be as any).jsonSchema(tagSchema.getTopArtists);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.tag.getTopArtists({tag: "japanese"})).to.be as any).jsonSchema(tagSchema.getTopArtists);
+		});
+
 		it("Should return properly with unused tag", async () => {
 			(expect(await lastfm.tag.getTopArtists("sodkjfklasdjfkl")).to.be as any).jsonSchema(tagSchema.getTopArtists);
 		});
@@ -61,12 +73,20 @@ describe("Tag", async () => {
 			(expect(await lastfm.tag.getTopTags()).to.be as any).jsonSchema(tagSchema.getTopTags);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.tag.getTopTags({})).to.be as any).jsonSchema(tagSchema.getTopTags);
+		});
+
 	});
 
 	describe(".getTopTracks", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.tag.getTopTracks("japanese")).to.be as any).jsonSchema(tagSchema.getTopTracks);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.tag.getTopTracks({tag: "japanese"})).to.be as any).jsonSchema(tagSchema.getTopTracks);
 		});
 
 		it("Should return properly with unused tag", async () => {

@@ -37,6 +37,10 @@ describe("Track", async () => {
 			(expect(await lastfm.track.getCorrection("TETORA", "めんどくさい")).to.be as any).jsonSchema(trackSchema.getCorrection);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.track.getCorrection({artist: "TETORA", track: "めんどくさい"})).to.be as any).jsonSchema(trackSchema.getCorrection);
+		});
+
 		it("Should return properly when track exists and there is redirect", async () => {
 			(expect(await lastfm.track.getCorrection("Girls' Generation", "VITAMIN")).to.be as any).jsonSchema(trackSchema.getCorrection);
 		});
@@ -51,6 +55,10 @@ describe("Track", async () => {
 
 		it("Should return properly with username", async () => {
 			(expect(await lastfm.track.getInfo(lastfm.helper.TrackFromName("Lily Sketch", "Black Lily"), {username: "Mexdeep"})).to.be as any).jsonSchema(trackSchema.getInfo);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.track.getInfo({artist: "Lily Sketch", track: "Black Lily", username: "Mexdeep"})).to.be as any).jsonSchema(trackSchema.getInfo);
 		});
 	
 		it("Should return properly without username", async () => {
@@ -72,6 +80,10 @@ describe("Track", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.track.getSimilar(lastfm.helper.TrackFromName("Cher", "Believe"))).to.be as any).jsonSchema(trackSchema.getSimilar);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.track.getSimilar({artist: "Cher", track: "Believe"})).to.be as any).jsonSchema(trackSchema.getSimilar);
 		});
 
 		it("Should return properly when no similar tracks", async () => {
@@ -98,8 +110,12 @@ describe("Track", async () => {
 		it("Should return properly when there are tags", async () => {
 			(expect(await lastfm.track.getTags(lastfm.helper.TrackFromName("Lily Sketch", "Black Lily"), "Mexdeep")).to.be as any).jsonSchema(trackSchema.getTags);
 		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.track.getTags({artist: "Lily Sketch", track: "Black Lily", user: "Mexdeep"})).to.be as any).jsonSchema(trackSchema.getTags);
+		});
 	
-		it("Should return properly for artist.getTags when there are no tags", async () => {
+		it("Should return properly when there are no tags", async () => {
 			(expect(await lastfm.track.getTags(lastfm.helper.TrackFromName("ひかりのなかに", "大丈夫"), "Mexdeep")).to.be as any).jsonSchema(trackSchema.getTags);
 		});
 
@@ -107,7 +123,7 @@ describe("Track", async () => {
 			expect((await lastfm.track.getTags(lastfm.helper.TrackFromName("ひかりのなかに", "大丈夫"), "Mexdeep")).tags.length).to.equal(0);
 		});
 	
-		it("Should error when artist.getTags artist does not exist", async () => {
+		it("Should error when artist does not exist", async () => {
 			try {
 				await lastfm.track.getTags(lastfm.helper.TrackFromName("ヨユヤ", "ヤユヨ"), "Mexdeep");
 				throw "Did not error";
@@ -122,6 +138,10 @@ describe("Track", async () => {
 
 		it("Should return properly when there are tags", async () => {
 			(expect(await lastfm.track.getTopTags(lastfm.helper.TrackFromName("BRATS", "アイニコイヨ"))).to.be as any).jsonSchema(trackSchema.getTopTags);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.track.getTopTags({artist: "BRATS", track: "アイニコイヨ"})).to.be as any).jsonSchema(trackSchema.getTopTags);
 		});
 	
 		it("Should return properly when there are no tags", async () => {
@@ -185,13 +205,33 @@ describe("Track", async () => {
 				"name": "yumeutsutsu"
 			});
 		});
+
+		it("Should return properly for object input", async () => {
+			(expect(await lastfm.track.scrobble({sk: config.session, scrobbles: [{artist: "赤い公園", track: "KILT OF MANTRA", album: "THE PARK", timestamp: Number(new Date()) / 1000}]})).to.be as any).jsonSchema(trackSchema.scrobble);
+		});
+
+		it("Wait for lfm to process", async () => {
+			await sleep(3000);
+		});
+
+		it("Should actually have scrobbled many", async () => {
+			expect((await lastfm.user.getRecentTracks(config.session, {limit: 1})).tracks[0]).to.deep.nested.include({
+				"artist.name": "赤い公園",
+				"album.name": "THE PARK",
+				"name": "KILT OF MANTRA"
+			});
+		});
 	
 	});
 
 	describe(".search", async () => {
 
-		it("Should return properly for when there is one result", async () => {
+		it("Should return properly when there is one result", async () => {
 			(expect(await lastfm.track.search("心中治療室")).to.be as any).jsonSchema(trackSchema.search);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.track.search({track: "心中治療室"})).to.be as any).jsonSchema(trackSchema.search);
 		});
 
 		it("Should verify that track checked actually only returns one result", async () => {

@@ -25,6 +25,10 @@ describe("Chart", async () => {
 			(expect(await lastfm.chart.getTopArtists()).to.be as any).jsonSchema(chartSchema.getTopArtists);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.chart.getTopArtists({})).to.be as any).jsonSchema(chartSchema.getTopArtists);
+		});
+
 	});
 
 	describe(".getTopTags", async () => {
@@ -33,12 +37,20 @@ describe("Chart", async () => {
 			(expect(await lastfm.chart.getTopTags()).to.be as any).jsonSchema(chartSchema.getTopTags);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.chart.getTopTags({})).to.be as any).jsonSchema(chartSchema.getTopTags);
+		});
+
 	});
 
 	describe(".getTopTracks", async () => {
 
 		it("Should return properly", async () => {
 			(expect(await lastfm.chart.getTopTracks()).to.be as any).jsonSchema(chartSchema.getTopTracks);
+		});
+
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.chart.getTopTracks({})).to.be as any).jsonSchema(chartSchema.getTopTracks);
 		});
 
 	});

@@ -1,4 +1,4 @@
-import { Album, Artist, ArtistBasic, Image, ShortMetadata, TagAlbum, TagArtist, TagTrack, TagUrlCount, TrackOptionalMBIDImg } from "./shared";
+import { Album, Artist, ArtistBasic, Image, ShortMetadata, TagAlbum, TagArtist, TagTrack, TagUrlCount, TrackOptionalMBIDImg, UserPaginatedInput, UserResolvable } from "./shared";
 
 interface Metadata extends ShortMetadata {
 	user:string;
@@ -182,3 +182,33 @@ export interface getWeeklyTrackChart {
 	tracks:ChartTrack[];
 	meta:ChartMetadata;
 }
+
+export interface getFriendsInput extends UserPaginatedInput {
+	recenttracks?:boolean;
+}
+
+export interface getRecentTracksInput extends UserPaginatedInput {
+	from?:string;
+	to?:string;
+	extended?:boolean;
+}
+
+export interface getPersonalTagsInput extends UserPaginatedInput {
+	tag:string;
+	taggingType:"artist"|"album"|"track";
+}
+
+export interface getTopEntriesInput extends UserPaginatedInput {
+	period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month";
+}
+
+export interface getTopTagsInput extends UserResolvable {
+	limit?:number;
+}
+
+interface topFromTo extends getTopTagsInput {
+	from:string;
+	to:string;
+}
+
+export type getWeeklyChartInput = getTopTagsInput | topFromTo;

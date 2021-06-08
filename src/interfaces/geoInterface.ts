@@ -13,3 +13,13 @@ export interface getTopTracks {
 	tracks:ListenerTrack[];
 	meta:Metadata;
 }
+
+export interface GeoBase {
+	country:string;
+	limit?:number;
+	page?:number;
+}
+
+export interface getTopTracksInput extends GeoBase {
+	location?:string;
+}

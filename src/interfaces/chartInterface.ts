@@ -14,3 +14,8 @@ export interface getTopTracks {
 	tracks:ListenerTrack[];
 	meta:ShortMetadata;
 }
+
+export interface chartInput {
+	limit?:number;
+	page?:number;
+}

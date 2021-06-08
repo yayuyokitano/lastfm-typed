@@ -29,6 +29,10 @@ describe("Library", async () => {
 			(expect(await lastfm.library.getArtists("Mexdeep", {limit: 15})).to.be as any).jsonSchema(librarySchema.getArtists);
 		});
 
+		it("Should return properly with object input", async () => {
+			(expect(await lastfm.library.getArtists({user:"Mexdeep", limit: 15})).to.be as any).jsonSchema(librarySchema.getArtists);
+		});
+
 		it("Should error when user doesnt exist", async () => {
 			try {
 				await lastfm.library.getArtists("lkasjdgkfljasfdgkjhdfakjghadsfafgafdgfgafdg");
