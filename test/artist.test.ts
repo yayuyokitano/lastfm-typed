@@ -70,7 +70,7 @@ describe("Artist", async () => {
 				await lastfm.artist.getInfo(lastfm.helper.ArtistFromName("ヨユヤ"));
 				throw "Did not error";
 			} catch (err) {
-				expect(err).to.deep.equal(lfmError(6, "The artist you supplied could not be found"));
+				expect(err).to.deep.equal(lfmError(6, "Artist not found"));
 			}
 		});
 
@@ -153,11 +153,11 @@ describe("Artist", async () => {
 		});
 	
 		it("Should return properly when there is one album", async () => {
-			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("Lyanas"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
+			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("聴色"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
 		});
 
 		it("Should verify that artist checked actually has one album", async () => {
-			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("Lyanas"))).albums.length).to.equal(1);
+			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("聴色"))).albums.length).to.equal(1);
 		});
 	
 		it("Should error when artist does not exist", async () => {

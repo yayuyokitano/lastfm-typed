@@ -7,7 +7,7 @@ interface Metadata {
 type LargeMetadata = Metadata & ShortMetadata;
 
 interface SimilarArtist extends ArtistStreamableOptionalMBID {
-	match:string;
+	match:number;
 }
 
 interface TrackData extends ArtistOptionalMBID {
@@ -33,7 +33,7 @@ export interface getInfo extends ArtistStreamableOptionalMBID {
 	}
 	similarArtists:ArtistNoMBID[];
 	tags:TagWUrl[];
-	bio: {
+	bio?: {
 		link: {
 			rel:string;
 			href:string;
@@ -70,18 +70,17 @@ export interface getTopTracks {
 }
 
 export interface search {
-	query: {
-		role:string;
-		searchTerms:string;
-		startPage:number;
-	}
-	totalResults:number;
-	startIndex:number;
-	itemsPerPage:number;
-	artistMatches:ListenerArtist[];
 	meta: {
-		query:string;
-	}
+			query: {
+			role:string;
+			searchTerms:string;
+			startPage:number;
+		}
+		totalResults:number;
+		startIndex:number;
+		itemsPerPage:number;
+	},
+	artistMatches:ListenerArtist[];
 }
 
 export interface BasicArtistInput extends StaticArtistInput {

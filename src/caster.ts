@@ -44,28 +44,32 @@ export function convertMeta(meta:any) {
 
 export function convertSearch(res:any) {
 
+	if (!res.meta) {
+		res.meta = {};
+	}
 	res["opensearch:Query"]["#text"] = void 0;
-	res.itemsPerPage = res["opensearch:itemsPerPage"];
+	res.meta.itemsPerPage = toInt(res["opensearch:itemsPerPage"]);
 	res["opensearch:itemsPerPage"] = void 0;
-	res.startIndex = res["opensearch:startIndex"];
+	res.meta.startIndex = toInt(res["opensearch:startIndex"]);
 	res["opensearch:startIndex"] = void 0;
-	res.totalResults = res["opensearch:totalResults"];
+	res.meta.totalResults = toInt(res["opensearch:totalResults"]);
 	res["opensearch:totalResults"] = void 0;
-	res.query = res["opensearch:Query"];
+	res.meta.query = { ...res.meta.query, ...res["opensearch:Query"]};
 	res["opensearch:Query"] = void 0;
-	res.query.startPage = toInt(res.query.startPage);
-	res.totalResults = toInt(res.totalResults);
-	res.startIndex = toInt(res.startIndex);
-	res.itemsPerPage = toInt(res.itemsPerPage);
+	if (res.meta.query?.startPage) {
+		res.meta.query.startPage = toInt(res.meta.query.startPage);
+	}
 	return res;
 
 }
 
 export function convertSearchWithQuery(res:any) {
 
+	res.meta
+
 	res.meta = res["@attr"];
 	res["@attr"] = void 0;
-	res.meta.query = res.meta.for;
+	res.meta.query = { for: res.meta.for };
 	res.meta.for = void 0;
 
 	return convertSearch(res);
@@ -84,7 +88,7 @@ export const convertImageArray = (img:any) => toArray(img).map(convertImage);
 
 function entryIntConverter(e:any) {
 
-	for (let key of ["playcount", "listeners", "tagcount", "userplaycount", "rank", "duration", "taggings", "reach", "bootstrap", "age", "count"]) {
+	for (let key of ["playcount", "listeners", "tagcount", "userplaycount", "rank", "duration", "taggings", "reach", "bootstrap", "age", "count", "match"]) {
 		if (e.hasOwnProperty(key)) {
 			e[key] = toInt(e[key]); // eslint-disable-line
 			continue;

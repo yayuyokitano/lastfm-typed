@@ -1,7 +1,7 @@
 import * as TrackInterface from "../interfaces/trackInterface";
 import Base from "../base";
 import { TrackInput } from "../interfaces/shared";
-import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta, addConditionals, convertString } from "../caster";
+import { toInt, toBool, toArray, convertMeta, convertSearch, convertEntry, convertImageArray, convertEntryArray, joinArray, convertBasicMetaTag, convertExtendedMeta, addConditionals, convertString, boolToInt } from "../caster";
 
 export default class TrackClass extends Base {
 
@@ -44,12 +44,12 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({ method: "track.getInfo", ...track, ...params })).track as any;
 
-		res.toptags = toArray(res.toptags.tag);
+		res.toptags = toArray(res.toptags?.tag);
 		res = convertEntry(res);
 		if (res.album) {
 			
 			if (res.album["@attr"]) {
-				res.album.position = toInt(res.album["@attr"].position);
+				res.album.position = toInt(res.album["@attr"]?.position);
 				res.album["@attr"] = void 0;
 			}
 			
@@ -126,7 +126,11 @@ export default class TrackClass extends Base {
 
 		for (let [index, scrobble] of sk.scrobbles.entries()) {
 			for (let [key, value] of Object.entries(scrobble)) {
-				params[`${key}[${index}]`] = value;
+				if (key === "chosenByUser") {
+					params[`${key}[${index}]`] = boolToInt(value as boolean);
+				} else {
+					params[`${key}[${index}]`] = value;
+				}
 			}
 		}
 

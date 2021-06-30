@@ -146,7 +146,7 @@ export interface GlobalArtist extends ListenerArtist {
 }
 
 interface TrackNoStreamable extends ArtistNoMBID {
-	duration:number;
+	duration?:number;
 }
 
 interface Track extends TrackNoStreamable {
@@ -161,13 +161,9 @@ interface TrackMBID extends Track {
 	artist:ArtistBasic;
 }
 
-interface TrackOptionalMBID extends Track {
+export interface TrackOptionalMBID extends Track {
 	mbid?:string;
 	artist:ArtistOptionalMBID;
-}
-
-export interface TrackOptionalMBIDImg extends TrackOptionalMBID {
-	image:Image[];
 }
 
 export interface TagTrack extends TrackOptionalMBID {

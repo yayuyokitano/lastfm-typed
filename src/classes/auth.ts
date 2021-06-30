@@ -1,6 +1,6 @@
 import * as AuthInterface from "../interfaces/authInterface";
 import Base from "../base";
-import { addConditionals, convertString, toBool } from "../caster";
+import { convertString, toBool } from "../caster";
 
 export default class AuthClass extends Base {
 
@@ -29,11 +29,11 @@ export default class AuthClass extends Base {
 
 	}
 
-	public async getMobileSession(username:string, password:string):Promise<AuthInterface.getSession>;
-	public async getMobileSession(input:{username:string, password:string}):Promise<AuthInterface.getSession>;
-	public async getMobileSession(firstInput:any, password?:string) {
+	public async getMobileSession(username:string, password:string, token:string):Promise<AuthInterface.getSession>;
+	public async getMobileSession(input:{username:string, password:string, token:string}):Promise<AuthInterface.getSession>;
+	public async getMobileSession(firstInput:any, password?:string, token?: string) {
 
-		firstInput = convertString(firstInput, "username", {password});
+		firstInput = convertString(firstInput, "username", {password, token});
 
 		return (await this.sendRequest({ method: "auth.getMobileSession", ...firstInput })).session as AuthInterface.getSession;
 

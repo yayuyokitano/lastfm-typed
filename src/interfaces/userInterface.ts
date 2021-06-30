@@ -1,4 +1,4 @@
-import { Album, Artist, ArtistBasic, Image, ShortMetadata, TagAlbum, TagArtist, TagTrack, TagUrlCount, TrackOptionalMBIDImg, UserPaginatedInput, UserResolvable } from "./shared";
+import { Album, Artist, ArtistBasic, Image, ShortMetadata, TagAlbum, TagArtist, TagTrack, TagUrlCount, TrackOptionalMBID, UserPaginatedInput, UserResolvable } from "./shared";
 
 interface Metadata extends ShortMetadata {
 	user:string;
@@ -27,7 +27,7 @@ interface UserDualTimestamp extends User {
 }
 
 export interface getFriends {
-	user:UserDualTimestamp[];
+	users:UserDualTimestamp[];
 	meta:Metadata;
 }
 
@@ -59,7 +59,7 @@ export interface getLovedTracks {
 export interface getPersonalTags {
 	artists?:Artist[];
 	albums?:Album[];
-	tracks?:TrackOptionalMBIDImg[];
+	tracks?:TrackOptionalMBID[];
 	meta:TagMetadata;
 }
 

@@ -23,8 +23,8 @@ export default class AlbumClass extends Base {
 		let res = (await this.sendRequest({ method: "album.getInfo", ...firstInput, ...params })).album as any;
 
 		res = convertEntry(res);
-		res.tracks = convertEntryArray(res.tracks.track);
-		res.tags = convertEntryArray(res.tags.tag);
+		res.tracks = convertEntryArray(res.tracks?.track);
+		res.tags = convertEntryArray(res.tags?.tag);
 
 		return res as AlbumInterface.getInfo;
 

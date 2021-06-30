@@ -1,4 +1,4 @@
-import {GlobalArtist, ListenerTrack, ShortMetadata, TagGlobalNoWiki} from "./shared";
+import {GlobalArtist, GlobalTrack, ShortMetadata, TagGlobalNoWiki} from "./shared";
 
 export interface getTopArtists {
 	artists:GlobalArtist[];
@@ -11,7 +11,7 @@ export interface getTopTags {
 }
 
 export interface getTopTracks {
-	tracks:ListenerTrack[];
+	tracks:GlobalTrack[];
 	meta:ShortMetadata;
 }
 

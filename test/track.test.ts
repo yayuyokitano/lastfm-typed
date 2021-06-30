@@ -179,7 +179,7 @@ describe("Track", async () => {
 		});
 
 		it("Wait for lfm to process", async () => {
-			await sleep(3000);
+			await sleep(5000);
 		});
 
 		it("Should actually have scrobbled", async () => {
@@ -195,7 +195,7 @@ describe("Track", async () => {
 		});
 
 		it("Wait for lfm to process", async () => {
-			await sleep(3000);
+			await sleep(5000);
 		});
 
 		it("Should actually have scrobbled many", async () => {
@@ -211,7 +211,7 @@ describe("Track", async () => {
 		});
 
 		it("Wait for lfm to process", async () => {
-			await sleep(3000);
+			await sleep(5000);
 		});
 
 		it("Should actually have scrobbled many", async () => {

@@ -23,18 +23,17 @@ export interface getTopTags {
 }
 
 export interface search {
-	query: {
-		role:string;
-		searchTerms:string;
-		startPage:number;
-	}
-	totalResults:number;
-	startIndex:number;
-	itemsPerPage:number;
-	albumMatches:StringAlbum[];
 	meta: {
-		query:string;
+		query: {
+			role:string;
+			searchTerms:string;
+			startPage:number;
+		}
+		totalResults:number;
+		startIndex:number;
+		itemsPerPage:number;
 	}
+	albumMatches:StringAlbum[];
 }
 
 export interface BasicAlbumInput extends StaticAlbumInput {

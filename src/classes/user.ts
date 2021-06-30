@@ -13,13 +13,14 @@ export default class UserClass extends Base {
 
 		let res = (await this.sendRequest({ method: "user.getFriends", ...usernameOrSessionKey, ...params })).friends as any;
 
-		res.user = toArray(res.user).map((e:any) => {
+		res.users = toArray(res.user).map((e:any) => {
 
 			e = setDate(e, "registered");
 			e = convertEntry(e);
 			return e;
 
 		});
+		res.user = void 0;
 
 		res.meta = convertMeta(res["@attr"]);
 		res["@attr"] = void 0;

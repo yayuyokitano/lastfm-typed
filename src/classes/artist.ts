@@ -38,11 +38,13 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getInfo", ...firstInput, ...params })).artist as any;
 
-		res.similarArtists = toArray(res.similar.artist);
+		res.similarArtists = toArray(res.similar?.artist);
 		res.similar = void 0;
-		res.tags = toArray(res.tags.tag);
-		res.bio.link = res.bio.links.link;
-		res.bio.links = void 0;
+		res.tags = toArray(res.tags?.tag);
+		if (res.bio) {
+			res.bio.link = res.bio.links?.link;
+			res.bio.links = void 0;
+		}
 
 		res = convertEntry(res);
 		res.stats = convertEntry(res.stats);

@@ -8,7 +8,7 @@ interface TrackMetadata extends Metadata {
 	track:string;
 }
 
-interface SimilarTrack extends ArtistNoMBID {
+interface SimilarTrack extends ArtistOptionalMBID {
 	duration?:number;
 	streamable: {
 		isStreamable:boolean;
@@ -25,13 +25,11 @@ interface searchTrack {
 	url:string;
 	streamable:boolean;
 	listeners:number;
-	image:Image[];
 	mbid:string;
 }
 
 export interface getCorrection {
 	track?:TrackBasic;
-	artist?:ArtistOptionalMBID;
 	meta?: {
 		index:number;
 		artistcorrected:boolean;
@@ -95,13 +93,15 @@ export interface scrobble {
 }
 
 export interface search {
-	query: {
-		role:string;
-		startPage:number;
+	meta: {
+		query: {
+			role:string;
+			startPage:number;
+		}
+		totalResults:number;
+		startIndex:number;
+		itemsPerPage:number;
 	}
-	totalResults:number;
-	startIndex:number;
-	itemsPerPage:number;
 	trackMatches:searchTrack[];
 }
 
@@ -110,7 +110,7 @@ export interface ScrobbleObject {
 	track:string;
 	timestamp:number;
 	album?:string;
-	chosenByUser?:0|1;
+	chosenByUser?:boolean;
 	trackNumber?:number;
 	mbid?:string;
 	albumArtist?:string;
