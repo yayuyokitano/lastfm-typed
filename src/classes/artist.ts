@@ -37,8 +37,9 @@ export default class ArtistClass extends Base {
 		if (res.bio) {
 			res.bio.link = res.bio.links?.link;
 			delete res.bio.links;
-		}
-		
+		} else {
+      res.bio = {};
+    }
 
 		return res as ArtistInterface.getInfo;
 

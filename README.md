@@ -26,7 +26,8 @@ Additionally, the constructor call has changed. See [Usage](#usage) for the new 
 
 ### Changes: 1.3.5
 
-1.3.5 patches up some fatal errors caused by last.fm making breaking changes to their API. Note that as it is implemented right now, this causes some difference in responses compared to before (indicated by changed interfaces, so you should get compile errors if your code is affected). I may go in and force input to be as it was before if it is not fixed on lastfm's end soon, or maybe I won't.
+1.3.5 patches up some fatal errors caused by last.fm making breaking changes to their API. Should be fixed in a way such that the result you see will be unchanged from previous versions, despite the change of output from lastfm.
+One exception to this is [this bug I detailed here,](https://support.last.fm/t/tags-bio-similar-artists-missing-from-artist-getinfo-response-for-artists-with-redirects/46740/3?u=mexdeep) which is not something I can fix client-side, unfortunately. Last.FM, please fix.
 
 ## Usage
 

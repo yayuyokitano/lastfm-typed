@@ -116,7 +116,6 @@ export class LFMRequest {
 			throw error;
 
 		}
-		console.log(this.response);
 		//successful request
 		return this.response;
 
@@ -145,7 +144,7 @@ export class LFMRequest {
 
 		const paramString = stringify(requestParam);
 
-		let res = await fetch(`${this.connectionType}://ws.audioscrobbler.com/2.0/`, {
+		return await fetch(`${this.connectionType}://ws.audioscrobbler.com/2.0/`, {
 			method: "POST",
 			headers: {
 				"Content-Length":  Buffer.byteLength(paramString).toString(),
@@ -154,8 +153,6 @@ export class LFMRequest {
 			},
 			body: paramString
 		});
-		console.log(paramString);
-		return res;
 
 	}
 
