@@ -24,9 +24,9 @@ lastfm-typed is a fully typed library for interaction with the [Last.FM API](htt
 It comes with a bunch of changes to attribute names in responses, so many that I will not list them all. Most notably, all instances of "#text" and "@attr" have been replaced with a descriptive name like "name" or "meta". Your IDE should help you deal with this, though I plan to make a full documentation of this later.
 Additionally, the constructor call has changed. See [Usage](#usage) for the new way to call the class constructor.
 
-### Changes: 1.3.2
+### Changes: 1.3.5
 
-1.3.3 fixes fatal bugs with artist.getCorrection and track.getCorrection.
+1.3.5 patches up some fatal errors caused by last.fm making breaking changes to their API. Note that as it is implemented right now, this causes some difference in responses compared to before (indicated by changed interfaces, so you should get compile errors if your code is affected). I may go in and force input to be as it was before if it is not fixed on lastfm's end soon, or maybe I won't.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 {
   "name": "lastfm-typed",
-  "version": "1.3.3",
+  "version": "1.3.5",
   "description": "Typed API wrapper for Last.FM using promises",
   "main": "dist/index.js",
   "author": "yayuyokitano",

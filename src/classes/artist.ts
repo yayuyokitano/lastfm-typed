@@ -31,11 +31,14 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getInfo", ...artist, ...params })).artist as any;
 
-		res.similarArtists = res.similar.artist;
+		res.similarArtists = res.similar?.artist ?? [];
 		delete res.similar;
-		res.tags = res.tags.tag;
-		res.bio.link = res.bio.links.link;
-		delete res.bio.links;
+		res.tags = res.tags?.tag ?? [];
+		if (res.bio) {
+			res.bio.link = res.bio.links?.link;
+			delete res.bio.links;
+		}
+		
 
 		return res as ArtistInterface.getInfo;
 

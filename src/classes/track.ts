@@ -43,7 +43,7 @@ export default class TrackClass extends Base {
 
 		let res = (await this.sendRequest({ method: "track.getInfo", ...track, ...params })).track as any;
 
-		res.toptags = res.toptags.tag;
+		res.toptags = res.toptags?.tag ?? [];
 		if (res.album) {
 			if (res.album["@attr"]) {
 				res.album.position = res.album["@attr"].position;

@@ -18,7 +18,7 @@ export default class AlbumClass extends Base {
 
 		let res = (await this.sendRequest({ method: "album.getInfo", ...album, ...params })).album as any;
 
-		res.tracks = res.tracks.track;
+		res.tracks = res.tracks?.track ?? [];
 		res.tracks.forEach((e:any) => {
 			e.streamable.isStreamable = e.streamable["#text"];
 			delete e.streamable["#text"];
@@ -26,7 +26,7 @@ export default class AlbumClass extends Base {
 			delete e["@attr"];
 		});
 
-		res.tags = res.tags.tag;
+		res.tags = res.tags?.tag ?? [];
 		res.image.forEach((e:any) => {
 			e.url = e["#text"];
 			delete e["#text"];
