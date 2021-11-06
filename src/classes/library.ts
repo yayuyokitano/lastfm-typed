@@ -5,7 +5,7 @@ import { UserPaginatedInput } from "../interfaces/shared";
 
 export default class LibraryClass extends Base {
 
-	public async getArtists(usernameOrSessionKey:string, params?:{page?:number, limit?:number}):Promise<LibraryInterface.getArtists>;
+	public async getArtists(username:string, params?:{sk?:string, page?:number, limit?:number}):Promise<LibraryInterface.getArtists>;
 	public async getArtists(input:UserPaginatedInput):Promise<LibraryInterface.getArtists>;
 	public async getArtists(firstInput:any, params?:{page?:number, limit?:number}) {
 

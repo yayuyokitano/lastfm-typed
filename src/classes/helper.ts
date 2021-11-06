@@ -29,7 +29,7 @@ export default class HelperClass {
 		this.lastfm = lastfm;
 	}
 
-	public async getCombo(usernameOrSessionKey:string, limit:number):Promise<HelperInterface.getCombo>;
+	public async getCombo(username:string, limit:number, params?:{sk?:string}):Promise<HelperInterface.getCombo>;
 	public async getCombo(input:HelperInterface.getComboInput):Promise<HelperInterface.getCombo>;
 	public async getCombo(firstInput:any, limit?:number) {
 
@@ -124,11 +124,11 @@ export default class HelperClass {
 		};
 	}
 
-	public async getNowPlaying(usernameOrSessionKey:string, detailTypes?:("artist"|"album"|"track")[], options?:{extended:boolean}):Promise<HelperInterface.getNowPlaying>;
+	public async getNowPlaying(username:string, detailTypes?:("artist"|"album"|"track")[], params?:{sk?:string, extended:boolean}):Promise<HelperInterface.getNowPlaying>;
 	public async getNowPlaying(input:HelperInterface.getNowPlayingInput):Promise<HelperInterface.getNowPlaying>;
-	public async getNowPlaying(firstInput:any, detailTypes:("artist"|"album"|"track")[] = [], options:{extended:boolean} = {extended: true}) {
+	public async getNowPlaying(firstInput:any, detailTypes:("artist"|"album"|"track")[] = [], params:{extended:boolean} = {extended: true}) {
 
-		firstInput = convertString(firstInput, "user", {detailTypes, ...options});
+		firstInput = convertString(firstInput, "user", {detailTypes, ...params});
 		firstInput = this.homogenizeUserInput(firstInput);
 
 		const curr = await this.lastfm.user.getRecentTracks(firstInput.user, {limit: 1, extended: firstInput.extended});
@@ -271,28 +271,28 @@ export default class HelperClass {
 
 	public TrackFromName = (artist:string, track:string) => ({ artist, track });
 
-	public cacheScrobbles(user:string, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}):TypedEmitter<ScrobbleEmitter>;
+	public cacheScrobbles(user:string, params?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}):TypedEmitter<ScrobbleEmitter>;
 	public cacheScrobbles(input:HelperInterface.cacheScrobblesInput):TypedEmitter<ScrobbleEmitter>;
-	public cacheScrobbles(user:any, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
+	public cacheScrobbles(user:any, params?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
 
-		options ??= {};
+		params ??= {};
 
 		if (typeof user !== "string") {
-			options.previouslyCached = user.previouslyCached;
-			options.parallelCaches = user.parallelCaches;
-			options.rateLimitTimeout = user.rateLimitTimeout;
+			params.previouslyCached = user.previouslyCached;
+			params.parallelCaches = user.parallelCaches;
+			params.rateLimitTimeout = user.rateLimitTimeout;
 			user = user.user;
 		}
 
 		let scrobbleEmitter = new EventEmitter() as TypedEmitter<ScrobbleEmitter>;
 
-		this.handleCaching(user, scrobbleEmitter, options);
+		this.handleCaching(user, scrobbleEmitter, params);
 
 		return scrobbleEmitter;
 
 	}
 
-	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, options?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
+	private async handleCaching(user:string, scrobbleEmitter:TypedEmitter<ScrobbleEmitter>, params?:{previouslyCached?:number, parallelCaches?:number, rateLimitTimeout?:number}) {
 		let count:number;
 		try {
 			count = (await this.lastfm.user.getRecentTracks(user, {limit: 1})).meta.total;
@@ -300,7 +300,7 @@ export default class HelperClass {
 			let rateLimitInterval = setInterval(() => {
 				
 				try {
-					this.handleCaching(user, scrobbleEmitter, options);
+					this.handleCaching(user, scrobbleEmitter, params);
 				
 					clearInterval(rateLimitInterval);
 				} catch (err) {
@@ -310,15 +310,15 @@ export default class HelperClass {
 			return;
 		}
 
-		let newCount = count - (options?.previouslyCached || 0);
+		let newCount = count - (params?.previouslyCached || 0);
 		let totalPages = Math.ceil(newCount / 1000);
 		let rateLimited = false;
-		let limitTime = options?.rateLimitTimeout || 300000;
+		let limitTime = params?.rateLimitTimeout || 300000;
 
 		scrobbleEmitter.emit("start", {totalPages, count: newCount});
 
 		let pages = Array(totalPages).fill("").map((_, i) => i + 1);
-		let active = Math.min(options?.parallelCaches || 1, totalPages);
+		let active = Math.min(params?.parallelCaches || 1, totalPages);
 		let complete = 0;
 
 		this.attemptClose(active, scrobbleEmitter);
@@ -410,7 +410,18 @@ export default class HelperClass {
 	
 			scrobbleEmitter.emit("internalDontUse", res);
 		} catch(err) {
-			scrobbleEmitter.emit("error", err, page);
+			if (typeof err === "object" && err !== null && err.hasOwnProperty("code") && err.hasOwnProperty("message")) {
+				scrobbleEmitter.emit("error", {
+					code: Number((err as any).code),
+					message: (err as any).message
+				}, page);
+			} else {
+				scrobbleEmitter.emit("error", {
+					code: 41,
+					message: `An unknown error occurred. Details: ${err}`
+				}, page);
+			}
+			
 		}
 
 	}
@@ -449,18 +460,27 @@ export default class HelperClass {
 	}
 
 
-	private async fetchDetails(usernameOrSessionKey:string, detailTypes:("artist"|"album"|"track")[], artist:string, album:string, track:string) {
+	private async fetchDetails(username:string, detailTypes:("artist"|"album"|"track")[], artist:string, album:string, track:string, params?:{sk?:string}) {
 
 		let promises:Promise<any>[] = [];
+		let options:{
+			username:string;
+			sk?:string;
+		} = {
+			username
+		}
+		if (params?.sk) {
+			options.sk = params.sk;
+		}
 
 		if (detailTypes?.includes("artist")) {
-			promises.push(this.lastfm.artist.getInfo({artist}, {username: usernameOrSessionKey}).catch((err) => {}));
+			promises.push(this.lastfm.artist.getInfo({artist}, options).catch((err) => {}));
 		}
 		if (detailTypes?.includes("album") && album) {
-			promises.push(this.lastfm.album.getInfo({artist, album}, {username: usernameOrSessionKey}).catch((err) => {}));
+			promises.push(this.lastfm.album.getInfo({artist, album}, options).catch((err) => {}));
 		}
 		if (detailTypes?.includes("track")) {
-			promises.push(this.lastfm.track.getInfo({artist, track}, {username: usernameOrSessionKey}).catch((err) => {}));
+			promises.push(this.lastfm.track.getInfo({artist, track}, options).catch((err) => {}));
 		}
 
 		return await Promise.all(promises);

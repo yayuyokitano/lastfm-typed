@@ -49,7 +49,7 @@ export default class TagClass extends Base {
 		let res = (await this.getTop("tag.getTopTags", {}, newParams)).toptags as any;
 
 		const total = toInt(res["@attr"].total);
-		if (typeof total === "undefined") {
+		if (total === null) {
 			throw "Total is not a number";
 		}
 
@@ -61,10 +61,10 @@ export default class TagClass extends Base {
 		};
 
 		res.meta = attr;
-		res["@attr"] = void 0;
+		delete res["@attr"];
 		res.tags = convertEntryArray(res.tag);
 
-		res.tag = void 0;
+		delete res.tag;
 		return res as TagInterface.getTopTags;
 
 	}

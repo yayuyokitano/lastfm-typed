@@ -70,7 +70,7 @@ describe("Artist", async () => {
 				await lastfm.artist.getInfo(lastfm.helper.ArtistFromName("ヨユヤ"));
 				throw "Did not error";
 			} catch (err) {
-				expect(err).to.deep.equal(lfmError(6, "Artist not found"));
+				expect(err).to.deep.equal(lfmError(6, "The artist you supplied could not be found"));
 			}
 		});
 
@@ -87,11 +87,11 @@ describe("Artist", async () => {
 		});
 
 		it("Should return properly when no similar artists", async () => {
-			(expect(await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("フミンニッキ"))).to.be as any).jsonSchema(artistSchema.getSimilar);
+			(expect(await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("山下由貴"))).to.be as any).jsonSchema(artistSchema.getSimilar);
 		});
 
 		it("Should verify that artist checked actually doesn't have similar artists", async () => {
-			expect((await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("フミンニッキ"))).artists.length).to.equal(0);
+			expect((await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("山下由貴"))).artists.length).to.equal(0);
 		});
 
 		it("Should error when artist does not exist", async () => {
@@ -145,19 +145,19 @@ describe("Artist", async () => {
 		});
 	
 		it("Should return properly when there is no album", async () => {
-			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("フミンニッキ"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
+			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("Jack in The b∅x"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
 		});
 
 		it("Should verify that artist checked actually has no album", async () => {
-			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("フミンニッキ"))).albums.length).to.equal(0);
+			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("Jack in The b∅x"))).albums.length).to.equal(0);
 		});
 	
 		it("Should return properly when there is one album", async () => {
-			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("聴色"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
+			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("山下由貴"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
 		});
 
 		it("Should verify that artist checked actually has one album", async () => {
-			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("聴色"))).albums.length).to.equal(1);
+			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("山下由貴"))).albums.length).to.equal(1);
 		});
 	
 		it("Should error when artist does not exist", async () => {
@@ -211,11 +211,11 @@ describe("Artist", async () => {
 		});
 	
 		it("Should return properly when there is one track", async () => {
-			(expect(await lastfm.artist.getTopTracks(lastfm.helper.ArtistFromName("フミンニッキ"))).to.be as any).jsonSchema(artistSchema.getTopTracks);
+			(expect(await lastfm.artist.getTopTracks(lastfm.helper.ArtistFromName("あねそかり"))).to.be as any).jsonSchema(artistSchema.getTopTracks);
 		});
 
 		it("Should verify that artist checked actually has one track", async () => {
-			expect((await lastfm.artist.getTopTracks(lastfm.helper.ArtistFromName("フミンニッキ"))).tracks.length).to.equal(1);
+			expect((await lastfm.artist.getTopTracks(lastfm.helper.ArtistFromName("あねそかり"))).tracks.length).to.equal(1);
 		});
 	
 		it("Should error when artist does not exist", async () => {

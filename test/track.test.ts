@@ -13,10 +13,10 @@ let config = {
 
 if (!config.key) {
 	config = require("./config.json");
-} else {
-	// This is key for a throwaway account, I don't care
-	config.session = "0SJC2cHJBjnjR-vbPCF-Skke0K9j5SQx";
 }
+
+config.session = "0SJC2cHJBjnjR-vbPCF-Skke0K9j5SQx";
+
 import trackSchema from "./schema/trackSchema.json";
 
 const lastfm = new LastFM(config.key as string, { apiSecret: config.secret as string });
@@ -166,12 +166,12 @@ describe("Track", async () => {
 	describe(".scrobble", async () => {
 
 		it("Should return properly for one track", async () => {
-			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: "THE PARK", timestamp: Number(new Date()) / 1000}])).to.be as any).jsonSchema(trackSchema.scrobble);
+			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)}])).to.be as any).jsonSchema(trackSchema.scrobble);
 		});
 
 		it("Should error when session key invalid", async () => {
 			try {
-				await lastfm.track.scrobble("0SJC2cHJBjnjR-vbPCF-Skke0K9j5SQS", [{artist: "赤い公園", track: "Mutant", album: "THE PARK", timestamp: Number(new Date()) / 1000}]);
+				await lastfm.track.scrobble("0SJC2cHJBjnjR-vbPCF-Skke0K9j5SQS", [{artist: "赤い公園", track: "Mutant", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)}]);
 				throw "Did not error";
 			} catch (err) {
 				expect(err).to.deep.equal(lfmError(9, "Invalid session key - Please re-authenticate"));
@@ -191,7 +191,7 @@ describe("Track", async () => {
 		});
 
 		it("Should return properly for many tracks", async () => {
-			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "yumeutsutsu", album: "THE PARK", timestamp: Number(new Date()) / 1000},{artist: "赤い公園", track: "yumeutsutsu", album: "THE PARK", timestamp: (Number(new Date()) / 1000) - 1}])).to.be as any).jsonSchema(trackSchema.scrobble);
+			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "yumeutsutsu", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)},{artist: "赤い公園", track: "yumeutsutsu", album: "THE PARK", timestamp: (Math.floor(Number(new Date()) / 1000)) - 1}])).to.be as any).jsonSchema(trackSchema.scrobble);
 		});
 
 		it("Wait for lfm to process", async () => {
@@ -207,14 +207,14 @@ describe("Track", async () => {
 		});
 
 		it("Should return properly for object input", async () => {
-			(expect(await lastfm.track.scrobble({sk: config.session, scrobbles: [{artist: "赤い公園", track: "KILT OF MANTRA", album: "THE PARK", timestamp: Number(new Date()) / 1000}]})).to.be as any).jsonSchema(trackSchema.scrobble);
+			(expect(await lastfm.track.scrobble({sk: config.session, scrobbles: [{artist: "赤い公園", track: "KILT OF MANTRA", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)}]})).to.be as any).jsonSchema(trackSchema.scrobble);
 		});
 
 		it("Wait for lfm to process", async () => {
 			await sleep(5000);
 		});
 
-		it("Should actually have scrobbled many", async () => {
+		it("Should actually have scrobbled object input", async () => {
 			expect((await lastfm.user.getRecentTracks(config.session, {limit: 1})).tracks[0]).to.deep.nested.include({
 				"artist.name": "赤い公園",
 				"album.name": "THE PARK",

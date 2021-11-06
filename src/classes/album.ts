@@ -30,7 +30,7 @@ export default class AlbumClass extends Base {
 
 	}
 	
-	public async getTags(album:AlbumInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}):Promise<AlbumInterface.getTags>;
+	public async getTags(album:AlbumInput, username:string, params?:{sk?:string, autocorrect?:boolean}):Promise<AlbumInterface.getTags>;
 	public async getTags(params:AlbumInterface.getTagsInput):Promise<AlbumInterface.getTags>;
 	public async getTags(firstInput:any, usernameOrSessionKey?:string, params?:{autocorrect?:boolean}) {
 
@@ -74,7 +74,7 @@ export default class AlbumClass extends Base {
 		res = convertSearchWithQuery(res);
 
 		res.albumMatches = convertEntryArray(res.albummatches.album);
-		res.albummatches = void 0;
+		delete res.albummatches;
 		
 		return res as AlbumInterface.search;
 

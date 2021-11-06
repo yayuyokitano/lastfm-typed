@@ -4,7 +4,7 @@ export function toInt(num:any) {
 		return num;
 	}
 	const res = parseInt(num, 10);
-	return isNaN(res) ? void 0 : res;
+	return isNaN(res) ? null : res;
 
 }
 
@@ -47,15 +47,15 @@ export function convertSearch(res:any) {
 	if (!res.meta) {
 		res.meta = {};
 	}
-	res["opensearch:Query"]["#text"] = void 0;
+	delete res["opensearch:Query"]["#text"];
 	res.meta.itemsPerPage = toInt(res["opensearch:itemsPerPage"]);
-	res["opensearch:itemsPerPage"] = void 0;
+	delete res["opensearch:itemsPerPage"];
 	res.meta.startIndex = toInt(res["opensearch:startIndex"]);
-	res["opensearch:startIndex"] = void 0;
+	delete res["opensearch:startIndex"];
 	res.meta.totalResults = toInt(res["opensearch:totalResults"]);
-	res["opensearch:totalResults"] = void 0;
+	delete res["opensearch:totalResults"];
 	res.meta.query = { ...res.meta.query, ...res["opensearch:Query"]};
-	res["opensearch:Query"] = void 0;
+	delete res["opensearch:Query"];
 	if (res.meta.query?.startPage) {
 		res.meta.query.startPage = toInt(res.meta.query.startPage);
 	}
@@ -68,9 +68,9 @@ export function convertSearchWithQuery(res:any) {
 	res.meta
 
 	res.meta = res["@attr"];
-	res["@attr"] = void 0;
+	delete res["@attr"];
 	res.meta.query = { for: res.meta.for };
-	res.meta.for = void 0;
+	delete res.meta.for;
 
 	return convertSearch(res);
 
@@ -79,7 +79,7 @@ export function convertSearchWithQuery(res:any) {
 export function convertImage(img:any) {
 
 	img.url = img["#text"];
-	img["#text"] = void 0;
+	delete img["#text"];
 	return img;
 
 }
@@ -96,7 +96,7 @@ function entryIntConverter(e:any) {
 
 		if (e["@attr"]?.hasOwnProperty(key)) {
 			e[key] = toInt(e["@attr"][key]); // eslint-disable-line
-			e["@attr"] = void 0;
+			delete e["@attr"];
 		}
 	}
 	return e;
@@ -108,7 +108,7 @@ function entryStreamableConverter(e:any) {
 	if (e.hasOwnProperty("streamable")) {
 		if (e.streamable.hasOwnProperty("fulltrack")) {
 			e.streamable.isStreamable = toBool(e.streamable["#text"]);
-			e.streamable["#text"] = void 0;
+			delete e.streamable["#text"];
 			e.streamable.fulltrack = toBool(e.streamable.fulltrack);
 		} else {
 			e.streamable = toBool(e.streamable?.["#text"] ?? e.streamable);
@@ -144,12 +144,12 @@ function setName(e:any) {
 
 	if (!e.artist.hasOwnProperty("name")) {
 		e.artist.name = e.artist["#text"];
-		e.artist["#text"] = void 0;
+		delete e.artist["#text"];
 	}
 
 	if (e.hasOwnProperty("album")) {
 		e.album.name ||= e.album["#text"];
-		e.album["#text"] = void 0;
+		delete e.album["#text"];
 	}
 
 	return e;
@@ -160,9 +160,9 @@ export function setDate(e:any, prop:string) {
 
 	if (e.hasOwnProperty(prop)) {
 		e[prop].datetime = e[prop]["#text"]; // eslint-disable-line
-		e[prop]["#text"] = void 0; // eslint-disable-line
+		delete e[prop]["#text"]; // eslint-disable-line
 		e[prop].uts = toInt(e[prop].uts ?? e[prop].unixtime); // eslint-disable-line
-		e[prop].unixtime = void 0; // eslint-disable-line
+		delete e[prop].unixtime; // eslint-disable-line
 	}
 
 	return e;
@@ -176,7 +176,7 @@ function convertGetRecentTracksEntry(e:any) {
 
 	if (e?.["@attr"]?.hasOwnProperty("nowplaying")) {
 		e.nowplaying = toBool(e["@attr"].nowplaying);
-		e["@attr"] = void 0;
+		delete e["@attr"];
 	} else {
 		e.nowplaying = false;
 	}
@@ -191,9 +191,9 @@ export const joinArray = (e:string[]|string) => Array.isArray(e) ? e.join(",") :
 export function convertBasicMetaTag(res:any) {
 
 	res.meta = res["@attr"];
-	res["@attr"] = void 0;
+	delete res["@attr"];
 	res.tags = toArray(res.tag);
-	res.tag = void 0;
+	delete res.tag;
 	return res;
 
 }
@@ -201,9 +201,9 @@ export function convertBasicMetaTag(res:any) {
 export function convertExtendedMeta(res:any, type:"tag"|"artist"|"album"|"track") {
 
 	res.meta = convertMeta(res["@attr"]);
-	res["@attr"] = void 0;
+	delete res["@attr"];
 	res[`${type}s`] = convertEntryArray(res[type]); // eslint-disable-line
-	res[type] = void 0; // eslint-disable-line
+	delete res[type]; // eslint-disable-line
 	return res;
 	
 }

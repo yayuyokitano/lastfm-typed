@@ -5,13 +5,13 @@ import { UserPaginatedInput, UserResolvable } from "../interfaces/shared";
 
 export default class UserClass extends Base {
 
-	public async getFriends(usernameOrSessionKey:string, params?:{recenttracks?:boolean, limit?:number, page?:number}):Promise<UserInterface.getFriends>;
+	public async getFriends(username:string, params?:{sk?:string, recenttracks?:boolean, limit?:number, page?:number}):Promise<UserInterface.getFriends>;
 	public async getFriends(input:UserInterface.getFriendsInput):Promise<UserInterface.getFriends>;
-	public async getFriends(usernameOrSessionKey:any, params?:{recenttracks?:boolean, limit?:number, page?:number}) {
+	public async getFriends(firstInput:any, params?:{sk?:string, recenttracks?:boolean, limit?:number, page?:number}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getFriends", ...usernameOrSessionKey, ...params })).friends as any;
+		let res = (await this.sendRequest({ method: "user.getFriends", ...firstInput, ...params })).friends as any;
 
 		res.users = toArray(res.user).map((e:any) => {
 
@@ -20,22 +20,22 @@ export default class UserClass extends Base {
 			return e;
 
 		});
-		res.user = void 0;
+		delete res.user;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		return res as UserInterface.getFriends;
 
 	}
 
-	public async getInfo(usernameOrSessionKey:string):Promise<UserInterface.getInfo>;
+	public async getInfo(username:string, params?:{sk?:string}):Promise<UserInterface.getInfo>;
 	public async getInfo(input:UserResolvable):Promise<UserInterface.getInfo>;
-	public async getInfo(usernameOrSessionKey:any) {
+	public async getInfo(firstInput:any, params?:{sk?:string}) {
 
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {});
+		firstInput = convertString(firstInput, "user", {});
 
-		let res = (await this.sendRequest({ method: "user.getInfo", ...usernameOrSessionKey })).user as any;
+		let res = (await this.sendRequest({ method: "user.getInfo", ...firstInput , ...params})).user as any;
 
 		res.registered = toInt(res.registered.unixtime);
 		res = convertEntry(res);
@@ -44,16 +44,16 @@ export default class UserClass extends Base {
 
 	}
 
-	public async getLovedTracks(usernameOrSessionKey:string, params?:{limit?:number, page?:number}):Promise<UserInterface.getLovedTracks>;
+	public async getLovedTracks(username:string, params?:{sk?:string, limit?:number, page?:number}):Promise<UserInterface.getLovedTracks>;
 	public async getLovedTracks(input:UserPaginatedInput):Promise<UserInterface.getLovedTracks>;
-	public async getLovedTracks(usernameOrSessionKey:any, params?:{limit?:number, page?:number}) {
+	public async getLovedTracks(firstInput:any, params?:{sk?:string, limit?:number, page?:number}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getLovedTracks", ...usernameOrSessionKey, ...params })).lovedtracks as any;
+		let res = (await this.sendRequest({ method: "user.getLovedTracks", ...firstInput, ...params })).lovedtracks as any;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 		res.tracks = toArray(res.track).map((e:any) => {
 
 			e = setDate(e, "date");
@@ -62,21 +62,21 @@ export default class UserClass extends Base {
 
 		});
 
-		res.track = void 0;
+		delete res.track;
 
 		return res as UserInterface.getLovedTracks;
 
 	}
 
-	public async getPersonalTags(usernameOrSessionKey:string, tag:string, taggingType:"artist"|"album"|"track", params?:{limit?:number, page?:number}):Promise<UserInterface.getPersonalTags>;
+	public async getPersonalTags(username:string, tag:string, taggingType:"artist"|"album"|"track", params?:{sk?:string, limit?:number, page?:number}):Promise<UserInterface.getPersonalTags>;
 	public async getPersonalTags(input:UserInterface.getPersonalTagsInput):Promise<UserInterface.getPersonalTags>;
-	public async getPersonalTags(usernameOrSessionKey:any, tag?:string, taggingType?:"artist"|"album"|"track", params?:{limit?:number, page?:number}) {
+	public async getPersonalTags(firstInput:any, tag?:string, taggingType?:"artist"|"album"|"track", params?:{sk?:string, limit?:number, page?:number}) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
+		this.checkLimit(params?.limit ?? firstInput?.limit, 1000);
 
-		usernameOrSessionKey = convertString(usernameOrSessionKey, "user", {tag, taggingType});
+		firstInput = convertString(firstInput, "user", {tag, taggingType});
 
-		let res = (await this.sendRequest({ method: "user.getPersonalTags", ...usernameOrSessionKey, ...params })).taggings as any;
+		let res = (await this.sendRequest({ method: "user.getPersonalTags", ...firstInput, ...params })).taggings as any;
 
 		if (res.hasOwnProperty("artists")) {
 
@@ -93,20 +93,20 @@ export default class UserClass extends Base {
 		}
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		return res as UserInterface.getPersonalTags;
 
 	}
 
-	public async getRecentTracks(usernameOrSessionKey:string, params?:{limit?:number, page?:number, from?:string, to?:string, extended?:boolean}):Promise<UserInterface.getRecentTracks>;
-	public async getRecentTracks(usernameOrSessionKey:UserInterface.getRecentTracksInput):Promise<UserInterface.getRecentTracks>;
-	public async getRecentTracks(firstInput:any, params?:{limit?:number, page?:number, from?:string, to?:string, extended?:boolean|number}) {
+	public async getRecentTracks(username:string, params?:{sk?:string, limit?:number, page?:number, from?:string, to?:string, extended?:boolean}):Promise<UserInterface.getRecentTracks>;
+	public async getRecentTracks(input:UserInterface.getRecentTracksInput):Promise<UserInterface.getRecentTracks>;
+	public async getRecentTracks(firstInput:any, params?:{sk?:string, limit?:number, page?:number, from?:string, to?:string, extended?:boolean|number}) {
 
 		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
 		if (params?.hasOwnProperty("extended")) {
-			params.extended = toInt(params.extended);
+			params.extended = toInt(params.extended) ?? 0;
 		} else if (firstInput?.hasOwnProperty("extended")) {
 			firstInput.extended = toInt(firstInput.extended);
 		}
@@ -114,92 +114,92 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getRecentTracks", ...firstInput, ...params })).recenttracks;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 		res.tracks = convertGetRecentTracks(res.track);
-		res.track = void 0;
+		delete res.track;
 
 		return res as UserInterface.getRecentTracks;
 		
 	}
 
-	public async getTopAlbums(usernameOrSessionKey:string, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}):Promise<UserInterface.getTopAlbums>;
+	public async getTopAlbums(username:string, params?:{sk?:string, limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}):Promise<UserInterface.getTopAlbums>;
 	public async getTopAlbums(input:UserInterface.getTopEntriesInput):Promise<UserInterface.getTopAlbums>;
-	public async getTopAlbums(usernameOrSessionKey:any, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
+	public async getTopAlbums(firstInput:any, params?:{sk?:string, limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getTopAlbums", ...usernameOrSessionKey, ...params })).topalbums as any;
+		let res = (await this.sendRequest({ method: "user.getTopAlbums", ...firstInput, ...params })).topalbums as any;
 
 		return convertExtendedMeta(res, "album") as UserInterface.getTopAlbums;
 
 	}
 
-	public async getTopArtists(usernameOrSessionKey:string, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}):Promise<UserInterface.getTopArtists>;
+	public async getTopArtists(username:string, params?:{sk?:string, limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}):Promise<UserInterface.getTopArtists>;
 	public async getTopArtists(input:UserInterface.getTopEntriesInput):Promise<UserInterface.getTopArtists>;
-	public async getTopArtists(usernameOrSessionKey:any, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
+	public async getTopArtists(firstInput:any, params?:{sk?:string, limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getTopArtists", ...usernameOrSessionKey, ...params })).topartists as any;
+		let res = (await this.sendRequest({ method: "user.getTopArtists", ...firstInput, ...params })).topartists as any;
 
 		return convertExtendedMeta(res, "artist") as UserInterface.getTopArtists;
 
 	}
 
-	public async getTopTags(usernameOrSessionKey:string, params?:{limit?:number}):Promise<UserInterface.getTopTags>;
+	public async getTopTags(username:string, params?:{sk?:string, limit?:number}):Promise<UserInterface.getTopTags>;
 	public async getTopTags(input:UserInterface.getTopTagsInput):Promise<UserInterface.getTopTags>;
-	public async getTopTags(usernameOrSessionKey:any, params?:{limit?:number}) {
+	public async getTopTags(firstInput:any, params?:{sk?:string, limit?:number}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getTopTags", ...usernameOrSessionKey, ...params })).toptags as any;
+		let res = (await this.sendRequest({ method: "user.getTopTags", ...firstInput, ...params })).toptags as any;
 
 		return convertExtendedMeta(res, "tag") as UserInterface.getTopTags;
 
 	}
 
-	public async getTopTracks(usernameOrSessionKey:string, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}):Promise<UserInterface.getTopTracks>;
+	public async getTopTracks(username:string, params?:{sk?:string, limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}):Promise<UserInterface.getTopTracks>;
 	public async getTopTracks(input:UserInterface.getTopEntriesInput):Promise<UserInterface.getTopTracks>;
-	public async getTopTracks(usernameOrSessionKey:any, params?:{limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
+	public async getTopTracks(firstInput:any, params?:{sk?:string, limit?:number, page?:number, period?:"overall"|"7day"|"1month"|"3month"|"6month"|"12month"}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getTopTracks", ...usernameOrSessionKey, ...params })).toptracks as any;
+		let res = (await this.sendRequest({ method: "user.getTopTracks", ...firstInput, ...params })).toptracks as any;
 
 		return convertExtendedMeta(res, "track") as UserInterface.getTopTracks;
 	}
 
-	public async getWeeklyAlbumChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}):Promise<UserInterface.getWeeklyAlbumChart>;
+	public async getWeeklyAlbumChart(username:string, params?:{sk?:string, limit?:number, from:string, to:string}|{limit?:number}):Promise<UserInterface.getWeeklyAlbumChart>;
 	public async getWeeklyAlbumChart(input:UserInterface.getWeeklyChartInput):Promise<UserInterface.getWeeklyAlbumChart>;
-	public async getWeeklyAlbumChart(usernameOrSessionKey:any, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
+	public async getWeeklyAlbumChart(firstInput:any, params?:{sk?:string, limit?:number, from:string, to:string}|{limit?:number}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 		
-		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", ...usernameOrSessionKey, ...params })).weeklyalbumchart;
+		let res = (await this.sendRequest({ method: "user.getWeeklyAlbumChart", ...firstInput, ...params })).weeklyalbumchart;
 		
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		res.albums = toArray(res.album).map((e:any) => {
 			e.artist.name = e.artist["#text"];
-			e.artist["#text"] = void 0;
+			delete e.artist["#text"];
 			e = convertEntry(e);
 			return e;
 		});
 
-		res.album = void 0;
+		delete res.album;
 
 		return res as UserInterface.getWeeklyAlbumChart;
 
 	}
 
-	public async getWeeklyArtistChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}):Promise<UserInterface.getWeeklyArtistChart>;
+	public async getWeeklyArtistChart(username:string, params?:{sk?:string, limit?:number, from:string, to:string}|{limit?:number}):Promise<UserInterface.getWeeklyArtistChart>;
 	public async getWeeklyArtistChart(input:UserInterface.getWeeklyChartInput):Promise<UserInterface.getWeeklyArtistChart>;
-	public async getWeeklyArtistChart(usernameOrSessionKey:any, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
+	public async getWeeklyArtistChart(firstInput:any, params?:{sk?:string, limit?:number, from:string, to:string}|{limit?:number}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", ...usernameOrSessionKey, ...params })).weeklyartistchart as any;
+		let res = (await this.sendRequest({ method: "user.getWeeklyArtistChart", ...firstInput, ...params })).weeklyartistchart as any;
 
 		return convertExtendedMeta(res, "artist") as UserInterface.getWeeklyArtistChart;
 	}
@@ -211,40 +211,40 @@ export default class UserClass extends Base {
 		let res = (await this.sendRequest({ method: "user.getWeeklyChartList"})).weeklychartlist as any;
 
 		res.charts = toArray(res.chart).map(convertMeta);
-		res.chart = void 0;
+		delete res.chart;
 
 		return res as UserInterface.getWeeklyChartList;
 
 	}
 
-	public async getWeeklyTrackChart(usernameOrSessionKey:string, params?:{limit?:number, from:string, to:string}|{limit?:number}):Promise<UserInterface.getWeeklyTrackChart>;
+	public async getWeeklyTrackChart(username:string, params?:{sk?:string, limit?:number, from:string, to:string}|{limit?:number}):Promise<UserInterface.getWeeklyTrackChart>;
 	public async getWeeklyTrackChart(input:UserInterface.getWeeklyChartInput):Promise<UserInterface.getWeeklyTrackChart>;
-	public async getWeeklyTrackChart(usernameOrSessionKey:any, params?:{limit?:number, from:string, to:string}|{limit?:number}) {
+	public async getWeeklyTrackChart(firstInput:any, params?:{sk?:string, limit?:number, from:string, to:string}|{limit?:number}) {
 
-		usernameOrSessionKey = this.checkLimitAndConvertString(usernameOrSessionKey, params);
+		firstInput = this.checkLimitAndConvertString(firstInput, params);
 
-		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", ...usernameOrSessionKey, ...params })).weeklytrackchart as any;
+		let res = (await this.sendRequest({ method: "user.getWeeklyTrackChart", ...firstInput, ...params })).weeklytrackchart as any;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		res.tracks = toArray(res.track).map((e:any) => {
 			e.artist.name = e.artist["#text"];
-			e.artist["#text"] = void 0;
+			delete e.artist["#text"];
 			e = convertEntry(e);
 			return e;
 		});
 
-		res.track = void 0;
+		delete res.track;
 
 		return res as UserInterface.getWeeklyTrackChart;
 
 	}
 
-	private checkLimitAndConvertString(usernameOrSessionKey:any, params:any) {
+	private checkLimitAndConvertString(firstInput:any, params:any) {
 
-		this.checkLimit(params?.limit ?? usernameOrSessionKey?.limit, 1000);
-		return convertString(usernameOrSessionKey, "user", {});
+		this.checkLimit(params?.limit ?? firstInput?.limit, 1000);
+		return convertString(firstInput, "user", {});
 
 	}
 

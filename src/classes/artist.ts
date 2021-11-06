@@ -25,7 +25,7 @@ export default class ArtistClass extends Base {
 
 		if (Object.keys(res).length) {
 			res.index = toInt(res["@attr"].index);
-			res["@attr"] = void 0;
+			delete res["@attr"];
 		}
 
 		return res as ArtistInterface.getCorrection;
@@ -39,11 +39,11 @@ export default class ArtistClass extends Base {
 		let res = (await this.sendRequest({ method: "artist.getInfo", ...firstInput, ...params })).artist as any;
 
 		res.similarArtists = toArray(res.similar?.artist);
-		res.similar = void 0;
+		delete res.similar;
 		res.tags = toArray(res.tags?.tag);
 		if (res.bio) {
 			res.bio.link = res.bio.links?.link;
-			res.bio.links = void 0;
+			delete res.bio.links;
 		}
 
 		res = convertEntry(res);
@@ -62,16 +62,16 @@ export default class ArtistClass extends Base {
 		let res = (await this.sendRequest({ method: "artist.getSimilar", ...firstInput, ...params })).similarartists as any;
 
 		res.meta = res["@attr"];
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		res.artists = convertEntryArray(res.artist);
-		res.artist = void 0;
+		delete res.artist;
 		
 		return res as ArtistInterface.getSimilar;
 
 	}
 	
-	public async getTags(artist:ArtistInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}):Promise<ArtistInterface.getTags>;
+	public async getTags(artist:ArtistInput, username:string, params?:{sk?:string, autocorrect?:boolean}):Promise<ArtistInterface.getTags>;
 	public async getTags(params:ArtistInterface.getTagsInput):Promise<ArtistInterface.getTags>;
 	public async getTags(firstInput:any, usernameOrSessionKey?:string, params?:{autocorrect?:boolean}) {
 
@@ -91,10 +91,10 @@ export default class ArtistClass extends Base {
 		let res = (await this.sendRequest({ method: "artist.getTopAlbums", ...firstInput, ...params })).topalbums as any;
 
 		res.albums = toArray(res.album).filter((e:any) => e.name !== "(null)").map(convertEntry);
-		res.album = void 0;
+		delete res.album;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		return res as ArtistInterface.getTopAlbums;
 
@@ -118,10 +118,10 @@ export default class ArtistClass extends Base {
 
 		let res = (await this.sendRequest({ method: "artist.getTopTracks", ...firstInput, ...params })).toptracks as any;
 		res.tracks = convertEntryArray(res.track);
-		res.track = void 0;
+		delete res.track;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		return res as ArtistInterface.getTopTracks;
 
@@ -153,7 +153,7 @@ export default class ArtistClass extends Base {
 		res = convertSearchWithQuery(res);
 
 		res.artistMatches = convertEntryArray(res.artistmatches.artist);
-		res.artistmatches = void 0;
+		delete res.artistmatches;
 
 		return res as ArtistInterface.search;
 

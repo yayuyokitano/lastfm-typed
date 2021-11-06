@@ -31,7 +31,7 @@ export default class TrackClass extends Base {
 		if (Object.keys(res).length) {
 
 			res.meta = convertMeta(res["@attr"]);
-			res["@attr"] = void 0;
+			delete res["@attr"];
 			
 		}
 
@@ -50,7 +50,7 @@ export default class TrackClass extends Base {
 			
 			if (res.album["@attr"]) {
 				res.album.position = toInt(res.album["@attr"]?.position);
-				res.album["@attr"] = void 0;
+				delete res.album["@attr"];
 			}
 			
 			res.album.image = convertImageArray(res.album.image);
@@ -73,11 +73,11 @@ export default class TrackClass extends Base {
 
 	}
 
-	public async getTags(track:TrackInput, usernameOrSessionKey:string, params?:{autocorrect?:boolean}):Promise<TrackInterface.getTags>;
+	public async getTags(track:TrackInput, username:string, params?:{sk?:string, autocorrect?:boolean}):Promise<TrackInterface.getTags>;
 	public async getTags(input:TrackInterface.getInfoInput):Promise<TrackInterface.getTags>;
-	public async getTags(track:any, usernameOrSessionKey?:string, params?:{autocorrect?:boolean}) {
+	public async getTags(track:any, username?:string, params?:{sk?:string, autocorrect?:boolean}) {
 
-		track = addConditionals(track, {usernameOrSessionKey});
+		track = addConditionals(track, {username});
 
 		let res = this.convertGetTags((await this.sendRequest({ method: "track.getTags", ...track, ...params })).tags) as any;
 
@@ -116,15 +116,15 @@ export default class TrackClass extends Base {
 
 	public async scrobble(sk:string, scrobbles:TrackInterface.ScrobbleObject[]):Promise<TrackInterface.scrobble>;
 	public async scrobble(input:TrackInterface.scrobbleInput):Promise<TrackInterface.scrobble>;
-	public async scrobble(sk:any, scrobbles?:TrackInterface.ScrobbleObject[]) {
+	public async scrobble(firstInput:any, scrobbles?:TrackInterface.ScrobbleObject[]) {
 
-		sk = convertString(sk, "sk", {scrobbles});
+		firstInput = convertString(firstInput, "sk", {scrobbles});
 
-		this.checkScrobbleCount(sk.scrobbles.length, 50);
+		this.checkScrobbleCount(firstInput.scrobbles.length, 50);
 
 		let params:any = {};
 
-		for (let [index, scrobble] of sk.scrobbles.entries()) {
+		for (let [index, scrobble] of firstInput.scrobbles.entries()) {
 			for (let [key, value] of Object.entries(scrobble)) {
 				if (key === "chosenByUser") {
 					params[`${key}[${index}]`] = boolToInt(value as boolean);
@@ -134,30 +134,30 @@ export default class TrackClass extends Base {
 			}
 		}
 
-		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk: sk.sk})).scrobbles as any;
+		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk: firstInput.sk})).scrobbles as any;
 
 		res.meta = convertMeta(res["@attr"]);
-		res["@attr"] = void 0;
+		delete res["@attr"];
 
 		res.scrobbles = toArray(res.scrobble).map((e:any) => {
 			e.ignoredMessage.message = e.ignoredMessage["#text"];
-			e.ignoredMessage["#text"] = void 0;
+			delete e.ignoredMessage["#text"];
 
 			if (e.artist["#text"]) {
 				e.artist.name = e.artist["#text"];
-				e.artist["#text"] = void 0;
+				delete e.artist["#text"];
 			}
 			if (e.album["#text"]) {
 				e.album.name = e.album["#text"];
-				e.album["#text"] = void 0;
+				delete e.album["#text"];
 			}
 			if (e.track["#text"]) {
 				e.track.name = e.track["#text"];
-				e.track["#text"] = void 0;
+				delete e.track["#text"];
 			}
 			if (e.albumArtist["#text"]) {
 				e.albumArtist.name = e.albumArtist["#text"];
-				e.albumArtist["#text"] = void 0;
+				delete e.albumArtist["#text"];
 			}
 
 			e.artist.corrected = toBool(e.artist.corrected);
@@ -170,7 +170,7 @@ export default class TrackClass extends Base {
 			return e;
 		});
 
-		res.scrobble = void 0;
+		delete res.scrobble;
 
 		return res as TrackInterface.scrobble;
 
@@ -188,7 +188,7 @@ export default class TrackClass extends Base {
 
 		res = convertSearch(res);
 		res.trackMatches = convertEntryArray(res.trackmatches.track);
-		res.trackmatches = void 0;
+		delete res.trackmatches;
 
 		return res as TrackInterface.search;
 	}
