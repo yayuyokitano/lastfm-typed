@@ -206,6 +206,22 @@ describe("Track", async () => {
 			});
 		});
 
+		it("Should return properly when album is undefined", async () => {
+			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: undefined, timestamp: Math.floor(Number(new Date()) / 1000)}])).to.be as any).jsonSchema(trackSchema.scrobble);
+		});
+
+		it("Wait for lfm to process", async () => {
+			await sleep(5000);
+		});
+
+		it("Should actually have scrobbled", async () => {
+			expect((await lastfm.user.getRecentTracks(config.session, {limit: 1})).tracks[0]).to.deep.nested.include({
+				"artist.name": "赤い公園",
+				"album.name": "THE PARK",
+				"name": "Mutant"
+			});
+		});
+
 		it("Should return properly for object input", async () => {
 			(expect(await lastfm.track.scrobble({sk: config.session, scrobbles: [{artist: "赤い公園", track: "KILT OF MANTRA", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)}]})).to.be as any).jsonSchema(trackSchema.scrobble);
 		});
