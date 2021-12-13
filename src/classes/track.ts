@@ -126,7 +126,7 @@ export default class TrackClass extends Base {
 
 		for (let [index, scrobble] of firstInput.scrobbles.entries()) {
 			for (let [key, value] of Object.entries(scrobble)) {
-				if (value === undefined) {
+				if (value === void 0) {
 					continue;
 				}
 				if (key === "chosenByUser") {
@@ -136,6 +136,7 @@ export default class TrackClass extends Base {
 				}
 			}
 		}
+		console.log(params);
 
 		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk: firstInput.sk})).scrobbles as any;
 
