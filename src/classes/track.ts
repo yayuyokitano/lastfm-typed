@@ -126,6 +126,9 @@ export default class TrackClass extends Base {
 
 		for (let [index, scrobble] of firstInput.scrobbles.entries()) {
 			for (let [key, value] of Object.entries(scrobble)) {
+				if (value === undefined) {
+					continue;
+				}
 				if (key === "chosenByUser") {
 					params[`${key}[${index}]`] = boolToInt(value as boolean);
 				} else {
