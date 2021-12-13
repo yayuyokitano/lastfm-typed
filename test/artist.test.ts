@@ -153,11 +153,11 @@ describe("Artist", async () => {
 		});
 	
 		it("Should return properly when there is one album", async () => {
-			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("山下由貴"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
+			(expect(await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("山形りお"))).to.be as any).jsonSchema(artistSchema.getTopAlbums);
 		});
 
 		it("Should verify that artist checked actually has one album", async () => {
-			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("山下由貴"))).albums.length).to.equal(1);
+			expect((await lastfm.artist.getTopAlbums(lastfm.helper.ArtistFromName("山形りお"))).albums.length).to.equal(1);
 		});
 	
 		it("Should error when artist does not exist", async () => {

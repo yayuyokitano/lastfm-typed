@@ -224,6 +224,7 @@ describe("Track", async () => {
 
 		it("Should return properly for object input", async () => {
 			(expect(await lastfm.track.scrobble({sk: config.session, scrobbles: [{artist: "赤い公園", track: "KILT OF MANTRA", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)}]})).to.be as any).jsonSchema(trackSchema.scrobble);
+			console.log(await lastfm.track.scrobble({sk: config.session, scrobbles: [{artist: "赤い公園", track: "KILT OF MANTRA", album: "THE PARK", timestamp: Math.floor(Number(new Date()) / 1000)}]}));
 		});
 
 		it("Wait for lfm to process", async () => {
