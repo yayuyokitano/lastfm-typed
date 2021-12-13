@@ -207,8 +207,8 @@ describe("Track", async () => {
 		});
 
 		it("Should return properly when album is undefined", async () => {
-			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: void 0, timestamp: Math.floor(Number(new Date()) / 1000)}])).to.be as any).jsonSchema(trackSchema.scrobble);
-			console.log((await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: void 0, timestamp: Math.floor(Number(new Date()) / 1000)}])).scrobbles[0]);
+			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", timestamp: Math.floor(Number(new Date()) / 1000)}])).to.be as any).jsonSchema(trackSchema.scrobble);
+			console.log((await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", timestamp: Math.floor(Number(new Date()) / 1000)}])).scrobbles[0]);
 		});
 
 		it("Wait for lfm to process", async () => {
