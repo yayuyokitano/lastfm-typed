@@ -51,7 +51,7 @@ export class LFMRequest {
 	public constructor(info:Logger.infoInterface, userAgent:string, secureConnection:boolean, params:LFMArgumentObject) {
 
 		this.key = info.key;
-		this.params = Object.fromEntries(Object.entries(params).filter((e) => Boolean(e[1]))) as LFMArgumentObject;
+		this.params = Object.fromEntries(Object.entries(params).filter((e) => e[1] !== void 0)) as LFMArgumentObject;
 		this.secret = info.secret;
 		this.userAgent = userAgent;
 		this.connectionType = secureConnection ? "https" : "http";
