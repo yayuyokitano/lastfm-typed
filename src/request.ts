@@ -159,6 +159,7 @@ export class LFMRequest {
 		}
 
 		const api_sig = this.getSignature();
+		console.log(stringify({...this.params}));
 
 		const requestParam = {
 			...this.params,

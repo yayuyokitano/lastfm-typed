@@ -136,7 +136,6 @@ export default class TrackClass extends Base {
 				}
 			}
 		}
-		console.log(params);
 
 		let res = (await this.sendRequest({method: "track.scrobble", ...params, sk: firstInput.sk})).scrobbles as any;
 
