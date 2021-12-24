@@ -1,0 +1,11 @@
+dist/
+.github/
+node_modules/
+src/
+test/
+
+.gitignore
+.editorconfig
+mocharc.json
+yarn.lock
+tsconfig.json
