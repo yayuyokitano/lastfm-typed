@@ -207,9 +207,7 @@ describe("Track", async () => {
 		});
 
 		it("Should return properly when album is undefined", async () => {
-			(expect(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: undefined, timestamp: Math.floor(Number(new Date()) / 1000)}])).to.be as any).jsonSchema(trackSchema.scrobble);
-			console.log(await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: undefined, timestamp: Math.floor(Number(new Date()) / 1000)}]));
-			console.log((await lastfm.track.scrobble(config.session, [{artist: "赤い公園", track: "Mutant", album: undefined, timestamp: Math.floor(Number(new Date()) / 1000)}])).scrobbles[0]);
+			(expect(await lastfm.track.scrobble(config.session, [{artist: "Lily Sketch", track: "night smoke", album: undefined, timestamp: Math.floor(Number(new Date()) / 1000)}])).to.be as any).jsonSchema(trackSchema.scrobble);
 		});
 
 		it("Wait for lfm to process", async () => {
@@ -218,8 +216,8 @@ describe("Track", async () => {
 
 		it("Should actually have scrobbled", async () => {
 			expect((await lastfm.user.getRecentTracks(config.session, {limit: 1})).tracks[0]).to.deep.nested.include({
-				"artist.name": "赤い公園",
-				"name": "Mutant"
+				"artist.name": "Lily Sketch",
+				"name": "night smoke"
 			});
 		});
 
