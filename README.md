@@ -20,6 +20,10 @@ For a full documentation of this library, please visit the [documentation websit
 Version 2.0.0 of lastfm-typed brings with it many breaking changes, mainly related to the typing of responses. Typescript should tell you where you need to make changes if you choose to upgrade.
 It is highly recommended that you update, as this comes in response to changes to last.fm's API causing issues with the previous versions. Version 2.0.0 comes with [a website to document it.](https://yayuyokita.no/lastfm-typed/)
 
+### Changes: 2.0.1
+
+2.0.1 now allows the calling of methods with nullish parameters, which will be treated as if the parameters were not there in the first place. For instance, you can now call track.scrobble with {album: null} and it will be treated as if the object was empty.
+
 ## Usage
 
 The library will call the appropriate endpoint (helper functions may call multiple and do additional processing), and format data to more appropriate types and structures than the default api. The structure output by lastfm-typed can be seen and tested in this documentation, and can also be seen from the typings in your IDE. In general, #text, @attr attributes are both renamed everywhere, and some groupings may change. Some deprecated properties may also not be shown. You can view the result of endpoints in the [documentation website.](https://yayuyokita.no/lastfm-typed/)
