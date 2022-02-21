@@ -20,9 +20,9 @@ For a full documentation of this library, please visit the [documentation websit
 Version 2.0.0 of lastfm-typed brings with it many breaking changes, mainly related to the typing of responses. Typescript should tell you where you need to make changes if you choose to upgrade.
 It is highly recommended that you update, as this comes in response to changes to last.fm's API causing issues with the previous versions. Version 2.0.0 comes with [a website to document it.](https://yayuyokita.no/lastfm-typed/)
 
-### Changes: 2.0.1
+### Changes: 2.0.2
 
-2.0.1 now allows the calling of methods with nullish parameters, which will be treated as if the parameters were not there in the first place. For instance, you can now call track.scrobble with {album: null} and it will be treated as if the object was empty.
+2.0.2 upgrades dependencies, most notably node-fetch vulnerability
 
 ## Usage
 
