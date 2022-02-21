@@ -105,3 +105,6 @@ dist
 
 # Don't leak api keys
 test/config.json
+
+# macos
+.DS_Store
