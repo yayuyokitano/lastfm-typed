@@ -22,7 +22,8 @@ It is highly recommended that you update, as this comes in response to changes t
 
 ### Changes: 2.0.2
 
-2.0.2 upgrades dependencies, most notably node-fetch vulnerability
+2.0.2 upgrades dependencies, most notably node-fetch vulnerability.
+Also updates the type definitions for track durations, as they can be null as well as undefined.
 
 ## Usage
 

@@ -9,7 +9,7 @@ interface TrackMetadata extends Metadata {
 }
 
 interface SimilarTrack extends ArtistOptionalMBID {
-	duration?:number;
+	duration?:number|null;
 	streamable: {
 		isStreamable:boolean;
 		fulltrack:boolean;
@@ -114,7 +114,7 @@ export interface ScrobbleObject {
 	trackNumber?:number;
 	mbid?:string;
 	albumArtist?:string;
-	duration?:number;
+	duration?:number|null;
 }
 
 export interface BaseTrackInput {
@@ -160,6 +160,6 @@ export interface updateNowPlayingInput extends PostTemplate {
 	album?:string;
 	trackNumber?:number;
 	mbid?:string;
-	duration?:number;
+	duration?:number|null;
 	albumArtist?:string;
 }

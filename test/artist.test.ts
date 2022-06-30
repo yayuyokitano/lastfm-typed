@@ -87,11 +87,11 @@ describe("Artist", async () => {
 		});
 
 		it("Should return properly when no similar artists", async () => {
-			(expect(await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("山下由貴"))).to.be as any).jsonSchema(artistSchema.getSimilar);
+			(expect(await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("せいな"))).to.be as any).jsonSchema(artistSchema.getSimilar);
 		});
 
 		it("Should verify that artist checked actually doesn't have similar artists", async () => {
-			expect((await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("山下由貴"))).artists.length).to.equal(0);
+			expect((await lastfm.artist.getSimilar(lastfm.helper.ArtistFromName("せいな"))).artists.length).to.equal(0);
 		});
 
 		it("Should error when artist does not exist", async () => {

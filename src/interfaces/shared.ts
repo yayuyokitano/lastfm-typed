@@ -146,7 +146,7 @@ export interface GlobalArtist extends ListenerArtist {
 }
 
 interface TrackNoStreamable extends ArtistNoMBID {
-	duration?:number;
+	duration?:number|null;
 }
 
 interface Track extends TrackNoStreamable {

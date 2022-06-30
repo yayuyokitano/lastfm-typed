@@ -242,15 +242,15 @@ describe("Track", async () => {
 	describe(".search", async () => {
 
 		it("Should return properly when there is one result", async () => {
-			(expect(await lastfm.track.search("心中治療室")).to.be as any).jsonSchema(trackSchema.search);
+			(expect(await lastfm.track.search("ハッピーマインドコントロール")).to.be as any).jsonSchema(trackSchema.search);
 		});
 
 		it("Should return properly with object input", async () => {
-			(expect(await lastfm.track.search({track: "心中治療室"})).to.be as any).jsonSchema(trackSchema.search);
+			(expect(await lastfm.track.search({track: "ハッピーマインドコントロール"})).to.be as any).jsonSchema(trackSchema.search);
 		});
 
 		it("Should verify that track checked actually only returns one result", async () => {
-			expect((await lastfm.track.search("心中治療室")).trackMatches.length).to.equal(1);
+			expect((await lastfm.track.search("ハッピーマインドコントロール")).trackMatches.length).to.equal(1);
 		});
 	
 		it("Should return properly when there are many results", async () => {
