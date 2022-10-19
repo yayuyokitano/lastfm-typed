@@ -182,11 +182,11 @@ describe("Artist", async () => {
 		});
 	
 		it("Should return properly when there are no tags", async () => {
-			(expect(await lastfm.artist.getTopTags(lastfm.helper.ArtistFromName("Lyanas"))).to.be as any).jsonSchema(artistSchema.getTopTags);
+			(expect(await lastfm.artist.getTopTags(lastfm.helper.ArtistFromName("坂元ルナ"))).to.be as any).jsonSchema(artistSchema.getTopTags);
 		});
 
 		it("Should verify that artist checked actually doesn't have tags", async () => {
-			expect((await lastfm.artist.getTopTags(lastfm.helper.ArtistFromName("Lyanas"))).tags.length).to.equal(0);
+			expect((await lastfm.artist.getTopTags(lastfm.helper.ArtistFromName("坂元ルナ"))).tags.length).to.equal(0);
 		});
 	
 		it("Should error when artist does not exist", async () => {

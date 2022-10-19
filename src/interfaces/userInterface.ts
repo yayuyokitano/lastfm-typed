@@ -36,6 +36,9 @@ export interface getInfo extends User {
 	gender:string;
 	playcount:number;
 	registered:number;
+	artistCount:number;
+	albumCount:number;
+	trackCount:number;
 }
 
 export interface getLovedTracks {

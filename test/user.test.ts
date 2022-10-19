@@ -71,6 +71,13 @@ describe("User", async () => {
 			(expect(await lastfm.user.getInfo({user: "Mexdeep"})).to.be as any).jsonSchema(userSchema.getInfo);
 		});
 
+		it("Should have artist, album, track counts", async () => {
+			const info = await lastfm.user.getInfo("Mexdeep");
+			expect(info.artistCount).to.be.greaterThan(460);
+			expect(info.albumCount).to.be.greaterThan(780);
+			expect(info.trackCount).to.be.greaterThan(2600);
+		});
+
 		it("Should error when user does not exist", async () => {
 
 			try {

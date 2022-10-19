@@ -99,6 +99,13 @@ function entryIntConverter(e:any) {
 			delete e["@attr"];
 		}
 	}
+	for (let key of ["artist_count", "album_count", "track_count"]) {
+		if (e.hasOwnProperty(key)) {
+			const camelKey = key.replace(/_(\w)/g, (_, p1) => p1.toUpperCase());
+			e[camelKey] = toInt(e[key]); // eslint-disable-line
+			delete e[key];
+		}
+	}
 	return e;
 
 }
