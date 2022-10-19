@@ -20,10 +20,10 @@ For a full documentation of this library, please visit the [documentation websit
 Version 2.0.0 of lastfm-typed brings with it many breaking changes, mainly related to the typing of responses. Typescript should tell you where you need to make changes if you choose to upgrade.
 It is highly recommended that you update, as this comes in response to changes to last.fm's API causing issues with the previous versions. Version 2.0.0 comes with [a website to document it.](https://yayuyokita.no/lastfm-typed/)
 
-### Changes: 2.0.2
+### Changes: 2.1.0
 
-2.0.2 upgrades dependencies, most notably node-fetch vulnerability.
-Also updates the type definitions for track durations, as they can be null as well as undefined.
+2.1.0 Adds the artistCount, albumCount, and trackCount properties to user.getInfo.
+This comes as last.fm updated its api to add these properties recently.
 
 ## Usage
 
